@@ -15,10 +15,20 @@ public class ClockItem implements Serializable, Comparable<ClockItem> {
     private String description = null;
     private int repeat = NO_REPEAT;
 
+    public ClockItem(Date time, String description, int repeat) {
+        this.time = time;
+        this.description = description;
+        this.repeat = repeat;
+    }
+
+    public ClockItem(Date time, int repeat) {
+        this.time = time;
+        this.repeat = repeat;
+    }
+
     @Override
     public int compareTo(ClockItem another) {
         if (this.time.equals(another.time)
-                && this.description.equals(another.description)
                 && this.repeat == another.repeat )
             return 0;
         return this.time.compareTo(another.time);

@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">HeavenClock</string>
     <string name="addNewClockButton">Add New Clock</string>
+    <string name="no_description">No Description</string>
 </resources>

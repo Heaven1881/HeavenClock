@@ -18,17 +18,15 @@ public class DataBase<T extends Serializable & Comparable<T>> {
 
     public DataBase(Class aClass, Context con) {
         context = con;
-        dbPath = new File(context.getFilesDir() + "/" + aClass.getSimpleName() + "." + EXT);
-        if (!dbPath.exists())
-            dbPath.mkdirs();
+        dbPath = new File(context.getFilesDir(), aClass.getSimpleName() + "." + EXT);
     }
 
     /**
-     * write list to database
+     * addItem list to database
      *
-     * @param list List to write
+     * @param list List to addItem
      */
-    public void write(List<T> list) {
+    public void addItem(List<T> list) {
         if (list == null)
             throw new IllegalArgumentException("list cannot be null");
 
@@ -46,12 +44,20 @@ public class DataBase<T extends Serializable & Comparable<T>> {
         putToDB(oldList);
     }
 
-    public List<T> read() {
+    public List<T> readAll() {
         return getFromDB();
+    }
+
+    public void replaceAll(List<T> list) {
+        putToDB(list);
     }
 
     private List<T> getFromDB() {
         List<T> list = new ArrayList<T>();
+
+        if (!dbPath.exists())
+            return list;
+
         try {
             FileInputStream fis = context.openFileInput(dbPath.getName());
             ObjectInputStream ois = new ObjectInputStream(fis);
