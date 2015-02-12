@@ -18,7 +18,8 @@ public class ClockCtrl {
 
         for (ClockItem ci : list) {
             HashMap<String, Object> map = new HashMap<String, Object>();
-            map.put("ItemTitle", ci.getTime().toLocaleString());
+            Date ciTime = ci.getTime();
+            map.put("ItemTitle", ciTime.getHours() + ":" + ciTime.getMinutes());
             map.put("ItemText", ci.getDescription() != null ? ci.getDescription() : MainActivity.getContext().getResources().getString(R.string.no_description));
             listItem.add(map);
         }
@@ -34,5 +35,9 @@ public class ClockCtrl {
 //        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.getContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 //        AlarmManager alarmManager = (AlarmManager) MainActivity.getContext().getSystemService(Context.ALARM_SERVICE);
 //        alarmManager.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), pendingIntent);
+    }
+
+    public static void delClockItem(int index) {
+        ClockAPI.delClockItemAPI(index);
     }
 }

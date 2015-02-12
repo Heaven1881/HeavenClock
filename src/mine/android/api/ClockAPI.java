@@ -17,10 +17,10 @@ public class ClockAPI {
         db.addItem(Arrays.asList(item));
     }
 
-    public static void delClockItemAPI(ClockItem item) {
+    public static void delClockItemAPI(int index) {
         DataBase<ClockItem> db = new DataBase<ClockItem>(ClockItem.class, MainActivity.getContext());
         List<ClockItem> clockItems = db.readAll();
-        clockItems.remove(item);
+        clockItems.remove(index);
         db.replaceAll(clockItems);
     }
 

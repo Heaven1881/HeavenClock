@@ -3,4 +3,6 @@
     <string name="app_name">HeavenClock</string>
     <string name="addNewClockButton">Add New Clock</string>
     <string name="no_description">No Description</string>
+    <string name="set_clock_msg">Add clock: ${time}</string>
+    <string name="del_clock_msg">Delete Clock ~</string>
 </resources>

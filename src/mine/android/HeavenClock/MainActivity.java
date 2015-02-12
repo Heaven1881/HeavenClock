@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import mine.android.controller.ClockCtrl;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by Heaven on 2015/2/2.
@@ -30,17 +31,6 @@ public class MainActivity extends Activity {
         context = this;
         debugView = (TextView) findViewById(R.id.debugView);
 
-        ListView lv = (ListView) findViewById(R.id.listView);
-        lv.setAdapter(ClockCtrl.getClockListAdapter());
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position,
-                                    long id) {
-                Log.i("ListView", "You just touch " + id + "th line");
-                debugView.setText("You just touch " + id + "th line");
-            }
-        });
-
         Button addClockBtn = (Button) findViewById(R.id.addClockBtn);
         addClockBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,16 +40,24 @@ public class MainActivity extends Activity {
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                if (!view.isShown())
+                                    return;
                                 Calendar time = Calendar.getInstance();
                                 time.setTimeInMillis(System.currentTimeMillis());
+                                time.setTimeZone(TimeZone.getDefault());
                                 time.set(Calendar.HOUR, hourOfDay);
                                 time.set(Calendar.MINUTE, minute);
                                 time.set(Calendar.SECOND, 0);
                                 time.set(Calendar.MILLISECOND, 0);
 
+                                Date date = time.getTime();
+
                                 ClockCtrl.addClockItem(time.getTime());
 
-                                Toast.makeText(getContext(), "add clock: " + time.getTime().toLocaleString(), Toast.LENGTH_LONG).show();
+                                renderClockListView();
+
+                                String line = getString(R.string.set_clock_msg).replaceFirst("\\$\\{time\\}", date.getHours() + ":" + date.getMinutes());
+                                Toast.makeText(getContext(), line, Toast.LENGTH_LONG).show();
                             }
                         },
                         Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
@@ -68,5 +66,25 @@ public class MainActivity extends Activity {
                 ).show();
             }
         });
+
+        ListView lv = (ListView) findViewById(R.id.listView);
+        final SimpleAdapter clockListAdapter = ClockCtrl.getClockListAdapter();
+        lv.setAdapter(clockListAdapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ClockCtrl.delClockItem(position);
+                String line = getString(R.string.del_clock_msg);
+                Toast.makeText(getContext(), line, Toast.LENGTH_LONG).show();
+                renderClockListView();
+                debugView.setText("You just touch " + position + "th line");
+            }
+        });
+    }
+
+    private void renderClockListView() {
+        ListView lv = (ListView) findViewById(R.id.listView);
+        final SimpleAdapter clockListAdapter = ClockCtrl.getClockListAdapter();
+        lv.setAdapter(clockListAdapter);
     }
 }
