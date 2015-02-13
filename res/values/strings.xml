@@ -5,4 +5,5 @@
     <string name="no_description">No Description</string>
     <string name="set_clock_msg">Add clock: ${time}</string>
     <string name="del_clock_msg">Delete Clock ~</string>
+    <string name="clock">Clock</string>
 </resources>

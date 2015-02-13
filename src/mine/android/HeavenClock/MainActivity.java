@@ -4,13 +4,14 @@ import android.app.Activity;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.*;
 import mine.android.controller.ClockCtrl;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 
 /**
  * Created by Heaven on 2015/2/2.
@@ -18,6 +19,7 @@ import java.util.TimeZone;
 public class MainActivity extends Activity {
     private static Context context = null;
     private TextView debugView = null;
+    private Handler handler = null;
 
     public static Context getContext() {
         return context;
@@ -30,6 +32,28 @@ public class MainActivity extends Activity {
 
         context = this;
         debugView = (TextView) findViewById(R.id.debugView);
+
+        handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                debugView.setText(msg.obj.toString());
+            }
+        };
+
+        new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    handler.sendMessage(Message.obtain(handler, 0, new Date().toString()));
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
 
         Button addClockBtn = (Button) findViewById(R.id.addClockBtn);
         addClockBtn.setOnClickListener(new View.OnClickListener() {
@@ -44,16 +68,14 @@ public class MainActivity extends Activity {
                                     return;
                                 Calendar time = Calendar.getInstance();
                                 time.setTimeInMillis(System.currentTimeMillis());
-                                time.setTimeZone(TimeZone.getDefault());
-                                time.set(Calendar.HOUR, hourOfDay);
+//                                time.setTimeZone(TimeZone.getDefault());
+//                                time.set(Calendar.HOUR, hourOfDay);
                                 time.set(Calendar.MINUTE, minute);
                                 time.set(Calendar.SECOND, 0);
                                 time.set(Calendar.MILLISECOND, 0);
 
                                 Date date = time.getTime();
-
-                                ClockCtrl.addClockItem(time.getTime());
-
+                                ClockCtrl.addClockItem(date);
                                 renderClockListView();
 
                                 String line = getString(R.string.set_clock_msg).replaceFirst("\\$\\{time\\}", date.getHours() + ":" + date.getMinutes());

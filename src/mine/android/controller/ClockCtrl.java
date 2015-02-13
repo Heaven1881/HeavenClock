@@ -1,6 +1,12 @@
 package mine.android.controller;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.widget.SimpleAdapter;
+import mine.android.HeavenClock.AlarmActivity;
 import mine.android.HeavenClock.MainActivity;
 import mine.android.HeavenClock.R;
 import mine.android.api.ClockAPI;
@@ -31,10 +37,17 @@ public class ClockCtrl {
         ClockAPI.addClockItemAPI(new ClockItem(date, ClockItem.NO_REPEAT));
 
         //TODO add alarmManager
-//        Intent intent = new Intent(MainActivity.getContext(), ClockActivity.class);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.getContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-//        AlarmManager alarmManager = (AlarmManager) MainActivity.getContext().getSystemService(Context.ALARM_SERVICE);
-//        alarmManager.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), pendingIntent);
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        Intent intent = new Intent(MainActivity.getContext(), AlarmActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.getContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) MainActivity.getContext().getSystemService(Context.ALARM_SERVICE);
+//        alarmManager.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 3 * 1000, pendingIntent);
+
+        Log.i("Clock - set    :", "" + c.getTimeInMillis() / 1000);
+        Log.i("Clock - current:", "" + System.currentTimeMillis() / 1000);
+        Log.i("Clock - devide :", "" + (c.getTimeInMillis() - System.currentTimeMillis()) / 1000);
     }
 
     public static void delClockItem(int index) {
