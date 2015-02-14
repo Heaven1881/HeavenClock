@@ -27,6 +27,10 @@ public class ClockItem implements Serializable, Comparable<ClockItem> {
         this.repeat = repeat;
     }
 
+    public int getId() {
+        return (int) (time.getTime() * 100 + repeat) % 1000000000;
+    }
+
     public ClockItem(Date time, int repeat) {
         this.time = time;
         this.repeat = repeat;
@@ -35,7 +39,7 @@ public class ClockItem implements Serializable, Comparable<ClockItem> {
     @Override
     public int compareTo(ClockItem another) {
         if (this.time.equals(another.time)
-                && this.repeat == another.repeat )
+                && this.repeat == another.repeat)
             return 0;
         return this.time.compareTo(another.time);
     }

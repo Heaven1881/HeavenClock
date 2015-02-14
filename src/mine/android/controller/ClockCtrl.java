@@ -40,17 +40,30 @@ public class ClockCtrl {
     private static void activateClockItem(ClockItem clock) {
         Calendar c = Calendar.getInstance();
         c.setTime(clock.getTime());
-        //TODO 添加传参
-        Intent intent = new Intent(MainActivity.getContext(), AlarmActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.getContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) MainActivity.getContext().getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
-//        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 3 * 1000, pendingIntent);
 
-        Log.i("Activate CLock - time", clock.getTime().toString());
-        Log.d("Clock - set    :", "" + c.getTimeInMillis() / 1000);
-        Log.d("Clock - current:", "" + System.currentTimeMillis() / 1000);
-        Log.d("Clock - devide :", "" + (c.getTimeInMillis() - System.currentTimeMillis()) / 1000);
+        //TODO 添加传参 区分一次性闹钟
+        Intent intent = new Intent(MainActivity.getContext(), AlarmActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.getContext(), clock.getId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) MainActivity.getContext().getSystemService(Context.ALARM_SERVICE);
+        if (clock.getRepeat() == ClockItem.NO_REPEAT) {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+        } else if (clock.getRepeat() == ClockItem.EVERY_DAY) {
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        } else if (clock.getRepeat() == ClockItem.EVERY_WEEK) {
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
+        }
+
+        Log.i("Activate CLock - time", clock.getTime().getHours() + ":" + clock.getTime().getMinutes() + " " + clock.getRepeat() + " " + clock.getId());
+    }
+
+    private static void dActivateClockItem(ClockItem clock) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(clock.getTime());
+
+        Intent intent = new Intent(MainActivity.getContext(), AlarmActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.getContext(), clock.getId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) MainActivity.getContext().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
     }
 
     public static void delClockItem(int index) {
@@ -59,6 +72,11 @@ public class ClockCtrl {
 
     public static void setClockItemEnable(ClockItem item, boolean enable) {
         ClockAPI.updateClockItem(item, ClockItem.FIELD_ACTIVATED, enable);
+        if (enable)
+            activateClockItem(item);
+        else {
+            dActivateClockItem(item);
+        }
         Log.i("Set Clock Enable", String.valueOf(enable));
     }
 }
