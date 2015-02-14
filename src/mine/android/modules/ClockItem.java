@@ -14,6 +14,7 @@ public class ClockItem implements Serializable, Comparable<ClockItem> {
     private Date time = null;
     private String description = null;
     private int repeat = NO_REPEAT;
+    private boolean activated = true;
 
     public ClockItem(Date time, String description, int repeat) {
         this.time = time;
@@ -56,5 +57,13 @@ public class ClockItem implements Serializable, Comparable<ClockItem> {
 
     public void setTime(Date time) {
         this.time = time;
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
     }
 }

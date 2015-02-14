@@ -90,7 +90,7 @@ public class MainActivity extends Activity {
         });
 
         ListView lv = (ListView) findViewById(R.id.listView);
-        final SimpleAdapter clockListAdapter = ClockCtrl.getClockListAdapter();
+        final SimpleAdapter clockListAdapter = ClockCtrl.getClockListForListView();
         lv.setAdapter(clockListAdapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -102,11 +102,14 @@ public class MainActivity extends Activity {
                 debugView.setText("You just touch " + position + "th line");
             }
         });
+
+        //activate all clock
+//        ClockCtrl.activateAllClockItem();
     }
 
     private void renderClockListView() {
         ListView lv = (ListView) findViewById(R.id.listView);
-        final SimpleAdapter clockListAdapter = ClockCtrl.getClockListAdapter();
+        final SimpleAdapter clockListAdapter = ClockCtrl.getClockListForListView();
         lv.setAdapter(clockListAdapter);
     }
 }
