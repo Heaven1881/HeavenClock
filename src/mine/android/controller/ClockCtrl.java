@@ -6,11 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.BaseAdapter;
-import android.widget.SimpleAdapter;
-import android.widget.Switch;
 import mine.android.HeavenClock.AlarmActivity;
 import mine.android.HeavenClock.MainActivity;
-import mine.android.HeavenClock.R;
 import mine.android.api.ClockAPI;
 import mine.android.modules.ClockItem;
 
@@ -22,22 +19,7 @@ import java.util.*;
 public class ClockCtrl {
     public static BaseAdapter getClockListForListView() {
         List<ClockItem> list = ClockAPI.getClockListAPI();
-        ArrayList<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>();
-
-        for (ClockItem ci : list) {
-            HashMap<String, Object> map = new HashMap<String, Object>();
-            Date ciTime = ci.getTime();
-            map.put("ItemTitle", ciTime.getHours() + ":" + ciTime.getMinutes());
-            map.put("ItemText", ci.getDescription() != null ? ci.getDescription() : MainActivity.getContext().getResources().getString(R.string.no_description));
-
-            Switch clockSwitch = new Switch(MainActivity.getContext());
-            clockSwitch.setChecked(ci.isActivated());
-//            map.put("clockSwitch", clockSwitch);
-
-            listItem.add(map);
-        }
-
-        return new SimpleAdapter(MainActivity.getContext(), listItem, R.layout.list_item, new String[]{"ItemTitle", "ItemText", "clockSwitch"}, new int[]{R.id.ItemTitle, R.id.ItemText, R.id.itemSwitch});
+        return ClockItemListAdapter.make(MainActivity.getContext(), list);
     }
 
     public static void activateAllClockItem() {
@@ -73,5 +55,10 @@ public class ClockCtrl {
 
     public static void delClockItem(int index) {
         ClockAPI.delClockItemAPI(index);
+    }
+
+    public static void setClockItemEnable(ClockItem item, boolean enable) {
+        ClockAPI.updateClockItem(item, ClockItem.FIELD_ACTIVATED, enable);
+        Log.i("Set Clock Enable", String.valueOf(enable));
     }
 }

@@ -8,17 +8,19 @@ import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import mine.android.HeavenClock.MainActivity;
 import mine.android.HeavenClock.R;
+import mine.android.modules.ClockItem;
 
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Heaven on 2015/2/14.
  */
 public class ClockItemListAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
-    private List<Map<String, Object>> mData;
+    private List<ClockItem> mData;
 
     public final class ListItemView {
         TextView itemTitle;
@@ -30,7 +32,7 @@ public class ClockItemListAdapter extends BaseAdapter {
         mInflater = LayoutInflater.from(context);
     }
 
-    public static ClockItemListAdapter make(Context context, List<Map<String, Object>> mData) {
+    public static ClockItemListAdapter make(Context context, List<ClockItem> mData) {
         ClockItemListAdapter ret = new ClockItemListAdapter(context);
         ret.mData = mData;
         return ret;
@@ -52,8 +54,8 @@ public class ClockItemListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ListItemView item = null;
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        final ListItemView item;
         if (convertView == null) {
             item = new ListItemView();
             convertView = mInflater.inflate(R.layout.list_item, null);
@@ -65,15 +67,22 @@ public class ClockItemListAdapter extends BaseAdapter {
             item = (ListItemView) convertView.getTag();
         }
 
-        item.itemTitle.setText((String) mData.get(position).get("ItemTitle"));
-        item.itemText.setText((String) mData.get(position).get("ItemText"));
+        final ClockItem clockItem = mData.get(position);
+
+        Date time = clockItem.getTime();
+        item.itemTitle.setText(time.getHours() + ":" + time.getMinutes() + ":00");
+
+        String description = clockItem.getDescription();
+        item.itemText.setText(description != null ? description : MainActivity.getContext().getResources().getString(R.string.no_description));
+
+        item.itemSwitch.setChecked(clockItem.isActivated());
         item.itemSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
+                ClockCtrl.setClockItemEnable(clockItem, isChecked);
             }
         });
 
-        return null;
+        return convertView;
     }
 }

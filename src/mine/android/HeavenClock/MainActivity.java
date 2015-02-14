@@ -68,8 +68,7 @@ public class MainActivity extends Activity {
                                     return;
                                 Calendar time = Calendar.getInstance();
                                 time.setTimeInMillis(System.currentTimeMillis());
-//                                time.setTimeZone(TimeZone.getDefault());
-//                                time.set(Calendar.HOUR, hourOfDay);
+                                time.set(Calendar.HOUR_OF_DAY, hourOfDay);
                                 time.set(Calendar.MINUTE, minute);
                                 time.set(Calendar.SECOND, 0);
                                 time.set(Calendar.MILLISECOND, 0);
@@ -90,18 +89,18 @@ public class MainActivity extends Activity {
         });
 
         ListView lv = (ListView) findViewById(R.id.listView);
-        final SimpleAdapter clockListAdapter = ClockCtrl.getClockListForListView();
+        final BaseAdapter clockListAdapter = ClockCtrl.getClockListForListView();
         lv.setAdapter(clockListAdapter);
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ClockCtrl.delClockItem(position);
-                String line = getString(R.string.del_clock_msg);
-                Toast.makeText(getContext(), line, Toast.LENGTH_LONG).show();
-                renderClockListView();
-                debugView.setText("You just touch " + position + "th line");
-            }
-        });
+//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                ClockCtrl.delClockItem(position);
+//                String line = getString(R.string.del_clock_msg);
+//                Toast.makeText(getContext(), line, Toast.LENGTH_LONG).show();
+//                renderClockListView();
+//                debugView.setText("You just touch " + position + "th line");
+//            }
+//        });
 
         //activate all clock
 //        ClockCtrl.activateAllClockItem();
@@ -109,7 +108,7 @@ public class MainActivity extends Activity {
 
     private void renderClockListView() {
         ListView lv = (ListView) findViewById(R.id.listView);
-        final SimpleAdapter clockListAdapter = ClockCtrl.getClockListForListView();
+        final BaseAdapter clockListAdapter = ClockCtrl.getClockListForListView();
         lv.setAdapter(clockListAdapter);
     }
 }

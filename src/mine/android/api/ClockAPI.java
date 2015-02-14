@@ -36,7 +36,7 @@ public class ClockAPI {
 
         int i = 0;
         for (ClockItem ci : clockItems) {
-            if (ci.equals(item)) {
+            if (ci.compareTo(item) == 0) {
                 switch (field) {
                     case ClockItem.FIELD_ACTIVATED:
                         ci.setActivated((Boolean) value);
