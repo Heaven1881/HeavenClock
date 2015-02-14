@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.BaseAdapter;
 import android.widget.SimpleAdapter;
 import android.widget.Switch;
 import mine.android.HeavenClock.AlarmActivity;
@@ -19,7 +20,7 @@ import java.util.*;
  * Created by Heaven on 2015/2/12.
  */
 public class ClockCtrl {
-    public static SimpleAdapter getClockListForListView() {
+    public static BaseAdapter getClockListForListView() {
         List<ClockItem> list = ClockAPI.getClockListAPI();
         ArrayList<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>();
 
@@ -36,7 +37,7 @@ public class ClockCtrl {
             listItem.add(map);
         }
 
-        return new SimpleAdapter(MainActivity.getContext(), listItem, R.layout.list_item, new String[]{"ItemTitle", "ItemText", "clockSwitch"}, new int[]{R.id.ItemTitle, R.id.ItemText, R.id.clockSwitch});
+        return new SimpleAdapter(MainActivity.getContext(), listItem, R.layout.list_item, new String[]{"ItemTitle", "ItemText", "clockSwitch"}, new int[]{R.id.ItemTitle, R.id.ItemText, R.id.itemSwitch});
     }
 
     public static void activateAllClockItem() {

@@ -5,6 +5,7 @@ import mine.android.db.DataBase;
 import mine.android.modules.ClockItem;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,5 +28,36 @@ public class ClockAPI {
     public static List<ClockItem> getClockListAPI() {
         DataBase<ClockItem> db = new DataBase<ClockItem>(ClockItem.class, MainActivity.getContext());
         return db.readAll();
+    }
+
+    public static void updateClockItem(ClockItem item, int field, Object value) {
+        DataBase<ClockItem> db = new DataBase<ClockItem>(ClockItem.class, MainActivity.getContext());
+        List<ClockItem> clockItems = db.readAll();
+
+        int i = 0;
+        for (ClockItem ci : clockItems) {
+            if (ci.equals(item)) {
+                switch (field) {
+                    case ClockItem.FIELD_ACTIVATED:
+                        ci.setActivated((Boolean) value);
+                        break;
+                    case ClockItem.FIELD_DESCRIPTION:
+                        ci.setDescription((String) value);
+                        break;
+                    case ClockItem.FIELD_REPEAT:
+                        ci.setRepeat((Integer) value);
+                        break;
+                    case ClockItem.FIELD_TIME:
+                        ci.setTime((Date) value);
+                        break;
+                    default:
+                        assert false;
+                }
+                clockItems.set(i, ci);
+            }
+            i = i + 1;
+        }
+
+        db.replaceAll(clockItems);
     }
 }

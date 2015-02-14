@@ -7,6 +7,11 @@ import java.util.Date;
  * Created by Heaven on 2015/2/12.
  */
 public class ClockItem implements Serializable, Comparable<ClockItem> {
+    public static final int FIELD_TIME = 10;
+    public static final int FIELD_DESCRIPTION = 11;
+    public static final int FIELD_REPEAT = 12;
+    public static final int FIELD_ACTIVATED = 13;
+
     public static final int NO_REPEAT = 0;
     public static final int EVERY_DAY = 1;
     public static final int EVERY_WEEK = 2;
