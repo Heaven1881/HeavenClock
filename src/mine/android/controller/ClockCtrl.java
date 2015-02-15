@@ -10,6 +10,7 @@ import mine.android.HeavenClock.AlarmActivity;
 import mine.android.HeavenClock.MainActivity;
 import mine.android.api.ClockAPI;
 import mine.android.modules.ClockItem;
+import mine.android.modules.ClockItemListAdapter;
 
 import java.util.*;
 

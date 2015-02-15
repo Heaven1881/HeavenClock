@@ -1,4 +1,4 @@
-package mine.android.controller;
+package mine.android.modules;
 
 import android.content.Context;
 import android.util.Log;
@@ -11,7 +11,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import mine.android.HeavenClock.MainActivity;
 import mine.android.HeavenClock.R;
-import mine.android.modules.ClockItem;
+import mine.android.controller.ClockCtrl;
 
 import java.util.Date;
 import java.util.List;

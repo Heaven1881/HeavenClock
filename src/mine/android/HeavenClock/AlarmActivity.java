@@ -19,9 +19,7 @@ public class AlarmActivity extends Activity {
         if (once) {
             int compareId = intent.getIntExtra("compareId", 0);
             ClockCtrl.setClockItemDisableByCompareId(compareId);
-            //TODO 判断时间，若在该时间之前，则不需要激活
             //TODO 使用id 来寻找 ClockItem
-            //TODO 重构代码结构
         }
 
 
