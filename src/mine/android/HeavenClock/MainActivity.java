@@ -1,17 +1,19 @@
 package mine.android.HeavenClock;
 
 import android.app.Activity;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
+import mine.android.api.WebAPI;
 import mine.android.controller.ClockCtrl;
+import mine.android.modules.ClockSong;
 
-import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Heaven on 2015/2/2.
@@ -26,7 +28,7 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
@@ -59,32 +61,44 @@ public class MainActivity extends Activity {
         addClockBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TimePickerDialog(
-                        getContext(),
-                        new TimePickerDialog.OnTimeSetListener() {
-                            @Override
-                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                if (!view.isShown())
-                                    return;
-                                Calendar time = Calendar.getInstance();
-                                time.setTimeInMillis(System.currentTimeMillis());
-                                time.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                                time.set(Calendar.MINUTE, minute);
-                                time.set(Calendar.SECOND, 0);
-                                time.set(Calendar.MILLISECOND, 0);
-
-                                Date date = time.getTime();
-                                ClockCtrl.addClockItem(date);
-                                renderClockListView();
-
-                                String line = getString(R.string.set_clock_msg).replaceFirst("\\$\\{time\\}", date.getHours() + ":" + date.getMinutes());
-                                Toast.makeText(getContext(), line, Toast.LENGTH_LONG).show();
-                            }
-                        },
-                        Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
-                        Calendar.getInstance().get(Calendar.MINUTE),
-                        true
-                ).show();
+                Thread thread = new Thread() {
+                    @Override
+                    public void run() {
+                        List<ClockSong> songList = WebAPI.getSongList(0, 'n');
+                        for (ClockSong song : songList) {
+                            Log.i("song - title :", song.getTitle());
+                            Log.i("song - artist:", song.getArtist());
+                            Log.i("song - url   :", song.getUrl());
+                        }
+                    }
+                };
+                thread.start();
+//                new TimePickerDialog(
+//                        getContext(),
+//                        new TimePickerDialog.OnTimeSetListener() {
+//                            @Override
+//                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+//                                if (!view.isShown())
+//                                    return;
+//                                Calendar time = Calendar.getInstance();
+//                                time.setTimeInMillis(System.currentTimeMillis());
+//                                time.set(Calendar.HOUR_OF_DAY, hourOfDay);
+//                                time.set(Calendar.MINUTE, minute);
+//                                time.set(Calendar.SECOND, 0);
+//                                time.set(Calendar.MILLISECOND, 0);
+//
+//                                Date date = time.getTime();
+//                                ClockCtrl.addClockItem(date);
+//                                renderClockListView();
+//
+//                                String line = getString(R.string.set_clock_msg).replaceFirst("\\$\\{time\\}", date.getHours() + ":" + date.getMinutes());
+//                                Toast.makeText(getContext(), line, Toast.LENGTH_LONG).show();
+//                            }
+//                        },
+//                        Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
+//                        Calendar.getInstance().get(Calendar.MINUTE),
+//                        true
+//                ).show();
             }
         });
 
