@@ -1,6 +1,7 @@
 package mine.android.controller;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,6 +82,7 @@ public class ClockItemListAdapter extends BaseAdapter {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 ClockCtrl.setClockItemEnable(clockItem, isChecked);
+                Log.i("Switch Checked", String.valueOf(isChecked));
             }
         });
 

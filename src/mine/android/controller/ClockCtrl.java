@@ -38,14 +38,25 @@ public class ClockCtrl {
 
     private static void activateClockItem(ClockItem clock) {
         Calendar c = Calendar.getInstance();
-        c.setTime(clock.getTime());
+        Date time = clock.getTime();
+        c.set(Calendar.HOUR_OF_DAY, time.getHours());
+        c.set(Calendar.MINUTE, time.getMinutes());
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
 
-        //TODO 添加传参 区分一次性闹钟
+        if (c.getTimeInMillis() < System.currentTimeMillis()) {
+            c.add(Calendar.DAY_OF_YEAR, 1);
+            Log.i("set clock", "set to next day");
+        }
+
+        // 添加传参 区分一次性闹钟
         Intent intent = new Intent(MainActivity.getContext(), AlarmActivity.class);
         intent.putExtra("once", true);
         intent.putExtra("compareId", clock.getCompareId());
+
         PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.getContext(), clock.getCompareId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager alarmManager = (AlarmManager) MainActivity.getContext().getSystemService(Context.ALARM_SERVICE);
+
         if (clock.getRepeat() == ClockItem.NO_REPEAT) {
             alarmManager.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
         } else if (clock.getRepeat() == ClockItem.EVERY_DAY) {
@@ -54,7 +65,7 @@ public class ClockCtrl {
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
         }
 
-        Log.i("Activate CLock - time", clock.getTime().getHours() + ":" + clock.getTime().getMinutes() + " " + clock.getRepeat() + " " + clock.getCompareId());
+        Log.i("Activate CLock - time", time.getHours() + ":" + time.getMinutes() + " " + clock.getRepeat() + " " + clock.getCompareId());
     }
 
     private static void dActivateClockItem(ClockItem clock) {

@@ -65,7 +65,7 @@ public class ClockAPI {
                     default:
                         assert false;
                 }
-                Log.i("db", "set " + field + " to " + value);
+                Log.i("clock " + ci.getCompareId(), "set " + field + " to " + value);
                 clockItems.set(i, ci);
             }
             i = i + 1;
