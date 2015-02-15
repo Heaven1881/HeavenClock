@@ -91,14 +91,17 @@ public class MainActivity extends Activity {
         ListView lv = (ListView) findViewById(R.id.listView);
         final BaseAdapter clockListAdapter = ClockCtrl.getClockListForListView();
         lv.setAdapter(clockListAdapter);
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 ClockCtrl.delClockItem(position);
+
                 String line = getString(R.string.del_clock_msg);
                 Toast.makeText(getContext(), line, Toast.LENGTH_LONG).show();
+
                 renderClockListView();
-                debugView.setText("You just touch " + position + "th line");
+                debugView.setText("You just long touch " + position + "th line");
+                return true;
             }
         });
 
