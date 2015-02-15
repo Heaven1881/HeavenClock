@@ -1,4 +1,4 @@
-package mine.android.modules;
+package mine.android.modules.adapter;
 
 import android.content.Context;
 import android.util.Log;
@@ -12,7 +12,9 @@ import android.widget.TextView;
 import mine.android.HeavenClock.MainActivity;
 import mine.android.HeavenClock.R;
 import mine.android.controller.ClockCtrl;
+import mine.android.modules.ClockItem;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -72,7 +74,25 @@ public class ClockItemListAdapter extends BaseAdapter {
 
         //TODO 显示 每天 每周
         Date time = clockItem.getTime();
-        item.itemTitle.setText(time.getHours() + ":" + time.getMinutes() + ":00");
+        String repeatStr = null;
+        switch (clockItem.getRepeat()) {
+            case ClockItem.NO_REPEAT:
+                repeatStr = MainActivity.getContext().getString(R.string.no_repeat);
+                break;
+            case ClockItem.EVERY_DAY:
+                repeatStr = MainActivity.getContext().getString(R.string.every_day);
+                break;
+            case ClockItem.EVERY_WEEK:
+                repeatStr = MainActivity.getContext().getString(R.string.every_week);
+                Calendar c = Calendar.getInstance();
+                c.setTime(time);
+                repeatStr = repeatStr + " " + c.get(Calendar.DAY_OF_WEEK);
+                break;
+            default:
+                assert false;
+        }
+        String itemTitle = repeatStr + " - " + time.getHours() + ":" + time.getMinutes() + ":00";
+        item.itemTitle.setText(itemTitle);
 
         String description = clockItem.getDescription();
         item.itemText.setText(description != null ? description : MainActivity.getContext().getResources().getString(R.string.no_description));

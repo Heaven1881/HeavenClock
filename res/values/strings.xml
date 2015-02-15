@@ -8,4 +8,7 @@
     <string name="clock">Clock</string>
     <string name="description">description</string>
     <string name="time">00:00 (everyday)</string>
+    <string name="every_day">Every day</string>
+    <string name="every_week">Every week</string>
+    <string name="no_repeat">Once</string>
 </resources>

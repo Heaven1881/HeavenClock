@@ -19,7 +19,6 @@ public class AlarmActivity extends Activity {
         if (once) {
             int compareId = intent.getIntExtra("compareId", 0);
             ClockCtrl.setClockItemDisableByCompareId(compareId);
-            //TODO 使用id 来寻找 ClockItem
         }
 
 
