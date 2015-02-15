@@ -21,7 +21,6 @@ public class AlarmActivity extends Activity {
             ClockCtrl.setClockItemDisableByCompareId(compareId);
         }
 
-
         Toast.makeText(MainActivity.getContext(), "Time up !", Toast.LENGTH_LONG).show();
     }
 }

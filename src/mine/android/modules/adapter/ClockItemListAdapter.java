@@ -72,7 +72,6 @@ public class ClockItemListAdapter extends BaseAdapter {
 
         final ClockItem clockItem = mData.get(position);
 
-        //TODO 显示 每天 每周
         Date time = clockItem.getTime();
         String repeatStr = null;
         switch (clockItem.getRepeat()) {
