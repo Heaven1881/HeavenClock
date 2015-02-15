@@ -24,8 +24,6 @@ public class ClockCtrl {
 
     public static void activateAllClockItem() {
         List<ClockItem> list = ClockAPI.getClockListAPI();
-        ArrayList<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>();
-
         for (ClockItem ci : list) {
             activateClockItem(ci);
         }
@@ -43,7 +41,8 @@ public class ClockCtrl {
 
         //TODO 添加传参 区分一次性闹钟
         Intent intent = new Intent(MainActivity.getContext(), AlarmActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.getContext(), clock.getId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        intent.putExtra("once", true);
+        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.getContext(), clock.getCompareId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager alarmManager = (AlarmManager) MainActivity.getContext().getSystemService(Context.ALARM_SERVICE);
         if (clock.getRepeat() == ClockItem.NO_REPEAT) {
             alarmManager.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
@@ -53,7 +52,7 @@ public class ClockCtrl {
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
         }
 
-        Log.i("Activate CLock - time", clock.getTime().getHours() + ":" + clock.getTime().getMinutes() + " " + clock.getRepeat() + " " + clock.getId());
+        Log.i("Activate CLock - time", clock.getTime().getHours() + ":" + clock.getTime().getMinutes() + " " + clock.getRepeat() + " " + clock.getCompareId());
     }
 
     private static void dActivateClockItem(ClockItem clock) {
@@ -61,7 +60,7 @@ public class ClockCtrl {
         c.setTime(clock.getTime());
 
         Intent intent = new Intent(MainActivity.getContext(), AlarmActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.getContext(), clock.getId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.getContext(), clock.getCompareId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager alarmManager = (AlarmManager) MainActivity.getContext().getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
     }
