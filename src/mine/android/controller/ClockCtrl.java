@@ -25,7 +25,8 @@ public class ClockCtrl {
     public static void activateAllClockItem() {
         List<ClockItem> list = ClockAPI.getClockListAPI();
         for (ClockItem ci : list) {
-            activateClockItem(ci);
+            if (ci.isActivated())
+                activateClockItem(ci);
         }
     }
 
@@ -42,6 +43,7 @@ public class ClockCtrl {
         //TODO 添加传参 区分一次性闹钟
         Intent intent = new Intent(MainActivity.getContext(), AlarmActivity.class);
         intent.putExtra("once", true);
+        intent.putExtra("compareId", clock.getCompareId());
         PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.getContext(), clock.getCompareId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager alarmManager = (AlarmManager) MainActivity.getContext().getSystemService(Context.ALARM_SERVICE);
         if (clock.getRepeat() == ClockItem.NO_REPEAT) {
@@ -65,6 +67,17 @@ public class ClockCtrl {
         alarmManager.cancel(pendingIntent);
     }
 
+    public static void setClockItemDisableByCompareId(int compareId) {
+        Intent intent = new Intent(MainActivity.getContext(), AlarmActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.getContext(), compareId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) MainActivity.getContext().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+
+        ClockAPI.updateClockItem(compareId, ClockItem.FIELD_ACTIVATED, false);
+
+        Log.i("dActivate by compare id", String.valueOf(compareId));
+    }
+
     public static void delClockItem(int index) {
         ClockAPI.delClockItemAPI(index);
     }
@@ -76,6 +89,5 @@ public class ClockCtrl {
         else {
             dActivateClockItem(item);
         }
-        Log.i("Set Clock Enable", String.valueOf(enable));
     }
 }

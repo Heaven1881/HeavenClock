@@ -1,5 +1,6 @@
 package mine.android.api;
 
+import android.util.Log;
 import mine.android.HeavenClock.MainActivity;
 import mine.android.db.DataBase;
 import mine.android.modules.ClockItem;
@@ -30,6 +31,17 @@ public class ClockAPI {
         return db.readAll();
     }
 
+    public static void updateClockItem(int compareId, int field, Object value) {
+        DataBase<ClockItem> db = new DataBase<ClockItem>(ClockItem.class, MainActivity.getContext());
+        List<ClockItem> list = db.readAll();
+
+        for (ClockItem ci : list) {
+            if (ci.getCompareId() == compareId) {
+                updateClockItem(ci, field, value);
+            }
+        }
+    }
+
     public static void updateClockItem(ClockItem item, int field, Object value) {
         DataBase<ClockItem> db = new DataBase<ClockItem>(ClockItem.class, MainActivity.getContext());
         List<ClockItem> clockItems = db.readAll();
@@ -53,6 +65,7 @@ public class ClockAPI {
                     default:
                         assert false;
                 }
+                Log.i("db", "set " + field + " to " + value);
                 clockItems.set(i, ci);
             }
             i = i + 1;
