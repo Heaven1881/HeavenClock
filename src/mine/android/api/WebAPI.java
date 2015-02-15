@@ -1,6 +1,9 @@
 package mine.android.api;
 
+import mine.android.HeavenClock.MainActivity;
+import mine.android.HeavenClock.R;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -40,5 +43,24 @@ public class WebAPI {
         in.close();
 
         return json.toString();
+    }
+
+    public static LogInfo loginToDouban(String email, String password) {
+        String url = MainActivity.getContext().getString(R.string.login_url);
+        JSONObject param = new JSONObject();
+        try {
+            param.put("app_name", "radio_desktop_win");
+            param.put("version", 100);
+            param.put("email", MainActivity.getContext().getString(R.string.douban_email));
+            param.put("password", MainActivity.getContext().getString(R.string.douban_password));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static class LogInfo {
+        String userId;
+        String token;
+        String expire;
     }
 }
