@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import mine.android.api.WebAPI;
@@ -28,9 +30,14 @@ import java.util.List;
  */
 public class AlarmActivity extends Activity implements Runnable,
         MediaPlayer.OnPreparedListener, MediaPlayer.OnBufferingUpdateListener {
+    private static final int SHOW_VIEW = 1;
+    private static final int TITLE = 2;
+    private static final int ARTIST = 3;
     private MediaPlayer mp = null;
     private TextView showView = null;
     private Handler uiHandler = null;
+    private TextView artist = null;
+    private TextView title = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +48,26 @@ public class AlarmActivity extends Activity implements Runnable,
         mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mp.setOnPreparedListener(this);
 
+        artist = (TextView) findViewById(R.id.songArtist);
+        title = (TextView) findViewById(R.id.songTitle);
+
         showView = (TextView) findViewById(R.id.clock_msg);
         uiHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                showView.setText((String) msg.obj);
+                switch (msg.what) {
+                    case SHOW_VIEW:
+                        showView.setText((String) msg.obj);
+                        break;
+                    case TITLE:
+                        title.setText((String) msg.obj);
+                        break;
+                    case ARTIST:
+                        artist.setText((String) msg.obj);
+                        break;
+                    default:
+                        assert false;
+                }
             }
         };
 
@@ -56,21 +78,43 @@ public class AlarmActivity extends Activity implements Runnable,
             ClockCtrl.setClockItemDisableByCompareId(compareId);
         }
 
+        Button stopBtu = (Button) findViewById(R.id.stopBtn);
+        stopBtu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mp.stop();
+                mp.release();
+                AlarmActivity.this.finish();
+            }
+        });
+
         Toast.makeText(MainActivity.getContext(), "Time up !", Toast.LENGTH_LONG).show();
+
+        new Thread(this).start();
     }
 
     @Override
     public void run() {
         List<ClockSong> songList = WebAPI.getSongList(0, 'n');
 
+        Log.i("get song list", "size = " + songList.size());
         if (songList.size() < 1)
             return;
         ClockSong song = songList.get(0);
 
+        uiHandler.sendMessage(Message.obtain(uiHandler, TITLE, song.getTitle()));
+        uiHandler.sendMessage(Message.obtain(uiHandler, ARTIST, song.getArtist()));
+
         try {
+            Log.i("mp3 url   :", song.getUrl());
+            Log.i("mp3 title :", song.getTitle());
+            Log.i("mp3 artist:", song.getArtist());
+            Log.i("mp3 sid   :", String.valueOf(song.getSid()));
             mp.reset();
             mp.setDataSource(song.getUrl());
             mp.prepare();
+//            mp = MediaPlayer.create(AlarmActivity.this, Uri.parse(song.getUrl()));
+//            mp.prepare();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -105,10 +149,11 @@ public class AlarmActivity extends Activity implements Runnable,
     @Override
     public void onPrepared(MediaPlayer mp) {
         mp.start();
+        Log.i("mp3", "onPrepared");
     }
 
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
-
+        uiHandler.sendMessage(Message.obtain(uiHandler, SHOW_VIEW, "download..." + percent + "%"));
     }
 }

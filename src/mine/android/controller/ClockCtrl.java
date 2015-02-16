@@ -61,7 +61,8 @@ public class ClockCtrl {
         AlarmManager alarmManager = (AlarmManager) MainActivity.getContext().getSystemService(Context.ALARM_SERVICE);
 
         if (clock.getRepeat() == ClockItem.NO_REPEAT) {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+//            alarmManager.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 3 * 1000, pendingIntent);
         } else if (clock.getRepeat() == ClockItem.EVERY_DAY) {
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
         } else if (clock.getRepeat() == ClockItem.EVERY_WEEK) {
