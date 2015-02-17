@@ -125,7 +125,9 @@ public class ClockCtrl {
     }
 
     public static void replaceClockItem(int position, ClockItem item) {
+        ClockItem clock = getClockItemByPos(position);
+        dActivateClockItem(clock);
         ClockAPI.delClockItemAPI(position);
-        ClockAPI.addClockItemAPI(item);
+        ClockCtrl.addClockItem(item);
     }
 }
