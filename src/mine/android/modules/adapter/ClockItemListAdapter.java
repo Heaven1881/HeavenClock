@@ -101,7 +101,7 @@ public class ClockItemListAdapter extends BaseAdapter {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 ClockCtrl.setClockItemEnable(clockItem, isChecked);
-                Log.i("Switch Checked", String.valueOf(isChecked));
+                Log.d("Switch Checked", String.valueOf(isChecked));
             }
         });
 

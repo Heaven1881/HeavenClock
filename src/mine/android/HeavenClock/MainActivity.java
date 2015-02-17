@@ -1,16 +1,17 @@
 package mine.android.HeavenClock;
 
 import android.app.Activity;
-import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import mine.android.controller.ClockCtrl;
+import mine.android.modules.ClockItem;
 
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -59,32 +60,35 @@ public class MainActivity extends Activity {
         addClockBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TimePickerDialog(
-                        getContext(),
-                        new TimePickerDialog.OnTimeSetListener() {
-                            @Override
-                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                if (!view.isShown())
-                                    return;
-                                Calendar time = Calendar.getInstance();
-                                time.setTimeInMillis(System.currentTimeMillis());
-                                time.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                                time.set(Calendar.MINUTE, minute);
-                                time.set(Calendar.SECOND, 0);
-                                time.set(Calendar.MILLISECOND, 0);
-
-                                Date date = time.getTime();
-                                ClockCtrl.addClockItem(date);
-                                renderClockListView();
-
-                                String line = getString(R.string.set_clock_msg).replaceFirst("\\$\\{time\\}", date.getHours() + ":" + date.getMinutes());
-                                Toast.makeText(getContext(), line, Toast.LENGTH_LONG).show();
-                            }
-                        },
-                        Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
-                        Calendar.getInstance().get(Calendar.MINUTE),
-                        true
-                ).show();
+//                new TimePickerDialog(
+//                        getContext(),
+//                        new TimePickerDialog.OnTimeSetListener() {
+//                            @Override
+//                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+//                                if (!view.isShown())
+//                                    return;
+//                                Calendar time = Calendar.getInstance();
+//                                time.setTimeInMillis(System.currentTimeMillis());
+//                                time.set(Calendar.HOUR_OF_DAY, hourOfDay);
+//                                time.set(Calendar.MINUTE, minute);
+//                                time.set(Calendar.SECOND, 0);
+//                                time.set(Calendar.MILLISECOND, 0);
+//
+//                                Date date = time.getTime();
+//                                ClockCtrl.addClockItem(date);
+//                                renderClockListView();
+//
+//                                String line = getString(R.string.set_clock_msg).replaceFirst("\\$\\{time\\}", date.getHours() + ":" + date.getMinutes());
+//                                Toast.makeText(getContext(), line, Toast.LENGTH_LONG).show();
+//                            }
+//                        },
+//                        Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
+//                        Calendar.getInstance().get(Calendar.MINUTE),
+//                        true
+//                ).show();
+                Intent intent = new Intent(getContext(), ClockDetailActivity.class);
+                intent.putExtra("mode", ClockDetailActivity.MODE_ADD);
+                startActivityForResult(intent, ClockDetailActivity.MODE_ADD);
             }
         });
 
@@ -104,9 +108,45 @@ public class MainActivity extends Activity {
                 return true;
             }
         });
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getContext(), ClockDetailActivity.class);
+                intent.putExtra("mode", ClockDetailActivity.MODE_UPDATE);
+                intent.putExtra("position", position);
+
+                startActivityForResult(intent, ClockDetailActivity.MODE_ADD);
+            }
+        });
 
         //activate all clock
         ClockCtrl.activateAllClockItem();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ClockDetailActivity.MODE_ADD && resultCode == ClockDetailActivity.RESULT_ADD) {
+            int r = data.getIntExtra("repeat", ClockItem.NO_REPEAT);
+            Date t = new Date(data.getLongExtra("date", 0));
+            String d = data.getStringExtra("description");
+
+            ClockItem item = new ClockItem(t, d, r);
+            ClockCtrl.addClockItem(item);
+            renderClockListView();
+        } else if (requestCode == ClockDetailActivity.MODE_UPDATE && requestCode == ClockDetailActivity.RESULT_UPDATE) {
+            int r = data.getIntExtra("repeat", ClockItem.NO_REPEAT);
+            Date t = new Date(data.getLongExtra("date", 0));
+            String d = data.getStringExtra("description");
+            int position = data.getIntExtra("position", -1);
+
+            if (position == -1) {
+                Log.i("clock return", "position == -1");
+            }
+
+            ClockItem item = new ClockItem(t, d, r);
+            ClockCtrl.replaceClockItem(position, item);
+        }
     }
 
     private void renderClockListView() {

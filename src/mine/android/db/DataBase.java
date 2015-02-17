@@ -39,8 +39,6 @@ public class DataBase<T extends Serializable & Comparable<T>> {
             Log.d("DataBase", "insert : " + t.toString());
         }
 
-        Collections.sort(oldList);
-
         putToDB(oldList);
     }
 
@@ -78,6 +76,7 @@ public class DataBase<T extends Serializable & Comparable<T>> {
     }
 
     private void putToDB(List<T> list) {
+        Collections.sort(list);
         try {
             FileOutputStream fos = context.openFileOutput(dbPath.getName(), Context.MODE_WORLD_WRITEABLE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);

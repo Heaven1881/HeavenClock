@@ -39,6 +39,12 @@ public class ClockCtrl {
         activateClockItem(clockItem);
     }
 
+    public static void addClockItem(ClockItem item) {
+        ClockAPI.addClockItemAPI(item);
+        activateClockItem(item);
+        Log.i("add clock", item.getCompareId() + ":" + item.getDescription() + ":" + item.getRepeat());
+    }
+
     private static void activateClockItem(ClockItem clock) {
         Calendar c = Calendar.getInstance();
         Date time = clock.getTime();
@@ -69,7 +75,7 @@ public class ClockCtrl {
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
         }
 
-        Log.i("Activate CLock - time", time.getHours() + ":" + time.getMinutes() + " " + clock.getRepeat() + " " + clock.getCompareId());
+        Log.d("Activate CLock - time", time.getHours() + ":" + time.getMinutes() + " " + clock.getRepeat() + " " + clock.getCompareId());
     }
 
     private static void dActivateClockItem(ClockItem clock) {
@@ -90,7 +96,7 @@ public class ClockCtrl {
 
         ClockAPI.updateClockItem(compareId, ClockItem.FIELD_ACTIVATED, false);
 
-        Log.i("dActivate by compare id", String.valueOf(compareId));
+        Log.d("dActivate by compare id", String.valueOf(compareId));
     }
 
     public static void delClockItem(int index) {
@@ -104,5 +110,15 @@ public class ClockCtrl {
         else {
             dActivateClockItem(item);
         }
+    }
+
+    public static ClockItem getClockItemByPos(int position) {
+        List<ClockItem> clockItems = ClockAPI.getClockListAPI();
+        return clockItems.get(position);
+    }
+
+    public static void replaceClockItem(int position, ClockItem item) {
+        ClockAPI.delClockItemAPI(position);
+        ClockAPI.addClockItemAPI(item);
     }
 }
