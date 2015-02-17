@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 import mine.android.api.ConfigAPI;
 import mine.android.modules.Configuration;
 
@@ -41,6 +42,7 @@ public class SettingActivity extends Activity {
                 c.setDoubanEmail(emailStr);
                 c.setDoubanPassword(passwordStr);
                 ConfigAPI.saveConfig(c);
+                Toast.makeText(getContext(), getString(R.string.save_setting), Toast.LENGTH_LONG).show();
                 finish();
             }
         });
