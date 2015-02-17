@@ -56,7 +56,7 @@ public class ClockCtrl {
         if (c.getTimeInMillis() < System.currentTimeMillis()) {
             Calendar tmp = Calendar.getInstance();
             c.set(Calendar.DAY_OF_YEAR, tmp.get(Calendar.DAY_OF_YEAR) + 1);
-            Log.i("set clock", "set to next day");
+            Log.i("set clock " + clock.getCompareId(), "set to next day");
         }
 
         // 添加传参 区分一次性闹钟
@@ -71,8 +71,8 @@ public class ClockCtrl {
         AlarmManager alarmManager = (AlarmManager) MainActivity.getContext().getSystemService(Context.ALARM_SERVICE);
 
         if (clock.getRepeat() == ClockItem.NO_REPEAT) {
-//            alarmManager.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
-            alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 3 * 1000, pendingIntent);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+//            alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 3 * 1000, pendingIntent);
         } else if (clock.getRepeat() == ClockItem.EVERY_DAY) {
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
         } else if (clock.getRepeat() == ClockItem.EVERY_WEEK) {
@@ -80,6 +80,7 @@ public class ClockCtrl {
         }
 
         Log.d("Activate CLock - time", time.getHours() + ":" + time.getMinutes() + " " + clock.getRepeat() + " " + clock.getCompareId());
+        Log.i("act", clock.getCompareId() + "");
     }
 
     private static void dActivateClockItem(ClockItem clock) {
@@ -90,6 +91,8 @@ public class ClockCtrl {
         PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.getContext(), clock.getCompareId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager alarmManager = (AlarmManager) MainActivity.getContext().getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
+
+        Log.i("dact", clock.getCompareId() + "");
     }
 
     public static void setClockItemDisableByCompareId(int compareId) {
@@ -100,7 +103,7 @@ public class ClockCtrl {
 
         ClockAPI.updateClockItem(compareId, ClockItem.FIELD_ACTIVATED, false);
 
-        Log.d("dActivate by compare id", String.valueOf(compareId));
+        Log.d("dAct by id", String.valueOf(compareId));
     }
 
     public static void delClockItem(int index) {

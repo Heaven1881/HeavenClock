@@ -89,7 +89,7 @@ public class MainActivity extends Activity {
                 intent.putExtra("mode", ClockDetailActivity.MODE_UPDATE);
                 intent.putExtra("position", position);
 
-                startActivityForResult(intent, ClockDetailActivity.MODE_ADD);
+                startActivityForResult(intent, ClockDetailActivity.MODE_UPDATE);
             }
         });
 
@@ -107,8 +107,7 @@ public class MainActivity extends Activity {
 
             ClockItem item = new ClockItem(t, d, r);
             ClockCtrl.addClockItem(item);
-            renderClockListView();
-        } else if (requestCode == ClockDetailActivity.MODE_UPDATE && requestCode == ClockDetailActivity.RESULT_UPDATE) {
+        } else if (requestCode == ClockDetailActivity.MODE_UPDATE && resultCode == ClockDetailActivity.RESULT_UPDATE) {
             int r = data.getIntExtra("repeat", ClockItem.NO_REPEAT);
             Date t = new Date(data.getLongExtra("date", 0));
             String d = data.getStringExtra("description");
@@ -121,6 +120,7 @@ public class MainActivity extends Activity {
             ClockItem item = new ClockItem(t, d, r);
             ClockCtrl.replaceClockItem(position, item);
         }
+        renderClockListView();
     }
 
     private void renderClockListView() {
