@@ -50,7 +50,7 @@ public class DataBase<T extends Serializable & Comparable<T>> {
         putToDB(list);
     }
 
-    private List<T> getFromDB() {
+    private synchronized List<T> getFromDB() {
         List<T> list = new ArrayList<T>();
 
         if (!dbPath.exists())
@@ -75,7 +75,7 @@ public class DataBase<T extends Serializable & Comparable<T>> {
         return list;
     }
 
-    private void putToDB(List<T> list) {
+    private synchronized void putToDB(List<T> list) {
         Collections.sort(list);
         try {
             FileOutputStream fos = context.openFileOutput(dbPath.getName(), Context.MODE_WORLD_WRITEABLE);

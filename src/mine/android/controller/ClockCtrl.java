@@ -56,7 +56,7 @@ public class ClockCtrl {
         if (c.getTimeInMillis() < System.currentTimeMillis()) {
             Calendar tmp = Calendar.getInstance();
             c.set(Calendar.DAY_OF_YEAR, tmp.get(Calendar.DAY_OF_YEAR) + 1);
-            Log.i("set clock " + clock.getCompareId(), "set to next day");
+            Log.d("set clock " + clock.getCompareId(), "set to next day");
         }
 
         // 添加传参 区分一次性闹钟
@@ -111,12 +111,16 @@ public class ClockCtrl {
     }
 
     public static void setClockItemEnable(ClockItem item, boolean enable) {
+        if (item.isActivated() == enable)
+            return;
+
         ClockAPI.updateClockItem(item, ClockItem.FIELD_ACTIVATED, enable);
         if (enable)
             activateClockItem(item);
         else {
             dActivateClockItem(item);
         }
+        Log.i("Set Enable", item.getCompareId() + ":" + enable);
     }
 
     public static ClockItem getClockItemByPos(int position) {

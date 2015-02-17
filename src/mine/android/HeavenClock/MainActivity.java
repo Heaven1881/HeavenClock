@@ -46,7 +46,8 @@ public class MainActivity extends Activity {
             @Override
             public void run() {
                 while (true) {
-                    handler.sendMessage(Message.obtain(handler, 0, new Date().toString()));
+                    Date date = new Date();
+                    handler.sendMessage(Message.obtain(handler, 0, date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()));
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
@@ -124,6 +125,7 @@ public class MainActivity extends Activity {
     }
 
     private void renderClockListView() {
+        Log.i("update", "listview");
         ListView lv = (ListView) findViewById(R.id.listView);
         final BaseAdapter clockListAdapter = ClockCtrl.getClockListForListView();
         lv.setAdapter(clockListAdapter);

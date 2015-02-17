@@ -94,16 +94,19 @@ public class ClockItemListAdapter extends BaseAdapter {
         item.itemTitle.setText(itemTitle);
 
         String description = clockItem.getDescription();
-        item.itemText.setText(description != null ? description : MainActivity.getContext().getResources().getString(R.string.no_description));
+//        item.itemText.setText(description != null ? description : MainActivity.getContext().getResources().getString(R.string.no_description));
+        item.itemText.setText("act:" + clockItem.isActivated());
 
-        item.itemSwitch.setChecked(clockItem.isActivated());
+
         item.itemSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.i("test", "clock: " + clockItem.isActivated() + " isChecked: " + isChecked);
                 ClockCtrl.setClockItemEnable(clockItem, isChecked);
-                Log.d("Switch Checked", String.valueOf(isChecked));
             }
         });
+        //为什么这一句放在上一句前面就不好使咧！！！！！！
+        item.itemSwitch.setChecked(clockItem.isActivated());
 
         return convertView;
     }
