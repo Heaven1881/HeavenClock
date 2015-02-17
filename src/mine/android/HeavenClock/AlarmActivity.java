@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Heaven on 2015/2/12.
@@ -39,6 +40,9 @@ public class AlarmActivity extends Activity implements Runnable,
     private TextView artist = null;
     private TextView title = null;
 
+    private int cancel_id = 0;
+    private int song_id = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +54,8 @@ public class AlarmActivity extends Activity implements Runnable,
 
         artist = (TextView) findViewById(R.id.songArtist);
         title = (TextView) findViewById(R.id.songTitle);
+        Random random = new Random(System.currentTimeMillis());
+        cancel_id = random.nextInt() & 5;
 
         showView = (TextView) findViewById(R.id.clock_msg);
         uiHandler = new Handler() {
@@ -82,22 +88,55 @@ public class AlarmActivity extends Activity implements Runnable,
         stopBtu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mp.stop();
-                mp.release();
+                try {
+                    mp.stop();
+                    mp.release();
+                } catch (Exception ignored) {
+                }
                 AlarmActivity.this.finish();
             }
         });
 
-        Toast.makeText(MainActivity.getContext(), "Time up !", Toast.LENGTH_LONG).show();
+        Button likeButton = (Button) findViewById(R.id.likeBtn);
+        likeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread() {
+                    @Override
+                    public void run() {
+                        WebAPI.SongListOperation(cancel_id, WebAPI.OP_MARK_AS_LIKE, song_id);
+                        Log.i("mark as like", "sid = " + song_id);
+                    }
+                }.start();
+                Toast.makeText(AlarmActivity.this, AlarmActivity.this.getString(R.string.mark_as_like), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        Button unlike = (Button) findViewById(R.id.dislikeBtn);
+        unlike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread() {
+                    @Override
+                    public void run() {
+                        WebAPI.SongListOperation(cancel_id, WebAPI.OP_BYE, song_id);
+                        Log.i("mark as unlike", "sid = " + song_id);
+                    }
+                }.start();
+                Toast.makeText(AlarmActivity.this, AlarmActivity.this.getString(R.string.mark_as_unlike), Toast.LENGTH_LONG).show();
+            }
+        });
+
+//        Toast.makeText(MainActivity.getContext(), "Time up !", Toast.LENGTH_LONG).show();
 
         new Thread(this).start();
     }
 
     @Override
     public void run() {
-        List<ClockSong> songList = WebAPI.getSongList(0, 'n');
+        List<ClockSong> songList = WebAPI.SongListOperation(cancel_id, WebAPI.OP_GET_NEXT_SONG);
 
-        Log.i("get song list", "size = " + songList.size());
+        Log.i("get song list c=" + cancel_id, "size = " + songList.size());
         if (songList.size() < 1)
             return;
         ClockSong song = songList.get(0);
@@ -110,6 +149,9 @@ public class AlarmActivity extends Activity implements Runnable,
             Log.i("mp3 title :", song.getTitle());
             Log.i("mp3 artist:", song.getArtist());
             Log.i("mp3 sid   :", String.valueOf(song.getSid()));
+
+            song_id = song.getSid();
+
             mp.reset();
             mp.setDataSource(song.getUrl());
             mp.prepare();

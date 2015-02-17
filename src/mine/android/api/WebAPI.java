@@ -20,6 +20,13 @@ import java.util.List;
  * Created by Heaven on 2015/2/15.
  */
 public class WebAPI {
+    public static char OP_GET_NEW_LIST = 'n';
+    public static char OP_GET_NEXT_SONG = 's';
+
+    public static char OP_MARK_AS_LIKE = 'r';
+    public static char OP_DMARK_LIKE = 'u';
+    public static char OP_BYE = 'b';
+
 
     public static String getStringFromUrl(String u, String param, boolean post) throws IOException, JSONException {
         StringBuilder json = new StringBuilder();
@@ -74,7 +81,11 @@ public class WebAPI {
         return logInfo;
     }
 
-    public static List<ClockSong> getSongList(int channel, char type) {
+    public static List<ClockSong> SongListOperation(int chanel, char type) {
+        return SongListOperation(chanel, type, 0);
+    }
+
+    public static List<ClockSong> SongListOperation(int channel, char type, int sid) {
         String email = MainActivity.getContext().getString(R.string.douban_email);
         String password = MainActivity.getContext().getString(R.string.douban_password);
         String url = MainActivity.getContext().getString(R.string.get_list_url);
@@ -91,6 +102,7 @@ public class WebAPI {
             param.append("token=" + logInfo.token + "&");
             param.append("channel=" + channel + "&");
             param.append("type=" + type + "&");
+            param.append("sid=" + sid);
 
             String listStr = getStringFromUrl(url, param.toString(), true);
             JSONObject response = new JSONObject(listStr);
