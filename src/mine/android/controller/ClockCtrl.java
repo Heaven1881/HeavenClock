@@ -54,13 +54,17 @@ public class ClockCtrl {
         c.set(Calendar.MILLISECOND, 0);
 
         if (c.getTimeInMillis() < System.currentTimeMillis()) {
-            c.add(Calendar.DAY_OF_YEAR, 1);
+            Calendar tmp = Calendar.getInstance();
+            c.set(Calendar.DAY_OF_YEAR, tmp.get(Calendar.DAY_OF_YEAR) + 1);
             Log.i("set clock", "set to next day");
         }
 
         // 添加传参 区分一次性闹钟
         Intent intent = new Intent(MainActivity.getContext(), AlarmActivity.class);
-        intent.putExtra("once", true);
+        if (clock.getRepeat() == ClockItem.NO_REPEAT)
+            intent.putExtra("once", true);
+        else
+            intent.putExtra("once", false);
         intent.putExtra("compareId", clock.getCompareId());
 
         PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.getContext(), clock.getCompareId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);

@@ -60,32 +60,6 @@ public class MainActivity extends Activity {
         addClockBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                new TimePickerDialog(
-//                        getContext(),
-//                        new TimePickerDialog.OnTimeSetListener() {
-//                            @Override
-//                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-//                                if (!view.isShown())
-//                                    return;
-//                                Calendar time = Calendar.getInstance();
-//                                time.setTimeInMillis(System.currentTimeMillis());
-//                                time.set(Calendar.HOUR_OF_DAY, hourOfDay);
-//                                time.set(Calendar.MINUTE, minute);
-//                                time.set(Calendar.SECOND, 0);
-//                                time.set(Calendar.MILLISECOND, 0);
-//
-//                                Date date = time.getTime();
-//                                ClockCtrl.addClockItem(date);
-//                                renderClockListView();
-//
-//                                String line = getString(R.string.set_clock_msg).replaceFirst("\\$\\{time\\}", date.getHours() + ":" + date.getMinutes());
-//                                Toast.makeText(getContext(), line, Toast.LENGTH_LONG).show();
-//                            }
-//                        },
-//                        Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
-//                        Calendar.getInstance().get(Calendar.MINUTE),
-//                        true
-//                ).show();
                 Intent intent = new Intent(getContext(), ClockDetailActivity.class);
                 intent.putExtra("mode", ClockDetailActivity.MODE_ADD);
                 startActivityForResult(intent, ClockDetailActivity.MODE_ADD);
