@@ -94,8 +94,8 @@ public class ClockItemListAdapter extends BaseAdapter {
         item.itemTitle.setText(itemTitle);
 
         String description = clockItem.getDescription();
-//        item.itemText.setText(description != null ? description : MainActivity.getContext().getResources().getString(R.string.no_description));
-        item.itemText.setText("act:" + clockItem.isActivated());
+        item.itemText.setText(description != null ? description : MainActivity.getContext().getResources().getString(R.string.no_description));
+//        item.itemText.setText("act:" + clockItem.isActivated());
 
 
         item.itemSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

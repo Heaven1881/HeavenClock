@@ -96,6 +96,8 @@ public class MainActivity extends Activity {
 
         //activate all clock
         ClockCtrl.activateAllClockItem();
+
+        Toast.makeText(getContext(), getString(R.string.activate_clock), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -125,7 +127,6 @@ public class MainActivity extends Activity {
     }
 
     private void renderClockListView() {
-        Log.i("update", "listview");
         ListView lv = (ListView) findViewById(R.id.listView);
         final BaseAdapter clockListAdapter = ClockCtrl.getClockListForListView();
         lv.setAdapter(clockListAdapter);

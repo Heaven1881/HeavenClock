@@ -146,9 +146,9 @@ public class AlarmActivity extends Activity implements Runnable,
 
         try {
             Log.i("mp3 url   :", song.getUrl());
-            Log.i("mp3 title :", song.getTitle());
-            Log.i("mp3 artist:", song.getArtist());
-            Log.i("mp3 sid   :", String.valueOf(song.getSid()));
+            Log.d("mp3 title :", song.getTitle());
+            Log.d("mp3 artist:", song.getArtist());
+            Log.d("mp3 sid   :", String.valueOf(song.getSid()));
 
             song_id = song.getSid();
 
