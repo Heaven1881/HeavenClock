@@ -67,6 +67,15 @@ public class MainActivity extends Activity {
             }
         });
 
+        Button settingBtn = (Button) findViewById(R.id.settingBtn);
+        settingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), SettingActivity.class);
+                startActivity(intent);
+            }
+        });
+
         ListView lv = (ListView) findViewById(R.id.listView);
         final BaseAdapter clockListAdapter = ClockCtrl.getClockListForListView();
         lv.setAdapter(clockListAdapter);

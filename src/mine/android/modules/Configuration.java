@@ -5,14 +5,14 @@ import java.io.Serializable;
 /**
  * Created by Heaven on 2015/2/16.
  */
-public class Configuration implements Serializable, Comparable {
+public class Configuration implements Serializable, Comparable<Configuration> {
 
     private String doubanEmail = null;
     private String doubanPassword = null;
 
 
     @Override
-    public int compareTo(Object another) {
+    public int compareTo(Configuration another) {
         return 0;
     }
 

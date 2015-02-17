@@ -3,6 +3,7 @@ package mine.android.api;
 import mine.android.HeavenClock.MainActivity;
 import mine.android.HeavenClock.R;
 import mine.android.modules.ClockSong;
+import mine.android.modules.Configuration;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -86,8 +87,9 @@ public class WebAPI {
     }
 
     public static List<ClockSong> SongListOperation(int channel, char type, int sid) {
-        String email = MainActivity.getContext().getString(R.string.douban_email);
-        String password = MainActivity.getContext().getString(R.string.douban_password);
+        Configuration c = ConfigAPI.getConfig();
+        String email = c.getDoubanEmail();
+        String password = c.getDoubanPassword();
         String url = MainActivity.getContext().getString(R.string.get_list_url);
         List<ClockSong> retList = new ArrayList<ClockSong>();
         LogInfo logInfo;
