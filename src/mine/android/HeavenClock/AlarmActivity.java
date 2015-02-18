@@ -34,7 +34,9 @@ public class AlarmActivity extends Activity implements Runnable,
     private static final int SHOW_VIEW = 1;
     private static final int TITLE = 2;
     private static final int ARTIST = 3;
+
     private MediaPlayer mp = null;
+
     private TextView showView = null;
     private Handler uiHandler = null;
     private TextView artist = null;
@@ -51,6 +53,7 @@ public class AlarmActivity extends Activity implements Runnable,
         mp = new MediaPlayer();
         mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mp.setOnPreparedListener(this);
+        mp.setVolume(1.0f, 1.0f);
 
         artist = (TextView) findViewById(R.id.songArtist);
         title = (TextView) findViewById(R.id.songTitle);
@@ -127,8 +130,6 @@ public class AlarmActivity extends Activity implements Runnable,
             }
         });
 
-//        Toast.makeText(MainActivity.getContext(), "Time up !", Toast.LENGTH_LONG).show();
-
         new Thread(this).start();
     }
 
@@ -155,8 +156,6 @@ public class AlarmActivity extends Activity implements Runnable,
             mp.reset();
             mp.setDataSource(song.getUrl());
             mp.prepare();
-//            mp = MediaPlayer.create(AlarmActivity.this, Uri.parse(song.getUrl()));
-//            mp.prepare();
         } catch (IOException e) {
             e.printStackTrace();
         }
