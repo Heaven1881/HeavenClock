@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
             public void run() {
                 while (true) {
                     Date date = new Date();
-                    handler.sendMessage(Message.obtain(handler, 0, date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()));
+                    handler.sendMessage(Message.obtain(handler, 0, date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()));
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
@@ -124,6 +124,7 @@ public class MainActivity extends Activity {
 
             ClockItem item = new ClockItem(t, d, r);
             ClockCtrl.addClockItem(item);
+            toastClockItem(item);
         } else if (requestCode == ClockDetailActivity.MODE_UPDATE && resultCode == ClockDetailActivity.RESULT_UPDATE) {
             int r = data.getIntExtra("repeat", ClockItem.NO_REPEAT);
             Date t = new Date(data.getLongExtra("date", 0));
@@ -138,6 +139,13 @@ public class MainActivity extends Activity {
             ClockCtrl.replaceClockItem(position, item);
         }
 //        renderClockListView();
+    }
+
+    private void toastClockItem(ClockItem item) {
+        String str = getString(R.string.clock_added);
+        str = str.replaceFirst("\\{H\\}", item.getTime().getHours() + "");
+        str = str.replaceFirst("\\{M\\}", item.getTime().getMinutes() + "");
+        Toast.makeText(this, str, Toast.LENGTH_LONG).show();
     }
 
     @Override
