@@ -137,7 +137,7 @@ public class MainActivity extends Activity {
             ClockItem item = new ClockItem(t, d, r);
             ClockCtrl.replaceClockItem(position, item);
         }
-        renderClockListView();
+//        renderClockListView();
     }
 
     @Override
@@ -157,6 +157,12 @@ public class MainActivity extends Activity {
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        renderClockListView();
     }
 
     private void renderClockListView() {

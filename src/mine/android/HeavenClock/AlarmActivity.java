@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by Heaven on 2015/2/12.
@@ -57,8 +56,8 @@ public class AlarmActivity extends Activity implements Runnable,
 
         artist = (TextView) findViewById(R.id.songArtist);
         title = (TextView) findViewById(R.id.songTitle);
-        Random random = new Random(System.currentTimeMillis());
-        cancel_id = random.nextInt() & 5;
+//        Random random = new Random(System.currentTimeMillis());
+//        cancel_id = random.nextInt() & 5;
 
         showView = (TextView) findViewById(R.id.clock_msg);
         uiHandler = new Handler() {
