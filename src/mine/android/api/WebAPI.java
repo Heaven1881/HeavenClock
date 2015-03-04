@@ -108,6 +108,9 @@ public class WebAPI {
 
             String listStr = getStringFromUrl(url, param.toString(), true);
             JSONObject response = new JSONObject(listStr);
+            if (response.getInt("r") != 0) {
+                return retList;
+            }
             JSONArray songList = response.getJSONArray("song");
             for (int i = 0; i < songList.length(); i++) {
                 JSONObject song = (JSONObject) songList.get(i);

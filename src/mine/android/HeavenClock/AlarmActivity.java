@@ -137,8 +137,10 @@ public class AlarmActivity extends Activity implements Runnable,
         List<ClockSong> songList = WebAPI.SongListOperation(cancel_id, WebAPI.OP_GET_NEXT_SONG);
 
         Log.i("get song list c=" + cancel_id, "size = " + songList.size());
-        if (songList.size() < 1)
+        if (songList.size() < 1) {
+            Toast.makeText(MainActivity.getContext(), getString(R.string.log_err), Toast.LENGTH_LONG).show();
             return;
+        }
         ClockSong song = songList.get(0);
 
         uiHandler.sendMessage(Message.obtain(uiHandler, TITLE, song.getTitle()));
