@@ -29,12 +29,13 @@ import java.util.List;
  * Created by Heaven on 2015/2/12.
  */
 public class AlarmActivity extends Activity implements Runnable,
-        MediaPlayer.OnPreparedListener, MediaPlayer.OnBufferingUpdateListener {
+        MediaPlayer.OnPreparedListener, MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener {
     private static final int SHOW_VIEW = 1;
     private static final int TITLE = 2;
     private static final int ARTIST = 3;
 
     private MediaPlayer mp = null;
+    List<ClockSong> songList;
 
     private TextView showView = null;
     private Handler uiHandler = null;
@@ -134,15 +135,21 @@ public class AlarmActivity extends Activity implements Runnable,
 
     @Override
     public void run() {
-        List<ClockSong> songList = WebAPI.SongListOperation(cancel_id, WebAPI.OP_GET_NEXT_SONG);
+        songList = WebAPI.SongListOperation(cancel_id, WebAPI.OP_GET_NEXT_SONG);
 
         Log.i("get song list c=" + cancel_id, "size = " + songList.size());
         if (songList.size() < 1) {
             Toast.makeText(MainActivity.getContext(), getString(R.string.log_err), Toast.LENGTH_LONG).show();
             return;
         }
-        ClockSong song = songList.get(0);
 
+        ClockSong song = songList.get(0);
+        songList.remove(0);
+
+        playSong(song);
+    }
+
+    private void playSong(ClockSong song) {
         uiHandler.sendMessage(Message.obtain(uiHandler, TITLE, song.getTitle()));
         uiHandler.sendMessage(Message.obtain(uiHandler, ARTIST, song.getArtist()));
 
@@ -160,8 +167,6 @@ public class AlarmActivity extends Activity implements Runnable,
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
     public static File downloadFile(String u, String filename) throws IOException {
@@ -197,5 +202,17 @@ public class AlarmActivity extends Activity implements Runnable,
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
         uiHandler.sendMessage(Message.obtain(uiHandler, SHOW_VIEW, "download..." + percent + "%"));
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        if (songList.size() < 1)
+            return;
+
+        ClockSong song = songList.get(0);
+        songList.remove(0);
+
+        playSong(song);
+
     }
 }

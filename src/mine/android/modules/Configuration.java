@@ -9,6 +9,7 @@ public class Configuration implements Serializable, Comparable<Configuration> {
 
     private String doubanEmail = null;
     private String doubanPassword = null;
+    private int repeatSong = 1;
 
 
     @Override
@@ -30,5 +31,13 @@ public class Configuration implements Serializable, Comparable<Configuration> {
 
     public void setDoubanEmail(String doubanEmail) {
         this.doubanEmail = doubanEmail;
+    }
+
+    public int getRepeatSong() {
+        return repeatSong;
+    }
+
+    public void setRepeatSong(int repeatSong) {
+        this.repeatSong = repeatSong;
     }
 }

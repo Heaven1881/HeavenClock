@@ -39,6 +39,22 @@
                     android:ems="10"
                     android:id="@+id/password"/>
         </TableRow>
+        <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/v_repeat_song"
+                    android:id="@+id/VrepeatSong"/>
+            <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:ems="10"
+                    android:id="@+id/repeatSong"/>
+        </TableRow>
     </TableLayout>
     <Button
             android:layout_width="fill_parent"
