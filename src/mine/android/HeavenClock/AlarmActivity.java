@@ -13,9 +13,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import mine.android.api.ConfigAPI;
 import mine.android.api.WebAPI;
 import mine.android.controller.ClockCtrl;
 import mine.android.modules.ClockSong;
+import mine.android.modules.Configuration;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -53,6 +55,7 @@ public class AlarmActivity extends Activity implements Runnable,
         mp = new MediaPlayer();
         mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mp.setOnPreparedListener(this);
+        mp.setOnCompletionListener(this);
         mp.setVolume(1.0f, 1.0f);
 
         artist = (TextView) findViewById(R.id.songArtist);
@@ -137,10 +140,19 @@ public class AlarmActivity extends Activity implements Runnable,
     public void run() {
         songList = WebAPI.SongListOperation(cancel_id, WebAPI.OP_GET_NEXT_SONG);
 
-        Log.i("get song list c=" + cancel_id, "size = " + songList.size());
+        Log.i("get song list c = " + cancel_id, "size = " + songList.size());
         if (songList.size() < 1) {
             Toast.makeText(MainActivity.getContext(), getString(R.string.log_err), Toast.LENGTH_LONG).show();
             return;
+        }
+
+        Configuration config = ConfigAPI.getConfig();
+        while (songList.size() < config.getRepeatSong()) {
+            List<ClockSong> additionalSongList = WebAPI.SongListOperation(cancel_id, WebAPI.OP_GET_NEW_LIST);
+            songList.addAll(additionalSongList);
+        }
+        while (songList.size() > config.getRepeatSong()) {
+            songList.remove(songList.size() - 1);
         }
 
         ClockSong song = songList.get(0);
@@ -157,7 +169,7 @@ public class AlarmActivity extends Activity implements Runnable,
             Log.i("mp3 url   :", song.getUrl());
             Log.d("mp3 title :", song.getTitle());
             Log.d("mp3 artist:", song.getArtist());
-            Log.d("mp3 sid   :", String.valueOf(song.getSid()));
+            Log.i("mp3 sid   :", String.valueOf(song.getSid()));
 
             song_id = song.getSid();
 
@@ -211,6 +223,8 @@ public class AlarmActivity extends Activity implements Runnable,
 
         ClockSong song = songList.get(0);
         songList.remove(0);
+
+        Log.i("alarm", songList.size() + " songs left");
 
         playSong(song);
 
