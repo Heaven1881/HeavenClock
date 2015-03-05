@@ -101,7 +101,7 @@ public class ClockItemListAdapter extends BaseAdapter {
         item.itemSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.i("test", "clock: " + clockItem.isActivated() + " isChecked: " + isChecked);
+                Log.d("test", "clock: " + clockItem.isActivated() + " isChecked: " + isChecked);
                 ClockCtrl.setClockItemEnable(clockItem, isChecked);
             }
         });

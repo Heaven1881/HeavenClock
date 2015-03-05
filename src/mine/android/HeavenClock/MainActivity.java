@@ -124,7 +124,6 @@ public class MainActivity extends Activity {
 
             ClockItem item = new ClockItem(t, d, r);
             ClockCtrl.addClockItem(item);
-            toastClockItem(item);
         } else if (requestCode == ClockDetailActivity.MODE_UPDATE && resultCode == ClockDetailActivity.RESULT_UPDATE) {
             int r = data.getIntExtra("repeat", ClockItem.NO_REPEAT);
             Date t = new Date(data.getLongExtra("date", 0));
@@ -141,11 +140,11 @@ public class MainActivity extends Activity {
 //        renderClockListView();
     }
 
-    private void toastClockItem(ClockItem item) {
-        String str = getString(R.string.clock_added);
+    public static void toastClockItem(ClockItem item) {
+        String str = MainActivity.getContext().getString(R.string.clock_added);
         str = str.replaceFirst("\\{H\\}", item.getTime().getHours() + "");
         str = str.replaceFirst("\\{M\\}", item.getTime().getMinutes() + "");
-        Toast.makeText(this, str, Toast.LENGTH_LONG).show();
+        Toast.makeText(MainActivity.getContext(), str, Toast.LENGTH_LONG).show();
     }
 
     @Override

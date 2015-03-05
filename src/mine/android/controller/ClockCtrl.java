@@ -79,8 +79,9 @@ public class ClockCtrl {
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
         }
 
+        MainActivity.toastClockItem(clock);
         Log.d("Activate CLock - time", time.getHours() + ":" + time.getMinutes() + " " + clock.getRepeat() + " " + clock.getCompareId());
-        Log.i("act", clock.getCompareId() + "");
+        Log.d("act", clock.getCompareId() + "");
     }
 
     private static void dActivateClockItem(ClockItem clock) {
@@ -92,7 +93,7 @@ public class ClockCtrl {
         AlarmManager alarmManager = (AlarmManager) MainActivity.getContext().getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
 
-        Log.i("dact", clock.getCompareId() + "");
+        Log.d("dact", clock.getCompareId() + "");
     }
 
     public static void setClockItemDisableByCompareId(int compareId) {
@@ -120,7 +121,7 @@ public class ClockCtrl {
         else {
             dActivateClockItem(item);
         }
-        Log.i("Set Enable", item.getCompareId() + ":" + enable);
+        Log.d("Set Enable", item.getCompareId() + ":" + enable);
     }
 
     public static ClockItem getClockItemByPos(int position) {
