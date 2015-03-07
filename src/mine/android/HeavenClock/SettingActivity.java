@@ -34,7 +34,7 @@ public class SettingActivity extends Activity {
         password.setText(config.getDoubanPassword());
 
         repeatSong = (EditText) findViewById(R.id.repeatSong);
-        repeatSong.setText(config.getRepeatSong());
+        repeatSong.setText(config.getRepeatSong() + "");
 
         Button save = (Button) findViewById(R.id.saveBtn);
         save.setOnClickListener(new View.OnClickListener() {
