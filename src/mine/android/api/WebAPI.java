@@ -1,5 +1,6 @@
 package mine.android.api;
 
+import android.util.Log;
 import mine.android.HeavenClock.MainActivity;
 import mine.android.HeavenClock.R;
 import mine.android.modules.ClockSong;
@@ -71,8 +72,10 @@ public class WebAPI {
 
             String retStr = getStringFromUrl(url, param.toString(), true);
             JSONObject logRet = new JSONObject(retStr);
-            if (logRet.getInt("r") != 0)
-                throw new IllegalAccessError("can not login to douban");
+            if (logRet.getInt("r") != 0) {
+                Log.e("login error", "can not login to douban");
+                return logInfo;
+            }
             logInfo.expire = logRet.getString("expire");
             logInfo.token = logRet.getString("token");
             logInfo.userId = logRet.getString("user_id");

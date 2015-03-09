@@ -36,6 +36,7 @@ public class AlarmActivity extends Activity implements Runnable,
     private static final int SHOW_VIEW = 1;
     private static final int TITLE = 2;
     private static final int ARTIST = 3;
+    private static final int TOAST = 4;
 
     private MediaPlayer mp = null;
     List<ClockSong> songList;
@@ -77,6 +78,9 @@ public class AlarmActivity extends Activity implements Runnable,
                         break;
                     case ARTIST:
                         artist.setText((String) msg.obj);
+                        break;
+                    case TOAST:
+                        Toast.makeText(MainActivity.getContext(), (String) msg.obj, Toast.LENGTH_LONG).show();
                         break;
                     default:
                         assert false;
@@ -143,7 +147,9 @@ public class AlarmActivity extends Activity implements Runnable,
 
         Log.i("get song list c = " + cancel_id, "size = " + songList.size());
         if (songList.size() < 1) {
-            Toast.makeText(MainActivity.getContext(), getString(R.string.log_err), Toast.LENGTH_LONG).show();
+            String string = getString(R.string.log_err);
+            uiHandler.sendMessage(Message.obtain(uiHandler, AlarmActivity.TOAST, string));
+            uiHandler.sendMessage(Message.obtain(uiHandler, AlarmActivity.SHOW_VIEW, string));
             return;
         }
 
