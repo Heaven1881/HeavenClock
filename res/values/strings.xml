@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Heaven Clock</string>
+    <string name="app_name">xuer闹钟</string>
     <string name="addNewClockButton">添加闹钟</string>
     <string name="no_description">未命名闹钟</string>
     <string name="set_clock_msg">添加闹钟: ${time}</string>
@@ -39,4 +39,6 @@
     <string name="clock_added">闹钟时间已设置为 {H}：{M}</string>
     <string name="log_err">你的豆瓣用户名或密码错误，因此无法获取音乐</string>
     <string name="v_repeat_song">闹钟播放歌曲数</string>
+    <string name="alram_label">闹钟</string>
+    <string name="setting_label">设置闹钟</string>
 </resources>
