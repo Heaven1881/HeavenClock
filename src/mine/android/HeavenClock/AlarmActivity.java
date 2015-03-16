@@ -20,13 +20,10 @@ import mine.android.controller.ClockCtrl;
 import mine.android.modules.ClockSong;
 import mine.android.modules.Configuration;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Heaven on 2015/2/12.
@@ -38,32 +35,41 @@ public class AlarmActivity extends Activity implements Runnable,
     private static final int ARTIST = 3;
     private static final int TOAST = 4;
 
+    //媒体播放任务
     private MediaPlayer mp = null;
     List<ClockSong> songList;
 
+    //界面UI
     private TextView showView = null;
     private Handler uiHandler = null;
     private TextView artist = null;
     private TextView title = null;
 
+    //界面显示的歌曲相关信息
     private int cancel_id = 0;
     private int song_id = 0;
+
+    //线程管理
+    private ExecutorService pool = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.alarm);
 
+        //初始化线程池
+        pool = Executors.newSingleThreadExecutor();
+
+        //初始化播放器
         mp = new MediaPlayer();
         mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mp.setOnPreparedListener(this);
         mp.setOnCompletionListener(this);
         mp.setAudioStreamType(AudioManager.STREAM_ALARM);
 
+        //初始化UI组件
         artist = (TextView) findViewById(R.id.songArtist);
         title = (TextView) findViewById(R.id.songTitle);
-//        Random random = new Random(System.currentTimeMillis());
-//        cancel_id = random.nextInt() & 5;
 
         showView = (TextView) findViewById(R.id.clock_msg);
         uiHandler = new Handler() {
@@ -88,13 +94,6 @@ public class AlarmActivity extends Activity implements Runnable,
             }
         };
 
-        Intent intent = getIntent();
-        boolean once = intent.getBooleanExtra("once", true);
-        if (once) {
-            int compareId = intent.getIntExtra("compareId", 0);
-            ClockCtrl.setClockItemDisableByCompareId(compareId);
-        }
-
         Button stopBtu = (Button) findViewById(R.id.stopBtn);
         stopBtu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,13 +111,15 @@ public class AlarmActivity extends Activity implements Runnable,
         likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Thread() {
+                Thread markLikeThread = new Thread() {
                     @Override
                     public void run() {
                         WebAPI.SongListOperation(cancel_id, WebAPI.OP_MARK_AS_LIKE, song_id);
                         Log.i("mark as like", "sid = " + song_id);
                     }
-                }.start();
+                };
+                pool.execute(markLikeThread);
+
                 Toast.makeText(AlarmActivity.this, AlarmActivity.this.getString(R.string.mark_as_like), Toast.LENGTH_LONG).show();
             }
         });
@@ -127,13 +128,15 @@ public class AlarmActivity extends Activity implements Runnable,
         unlike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Thread() {
+                Thread markUnlikeThread = new Thread() {
                     @Override
                     public void run() {
                         WebAPI.SongListOperation(cancel_id, WebAPI.OP_BYE, song_id);
                         Log.i("mark as unlike", "sid = " + song_id);
                     }
-                }.start();
+                };
+                pool.execute(markUnlikeThread);
+
                 Toast.makeText(AlarmActivity.this, AlarmActivity.this.getString(R.string.mark_as_unlike), Toast.LENGTH_LONG).show();
             }
         });
@@ -154,23 +157,33 @@ public class AlarmActivity extends Activity implements Runnable,
                 final ClockSong song = songList.get(0);
                 songList.remove(0);
 
-                new Thread() {
+                Thread playThread = new Thread() {
                     @Override
                     public void run() {
                         WebAPI.SongListOperation(cancel_id, WebAPI.OP_SKIP, song_id);
                         playSong(song);
                     }
-                }.start();
+                };
+                pool.execute(playThread);
             }
         });
 
-        new Thread(this).start();
+        //检查闹钟信息
+        Intent intent = getIntent();
+        boolean once = intent.getBooleanExtra("once", true);
+        if (once) {
+            int compareId = intent.getIntExtra("compareId", 0);
+            ClockCtrl.setClockItemDisableByCompareId(compareId);
+        }
+
+        //运行
+        pool.execute(new Thread(this));
     }
 
     @Override
     public void run() {
+        //获取歌曲列表
         songList = WebAPI.SongListOperation(cancel_id, WebAPI.OP_GET_NEXT_SONG);
-
         Log.i("get song list c = " + cancel_id, "size = " + songList.size());
         if (songList.size() < 1) {
             String string = getString(R.string.log_err);
@@ -179,6 +192,7 @@ public class AlarmActivity extends Activity implements Runnable,
             return;
         }
 
+        //检查播放设置并调节歌曲列表长度
         Configuration config = ConfigAPI.getConfig();
         while (songList.size() < config.getRepeatSong()) {
             List<ClockSong> additionalSongList = WebAPI.SongListOperation(cancel_id, WebAPI.OP_GET_NEW_LIST);
@@ -188,16 +202,18 @@ public class AlarmActivity extends Activity implements Runnable,
             songList.remove(songList.size() - 1);
         }
 
+        //弹出并播放
         ClockSong song = songList.get(0);
         songList.remove(0);
-
         playSong(song);
     }
 
     private void playSong(ClockSong song) {
+        //更新UI界面歌曲信息
         uiHandler.sendMessage(Message.obtain(uiHandler, TITLE, song.getTitle()));
         uiHandler.sendMessage(Message.obtain(uiHandler, ARTIST, song.getArtist()));
 
+        //播放
         try {
             Log.i("mp3 url   :", song.getUrl());
             Log.d("mp3 title :", song.getTitle());
@@ -214,29 +230,29 @@ public class AlarmActivity extends Activity implements Runnable,
         }
     }
 
-    public static File downloadFile(String u, String filename) throws IOException {
-        Log.i("download url", u);
-        URL url = new URL(u);
-        URLConnection uc = url.openConnection();
-        InputStream is = uc.getInputStream();
-        byte[] buffer = new byte[1024 * 4];
-        File filePath = new File(MainActivity.getContext().getCacheDir(), filename);
-        Log.i("download file name", filePath.getAbsolutePath());
-        FileOutputStream os = MainActivity.getContext().openFileOutput(filePath.getName(), Context.MODE_WORLD_WRITEABLE);
-        int length = uc.getContentLength();
-        long all = 0;
-        int len;
-        while ((len = is.read(buffer)) != -1) {
-            os.write(buffer, 0, len);
-            all += len;
-        }
-
-        Log.i("file download", "competed");
-        os.close();
-        is.close();
-
-        return filePath;
-    }
+//    public static File downloadFile(String u, String filename) throws IOException {
+//        Log.d("download url", u);
+//        URL url = new URL(u);
+//        URLConnection uc = url.openConnection();
+//        InputStream is = uc.getInputStream();
+//        byte[] buffer = new byte[1024 * 4];
+//        File filePath = new File(MainActivity.getContext().getCacheDir(), filename);
+//        Log.i("download file name", filePath.getAbsolutePath());
+//        FileOutputStream os = MainActivity.getContext().openFileOutput(filePath.getName(), Context.MODE_WORLD_WRITEABLE);
+//        int length = uc.getContentLength();
+//        long all = 0;
+//        int len;
+//        while ((len = is.read(buffer)) != -1) {
+//            os.write(buffer, 0, len);
+//            all += len;
+//        }
+//
+//        Log.i("file download", "competed");
+//        os.close();
+//        is.close();
+//
+//        return filePath;
+//    }
 
     @Override
     public void onPrepared(MediaPlayer mp) {
@@ -251,7 +267,6 @@ public class AlarmActivity extends Activity implements Runnable,
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-
         WebAPI.SongListOperation(cancel_id, WebAPI.OP_END, song_id);
 
         if (songList.size() < 1)
@@ -263,7 +278,6 @@ public class AlarmActivity extends Activity implements Runnable,
         Log.i("alarm", songList.size() + " songs left");
 
         playSong(song);
-
     }
 
     @Override
