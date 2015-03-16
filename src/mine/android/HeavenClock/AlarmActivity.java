@@ -58,7 +58,7 @@ public class AlarmActivity extends Activity implements Runnable,
         mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mp.setOnPreparedListener(this);
         mp.setOnCompletionListener(this);
-        mp.setVolume(1.0f, 1.0f);
+        mp.setAudioStreamType(AudioManager.STREAM_ALARM);
 
         artist = (TextView) findViewById(R.id.songArtist);
         title = (TextView) findViewById(R.id.songTitle);
@@ -135,6 +135,32 @@ public class AlarmActivity extends Activity implements Runnable,
                     }
                 }.start();
                 Toast.makeText(AlarmActivity.this, AlarmActivity.this.getString(R.string.mark_as_unlike), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        Button next = (Button) findViewById(R.id.nextBtn);
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mp.isPlaying())
+                    return;
+                if (songList.size() < 1) {
+                    String line = MainActivity.getContext().getString(R.string.no_more_song);
+                    line = line.replaceFirst("\\{n\\}", String.valueOf(ConfigAPI.getConfig().getRepeatSong()));
+                    Toast.makeText(MainActivity.getContext(), line, Toast.LENGTH_LONG).show();
+                    return;
+                }
+                mp.stop();
+                final ClockSong song = songList.get(0);
+                songList.remove(0);
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        WebAPI.SongListOperation(cancel_id, WebAPI.OP_SKIP, song_id);
+                        playSong(song);
+                    }
+                }.start();
             }
         });
 
@@ -225,6 +251,9 @@ public class AlarmActivity extends Activity implements Runnable,
 
     @Override
     public void onCompletion(MediaPlayer mp) {
+
+        WebAPI.SongListOperation(cancel_id, WebAPI.OP_END, song_id);
+
         if (songList.size() < 1)
             return;
 

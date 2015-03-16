@@ -22,19 +22,21 @@ import java.util.List;
  * Created by Heaven on 2015/2/15.
  */
 public class WebAPI {
-    public static char OP_GET_NEW_LIST = 'n';
-    public static char OP_GET_NEXT_SONG = 's';
+    public static final char OP_SKIP = 's';
+    public static final char OP_GET_NEW_LIST = 'n';
+    public static final char OP_GET_NEXT_SONG = 's';
 
-    public static char OP_MARK_AS_LIKE = 'r';
-    public static char OP_DMARK_LIKE = 'u';
-    public static char OP_BYE = 'b';
+    public static final char OP_MARK_AS_LIKE = 'r';
+    public static final char OP_DMARK_LIKE = 'u';
+    public static final char OP_BYE = 'b';
+    public static final char OP_END = 'e';
 
 
     public static String getStringFromUrl(String u, String param, boolean post) throws IOException, JSONException {
         StringBuilder json = new StringBuilder();
 
         URL url = new URL(u);
-        if (!post && param!=null) {
+        if (!post && param != null) {
             url = new URL(u + "?" + param);
         }
         URLConnection uc = url.openConnection();
@@ -50,7 +52,7 @@ public class WebAPI {
 
         BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
         String inputLine;
-        while ( (inputLine = in.readLine()) != null) {
+        while ((inputLine = in.readLine()) != null) {
             json.append(inputLine);
         }
         in.close();
@@ -90,6 +92,7 @@ public class WebAPI {
     }
 
     public static List<ClockSong> SongListOperation(int channel, char type, int sid) {
+        Log.i("song oper", "channel=" + channel + " type=" + type + " songId=" + sid);
         Configuration c = ConfigAPI.getConfig();
         String email = c.getDoubanEmail();
         String password = c.getDoubanPassword();
