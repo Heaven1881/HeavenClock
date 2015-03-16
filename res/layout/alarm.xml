@@ -10,6 +10,11 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/time_up"
             android:id="@+id/clock_msg" android:layout_gravity="center_horizontal"/>
+    <ImageView
+            android:layout_width="195dp"
+            android:layout_height="195dp"
+            android:background="@drawable/music"
+            android:id="@+id/imageView" android:layout_gravity="center_horizontal" android:contentDescription="music"/>
     <Space
             android:layout_width="fill_parent"
             android:layout_height="50dp"
@@ -21,37 +26,37 @@
             android:baselineAligned="false">
         <LinearLayout
                 android:orientation="vertical"
-                android:layout_width="100dp"
-                android:layout_height="match_parent">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/song_title"
-                    android:id="@+id/songTitleV"/>
+                    android:id="@+id/songTitleV" android:clickable="true" android:textSize="30sp"/>
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/song_artist"
-                    android:id="@+id/songArtistV"/>
+                    android:id="@+id/songArtistV" android:textSize="30sp"/>
         </LinearLayout>
         <LinearLayout
                 android:orientation="vertical"
-                android:layout_width="15dp"
+                android:layout_width="30dp"
                 android:layout_height="wrap_content">
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text=":"
-                    android:id="@+id/u"/>
+                    android:id="@+id/u" android:textSize="30sp"/>
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text=":"
-                    android:id="@+id/u2"/>
+                    android:id="@+id/u2" android:textSize="30sp"/>
         </LinearLayout>
         <LinearLayout
                 android:orientation="vertical"
@@ -62,26 +67,24 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/default_title"
-                    android:id="@+id/songTitle"/>
+                    android:id="@+id/songTitle" android:textSize="30dp"/>
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/default_artist"
-                    android:id="@+id/songArtist"/>
+                    android:id="@+id/songArtist" android:textSize="30dp"/>
         </LinearLayout>
     </LinearLayout>
     <Space
             android:layout_width="fill_parent"
-            android:layout_height="100dp"
+            android:layout_height="50dp"
             />
     <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/stop"
             android:id="@+id/stopBtn" android:layout_gravity="center_horizontal"/>
-    <Space android:layout_width="match_parent" android:layout_height="80dp"
-           android:layout_gravity="center_horizontal"/>
     <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
