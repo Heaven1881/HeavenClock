@@ -1,7 +1,6 @@
 package mine.android.HeavenClock;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -12,7 +11,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import mine.android.api.ConfigAPI;
@@ -268,7 +266,13 @@ public class AlarmActivity extends Activity implements Runnable,
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        WebAPI.SongListOperation(cancel_id, WebAPI.OP_END, song_id);
+        Thread completionThread = new Thread() {
+            @Override
+            public void run() {
+                WebAPI.SongListOperation(cancel_id, WebAPI.OP_END, song_id);
+            }
+        };
+        pool.execute(completionThread);
 
         if (songList.size() < 1)
             return;

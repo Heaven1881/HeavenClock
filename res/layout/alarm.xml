@@ -11,8 +11,8 @@
             android:text="@string/time_up"
             android:id="@+id/clock_msg" android:layout_gravity="center_horizontal"/>
     <ImageView
-            android:layout_width="195dp"
-            android:layout_height="195dp"
+            android:layout_width="103dp"
+            android:layout_height="103dp"
             android:background="@drawable/music"
             android:id="@+id/imageView" android:layout_gravity="center_horizontal" android:contentDescription="music"/>
     <Space
@@ -33,13 +33,13 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/song_title"
-                    android:id="@+id/songTitleV" android:clickable="true" android:textSize="30sp"/>
+                    android:id="@+id/songTitleV" android:clickable="true" android:textSize="20sp"/>
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/song_artist"
-                    android:id="@+id/songArtistV" android:textSize="30sp"/>
+                    android:id="@+id/songArtistV" android:textSize="20sp"/>
         </LinearLayout>
         <LinearLayout
                 android:orientation="vertical"
@@ -50,13 +50,13 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text=":"
-                    android:id="@+id/u" android:textSize="30sp"/>
+                    android:id="@+id/u" android:textSize="20sp"/>
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text=":"
-                    android:id="@+id/u2" android:textSize="30sp"/>
+                    android:id="@+id/u2" android:textSize="20sp"/>
         </LinearLayout>
         <LinearLayout
                 android:orientation="vertical"
@@ -67,13 +67,13 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/default_title"
-                    android:id="@+id/songTitle" android:textSize="30dp"/>
+                    android:id="@+id/songTitle" android:textSize="20dp"/>
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/default_artist"
-                    android:id="@+id/songArtist" android:textSize="30dp"/>
+                    android:id="@+id/songArtist" android:textSize="20dp"/>
         </LinearLayout>
     </LinearLayout>
     <Space
