@@ -33,6 +33,7 @@ public class AlarmActivity extends Activity implements Runnable,
     private static final int TITLE = 2;
     private static final int ARTIST = 3;
     private static final int TOAST = 4;
+    private static final int LIKE_BUTTON = 5;
 
     //媒体播放任务
     private MediaPlayer mp = null;
@@ -43,6 +44,8 @@ public class AlarmActivity extends Activity implements Runnable,
     private Handler uiHandler = null;
     private TextView artist = null;
     private TextView title = null;
+
+    private Button likeButton;
 
     //界面显示的歌曲相关信息
     private int cancel_id = 0;
@@ -87,12 +90,20 @@ public class AlarmActivity extends Activity implements Runnable,
                     case TOAST:
                         Toast.makeText(MainActivity.getContext(), (String) msg.obj, Toast.LENGTH_LONG).show();
                         break;
+                    case LIKE_BUTTON:
+                        boolean like = (Boolean) msg.obj;
+                        if (like)
+                            likeButton.setText(getString(R.string.already_like));
+                        else
+                            likeButton.setText(getString(R.string.like));
+                        break;
                     default:
                         assert false;
                 }
             }
         };
 
+        // 停止播放按钮
         Button stopBtu = (Button) findViewById(R.id.stopBtn);
         stopBtu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,7 +117,8 @@ public class AlarmActivity extends Activity implements Runnable,
             }
         });
 
-        Button likeButton = (Button) findViewById(R.id.likeBtn);
+        // 标记歌曲为喜欢按钮
+        likeButton = (Button) findViewById(R.id.likeBtn);
         likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,6 +135,7 @@ public class AlarmActivity extends Activity implements Runnable,
             }
         });
 
+        // 标记歌曲为不喜欢
         Button unlike = (Button) findViewById(R.id.dislikeBtn);
         unlike.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,6 +153,7 @@ public class AlarmActivity extends Activity implements Runnable,
             }
         });
 
+        // 下一首
         Button next = (Button) findViewById(R.id.nextBtn);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,7 +196,7 @@ public class AlarmActivity extends Activity implements Runnable,
     @Override
     public void run() {
         //获取歌曲列表
-        songList = WebAPI.SongListOperation(cancel_id, WebAPI.OP_GET_NEXT_SONG);
+        songList = WebAPI.SongListOperation(cancel_id, WebAPI.OP_GET_NEW_LIST);
         Log.i("get song list c = " + cancel_id, "size = " + songList.size());
         if (songList.size() < 1) {
             String string = getString(R.string.log_err);
@@ -194,7 +208,7 @@ public class AlarmActivity extends Activity implements Runnable,
         //检查播放设置并调节歌曲列表长度
         Configuration config = ConfigAPI.getConfig();
         while (songList.size() < config.getRepeatSong()) {
-            List<ClockSong> additionalSongList = WebAPI.SongListOperation(cancel_id, WebAPI.OP_GET_NEW_LIST);
+            List<ClockSong> additionalSongList = WebAPI.SongListOperation(cancel_id, WebAPI.OP_GET_NEXT_SONG);
             songList.addAll(additionalSongList);
         }
         while (songList.size() > config.getRepeatSong()) {
@@ -211,6 +225,7 @@ public class AlarmActivity extends Activity implements Runnable,
         //更新UI界面歌曲信息
         uiHandler.sendMessage(Message.obtain(uiHandler, TITLE, song.getTitle()));
         uiHandler.sendMessage(Message.obtain(uiHandler, ARTIST, song.getArtist()));
+        uiHandler.sendMessage(Message.obtain(uiHandler, LIKE_BUTTON, song.isLike()));
 
         //播放
         try {

@@ -17,7 +17,8 @@
     <string name="default_artist">正在读取…</string>
     <string name="time_up">闹钟时间到</string>
     <string name="like">喜欢</string>
-    <string name="dislike">不喜欢</string>
+    <string name="already_like">已标记为喜欢</string>
+    <string name="dislike">不再播放</string>
     <string name="stop">关闭闹钟</string>
     <string name="song_artist">艺术家</string>
     <string name="song_title">歌曲名称</string>

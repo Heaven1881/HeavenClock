@@ -8,6 +8,7 @@ public class ClockSong {
     private String url = null;
     private String artist = null;
     private int sid = 0;
+    private boolean like = false;
 
     public ClockSong(String url) {
         this.url = url;
@@ -43,5 +44,13 @@ public class ClockSong {
 
     public void setSid(int sid) {
         this.sid = sid;
+    }
+
+    public boolean isLike() {
+        return like;
+    }
+
+    public void setLike(boolean like) {
+        this.like = like;
     }
 }
