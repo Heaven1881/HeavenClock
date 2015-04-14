@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Created by Heaven on 2015/4/14.
@@ -26,38 +25,48 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
 
     private Queue<ClockSong> playList = new LinkedList<ClockSong>();
 
-    private int maxSize = 3;
+    private int size = 3;
 
     private int playedSong = 0;
 
     private ClockSong currentSong = null;
 
+    private OnNewSongListener onNewSongListener = null;
+
     private void playClockSong(ClockSong song) {
         try {
             currentSong = song;
 
+            // 调用onNewSongListener做进一步处理
+            if (onNewSongListener != null)
+                onNewSongListener.onNewSong(song);
+
             mp.reset();
             mp.setDataSource(song.getUrl());
-            mp.prepare();
-
+            mp.prepareAsync();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public DouBanPlayer(int maxSize) {
-        this.maxSize = maxSize;
+    public void setOnNewSongListener(OnNewSongListener listener) {
+        this.onNewSongListener = listener;
+    }
+
+    public DouBanPlayer(int size, ExecutorService threadPool) {
+        this.size = size;
 
         mp = new MediaPlayer();
         mp.setAudioStreamType(AudioManager.STREAM_ALARM);
         mp.setOnCompletionListener(this);
         mp.setOnPreparedListener(this);
 
-        threadPool = Executors.newSingleThreadExecutor();
+        this.threadPool = threadPool;
     }
 
     /**
      * 获取当前播放的音乐
+     *
      * @return
      */
     public ClockSong getCurrentSong() {
@@ -69,9 +78,11 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
         // 更新播放歌曲数
         playedSong++;
         markCurrentSong(WebAPI.OP_END);
+        nextSong();
+    }
 
-        if (playedSong < maxSize)
-            nextSong();
+    public void start() {
+        nextSong();
     }
 
     private void nextSong() {
@@ -98,11 +109,22 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
         // 将获得的播放列表加入播放队列中
         // 只加入一定数量的歌曲
         for (ClockSong item : gottenList) {
-            playList.add(item);
-            if (playList.size() == maxSize)
+            if (playList.size() > 2 * size)
                 break;
+            playList.add(item);
         }
 
+    }
+
+    /**
+     * 跳过当前歌曲，播放下一首
+     */
+    public void skipCurrentSong() {
+        if (!mp.isPlaying())
+            return;
+        mp.stop();
+        markCurrentSong(WebAPI.OP_SKIP);
+        nextSong();
     }
 
     public void markCurrentSong(final char op) {
@@ -123,5 +145,14 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
 
     public int getPlayedSong() {
         return playedSong;
+    }
+
+    public void stop() {
+        mp.stop();
+        mp.release();
+    }
+
+    public interface OnNewSongListener {
+        public void onNewSong(ClockSong song);
     }
 }

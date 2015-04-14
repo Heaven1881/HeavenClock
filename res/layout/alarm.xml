@@ -10,14 +10,9 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/time_up"
             android:id="@+id/clock_msg" android:layout_gravity="center_horizontal"/>
-    <ImageView
-            android:layout_width="103dp"
-            android:layout_height="103dp"
-            android:background="@drawable/music"
-            android:id="@+id/imageView" android:layout_gravity="center_horizontal" android:contentDescription="music"/>
     <Space
             android:layout_width="fill_parent"
-            android:layout_height="50dp"
+            android:layout_height="125dp"
             />
     <LinearLayout
             android:orientation="horizontal"
@@ -60,7 +55,7 @@
         </LinearLayout>
         <LinearLayout
                 android:orientation="vertical"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="fill_parent" android:layout_weight="1">
             <TextView
                     android:layout_width="wrap_content"
