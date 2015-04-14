@@ -99,7 +99,7 @@ public class AlarmActivity extends Activity implements Runnable {
                 likeButton.setOnClickListener(mark);
             }
         };
-        likeButton.setOnClickListener(mark);
+//        likeButton.setOnClickListener(mark);
 
         // 标记歌曲为不喜欢
         Button unlike = (Button) findViewById(R.id.dislikeBtn);
@@ -187,10 +187,13 @@ public class AlarmActivity extends Activity implements Runnable {
                     break;
                 case LIKE_BUTTON:
                     boolean like = (Boolean) msg.obj;
-                    if (like)
+                    if (like) {
                         likeButton.setText(getString(R.string.already_like));
-                    else
+                        likeButton.setOnClickListener(dmark);
+                    } else {
                         likeButton.setText(getString(R.string.like));
+                        likeButton.setOnClickListener(mark);
+                    }
                     break;
                 default:
                     assert false;

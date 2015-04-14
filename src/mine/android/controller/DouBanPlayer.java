@@ -78,7 +78,7 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
     @Override
     public void onCompletion(MediaPlayer mp) {
         // 更新播放歌曲数
-        markCurrentSong(WebAPI.OP_END);
+        markSong(WebAPI.OP_END, currentSong.getSid());
 
         if (playedSong >= size) {
             stop();
@@ -130,15 +130,19 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
         if (!mp.isPlaying())
             return;
         mp.stop();
-        markCurrentSong(WebAPI.OP_SKIP);
+        markSong(WebAPI.OP_SKIP, currentSong.getSid());
         nextSong();
     }
 
-    public void markCurrentSong(final char op) {
+    public void markCurrentSong(char op) {
+        markSong(op, currentSong.getSid());
+    }
+
+    private void markSong(final char op, final int sid) {
         Thread markThread = new Thread() {
             @Override
             public void run() {
-                WebAPI.SongListOperation(-1, op, currentSong.getSid());
+                WebAPI.SongListOperation(-1, op, sid);
             }
         };
         threadPool.execute(markThread);
@@ -155,7 +159,8 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
     }
 
     public void stop() {
-        mp.stop();
+        if (mp.isPlaying())
+            mp.stop();
         mp.release();
     }
 
