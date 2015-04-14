@@ -80,8 +80,10 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
         // 更新播放歌曲数
         markCurrentSong(WebAPI.OP_END);
 
-        if (playedSong >= size)
+        if (playedSong >= size) {
             stop();
+            return;
+        }
 
         nextSong();
     }

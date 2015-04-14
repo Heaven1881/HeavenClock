@@ -134,7 +134,7 @@ public class AlarmActivity extends Activity implements Runnable {
     }
 
     private void tryPlayNextSong() {
-        Log.i("playsong:", player.getPlayedSong() + "");
+//        Log.i("playsong:", player.getPlayedSong() + "");
         if (player.getPlayedSong() >= repeatTime) {
             String line = MainActivity.getContext().getString(R.string.no_more_song);
             line = line.replaceFirst("\\{n\\}", String.valueOf(repeatTime));
