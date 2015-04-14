@@ -44,4 +44,5 @@
     <string name="setting_label">设置闹钟</string>
     <string name="next_btn">下一首</string>
     <string name="no_more_song">本次闹钟的{n}首歌曲已播放完毕</string>
+    <string name="dmark_as_like">已取消标记</string>
 </resources>

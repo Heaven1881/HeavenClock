@@ -45,10 +45,13 @@ public class AlarmActivity extends Activity implements Runnable,
     private TextView artist = null;
     private TextView title = null;
 
+    // 标记喜欢按钮
     private Button likeButton;
+    private View.OnClickListener mark = null;
+    private View.OnClickListener dmark = null;
 
     //界面显示的歌曲相关信息
-    private int cancel_id = 0;
+    private int channel_id = -3;
     private int song_id = 0;
 
     //线程管理
@@ -74,34 +77,7 @@ public class AlarmActivity extends Activity implements Runnable,
         title = (TextView) findViewById(R.id.songTitle);
 
         showView = (TextView) findViewById(R.id.clock_msg);
-        uiHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case SHOW_VIEW:
-                        showView.setText((String) msg.obj);
-                        break;
-                    case TITLE:
-                        title.setText((String) msg.obj);
-                        break;
-                    case ARTIST:
-                        artist.setText((String) msg.obj);
-                        break;
-                    case TOAST:
-                        Toast.makeText(MainActivity.getContext(), (String) msg.obj, Toast.LENGTH_LONG).show();
-                        break;
-                    case LIKE_BUTTON:
-                        boolean like = (Boolean) msg.obj;
-                        if (like)
-                            likeButton.setText(getString(R.string.already_like));
-                        else
-                            likeButton.setText(getString(R.string.like));
-                        break;
-                    default:
-                        assert false;
-                }
-            }
-        };
+        uiHandler = new AlarmUIHandler();
 
         // 停止播放按钮
         Button stopBtu = (Button) findViewById(R.id.stopBtn);
@@ -119,21 +95,42 @@ public class AlarmActivity extends Activity implements Runnable,
 
         // 标记歌曲为喜欢按钮
         likeButton = (Button) findViewById(R.id.likeBtn);
-        likeButton.setOnClickListener(new View.OnClickListener() {
+        mark = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Thread markLikeThread = new Thread() {
                     @Override
                     public void run() {
-                        WebAPI.SongListOperation(cancel_id, WebAPI.OP_MARK_AS_LIKE, song_id);
+                        WebAPI.SongListOperation(channel_id, WebAPI.OP_MARK_AS_LIKE, song_id);
                         Log.i("mark as like", "sid = " + song_id);
                     }
                 };
                 pool.execute(markLikeThread);
 
                 Toast.makeText(AlarmActivity.this, AlarmActivity.this.getString(R.string.mark_as_like), Toast.LENGTH_LONG).show();
+
+                likeButton.setText(getString(R.string.already_like));
+                likeButton.setOnClickListener(dmark);
             }
-        });
+        };
+        dmark = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Thread dmarkLikeThread = new Thread() {
+                    @Override
+                    public void run() {
+                        WebAPI.SongListOperation(channel_id, WebAPI.OP_DMARK_LIKE, song_id);
+                        Log.i("dmark for like", "sid = " + song_id);
+                    }
+                };
+                pool.execute(dmarkLikeThread);
+
+                Toast.makeText(AlarmActivity.this, AlarmActivity.this.getString(R.string.dmark_as_like), Toast.LENGTH_SHORT).show();
+                likeButton.setText(getString(R.string.like));
+                likeButton.setOnClickListener(mark);
+            }
+        };
+        likeButton.setOnClickListener(mark);
 
         // 标记歌曲为不喜欢
         Button unlike = (Button) findViewById(R.id.dislikeBtn);
@@ -143,7 +140,7 @@ public class AlarmActivity extends Activity implements Runnable,
                 Thread markUnlikeThread = new Thread() {
                     @Override
                     public void run() {
-                        WebAPI.SongListOperation(cancel_id, WebAPI.OP_BYE, song_id);
+                        WebAPI.SongListOperation(channel_id, WebAPI.OP_BYE, song_id);
                         Log.i("mark as unlike", "sid = " + song_id);
                     }
                 };
@@ -173,7 +170,7 @@ public class AlarmActivity extends Activity implements Runnable,
                 Thread playThread = new Thread() {
                     @Override
                     public void run() {
-                        WebAPI.SongListOperation(cancel_id, WebAPI.OP_SKIP, song_id);
+                        WebAPI.SongListOperation(channel_id, WebAPI.OP_SKIP, song_id);
                         playSong(song);
                     }
                 };
@@ -196,8 +193,8 @@ public class AlarmActivity extends Activity implements Runnable,
     @Override
     public void run() {
         //获取歌曲列表
-        songList = WebAPI.SongListOperation(cancel_id, WebAPI.OP_GET_NEW_LIST);
-        Log.i("get song list c = " + cancel_id, "size = " + songList.size());
+        songList = WebAPI.SongListOperation(channel_id, WebAPI.OP_GET_NEW_LIST);
+        Log.i("get song list c = " + channel_id, "size = " + songList.size());
         if (songList.size() < 1) {
             String string = getString(R.string.log_err);
             uiHandler.sendMessage(Message.obtain(uiHandler, AlarmActivity.TOAST, string));
@@ -205,10 +202,14 @@ public class AlarmActivity extends Activity implements Runnable,
             return;
         }
 
+        for (ClockSong song : songList) {
+            Log.i("songlist", song.getTitle());
+        }
+
         //检查播放设置并调节歌曲列表长度
         Configuration config = ConfigAPI.getConfig();
         while (songList.size() < config.getRepeatSong()) {
-            List<ClockSong> additionalSongList = WebAPI.SongListOperation(cancel_id, WebAPI.OP_GET_NEXT_SONG);
+            List<ClockSong> additionalSongList = WebAPI.SongListOperation(channel_id, WebAPI.OP_GET_NEXT_SONG);
             songList.addAll(additionalSongList);
         }
         while (songList.size() > config.getRepeatSong()) {
@@ -284,7 +285,7 @@ public class AlarmActivity extends Activity implements Runnable,
         Thread completionThread = new Thread() {
             @Override
             public void run() {
-                WebAPI.SongListOperation(cancel_id, WebAPI.OP_END, song_id);
+                WebAPI.SongListOperation(channel_id, WebAPI.OP_END, song_id);
             }
         };
         pool.execute(completionThread);
@@ -303,5 +304,34 @@ public class AlarmActivity extends Activity implements Runnable,
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         return true;
+    }
+
+    private class AlarmUIHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case SHOW_VIEW:
+                    showView.setText((String) msg.obj);
+                    break;
+                case TITLE:
+                    title.setText((String) msg.obj);
+                    break;
+                case ARTIST:
+                    artist.setText((String) msg.obj);
+                    break;
+                case TOAST:
+                    Toast.makeText(MainActivity.getContext(), (String) msg.obj, Toast.LENGTH_LONG).show();
+                    break;
+                case LIKE_BUTTON:
+                    boolean like = (Boolean) msg.obj;
+                    if (like)
+                        likeButton.setText(getString(R.string.already_like));
+                    else
+                        likeButton.setText(getString(R.string.like));
+                    break;
+                default:
+                    assert false;
+            }
+        }
     }
 }

@@ -126,7 +126,7 @@ public class WebAPI {
                 clockSong.setTitle(song.getString("title"));
                 clockSong.setArtist(song.getString("artist"));
                 clockSong.setSid(song.getInt("sid"));
-                clockSong.setLike(song.getBoolean("like"));
+                clockSong.setLike(song.getInt("like") == 1 ? true : false);
 
                 retList.add(clockSong);
             }
