@@ -41,6 +41,8 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
             if (onNewSongListener != null)
                 onNewSongListener.onNewSong(song);
 
+            playedSong++;
+
             mp.reset();
             mp.setDataSource(song.getUrl());
             mp.prepareAsync();
@@ -76,8 +78,11 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
     @Override
     public void onCompletion(MediaPlayer mp) {
         // 更新播放歌曲数
-        playedSong++;
         markCurrentSong(WebAPI.OP_END);
+
+        if (playedSong >= size)
+            stop();
+
         nextSong();
     }
 

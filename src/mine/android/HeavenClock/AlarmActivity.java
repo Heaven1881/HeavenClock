@@ -32,6 +32,7 @@ public class AlarmActivity extends Activity implements Runnable {
 
     //媒体播放任务
     private DouBanPlayer player = null;
+    private int repeatTime = 1;
 
     //界面UI
     private TextView showView = null;
@@ -55,7 +56,7 @@ public class AlarmActivity extends Activity implements Runnable {
         ExecutorService pool = Executors.newSingleThreadExecutor();
 
         //初始化播放器
-        final int repeatTime = ConfigAPI.getConfig().getRepeatSong();
+        repeatTime = ConfigAPI.getConfig().getRepeatSong();
         player = new DouBanPlayer(repeatTime, pool);
 
 
@@ -107,7 +108,7 @@ public class AlarmActivity extends Activity implements Runnable {
             public void onClick(View v) {
                 player.markCurrentSong(WebAPI.OP_BYE);
                 Toast.makeText(AlarmActivity.this, AlarmActivity.this.getString(R.string.mark_as_unlike), Toast.LENGTH_LONG).show();
-                player.skipCurrentSong();
+                tryPlayNextSong();
             }
         });
 
@@ -116,13 +117,7 @@ public class AlarmActivity extends Activity implements Runnable {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if (player.getPlayedSong() >= repeatTime - 1) {
-//                    String line = MainActivity.getContext().getString(R.string.no_more_song);
-//                    line = line.replaceFirst("\\{n\\}", String.valueOf(repeatTime));
-//                    Toast.makeText(MainActivity.getContext(), line, Toast.LENGTH_LONG).show();
-//                    return;
-//                }
-                player.skipCurrentSong();
+                tryPlayNextSong();
             }
         });
 
@@ -138,6 +133,17 @@ public class AlarmActivity extends Activity implements Runnable {
         pool.execute(new Thread(this));
     }
 
+    private void tryPlayNextSong() {
+        Log.i("playsong:", player.getPlayedSong() + "");
+        if (player.getPlayedSong() >= repeatTime) {
+            String line = MainActivity.getContext().getString(R.string.no_more_song);
+            line = line.replaceFirst("\\{n\\}", String.valueOf(repeatTime));
+            Toast.makeText(MainActivity.getContext(), line, Toast.LENGTH_LONG).show();
+            return;
+        }
+        player.skipCurrentSong();
+    }
+
     @Override
     public void run() {
         player.setOnNewSongListener(new DouBanPlayer.OnNewSongListener() {
@@ -149,8 +155,8 @@ public class AlarmActivity extends Activity implements Runnable {
                 uiHandler.sendMessage(Message.obtain(uiHandler, LIKE_BUTTON, song.isLike()));
 
                 Log.i("mp3 url   :", song.getUrl());
-                Log.d("mp3 title :", song.getTitle());
-                Log.d("mp3 artist:", song.getArtist());
+                Log.i("mp3 title :", song.getTitle());
+                Log.i("mp3 artist:", song.getArtist());
                 Log.i("mp3 sid   :", String.valueOf(song.getSid()));
                 Log.i("mp3 like  :", String.valueOf(song.isLike()));
             }
