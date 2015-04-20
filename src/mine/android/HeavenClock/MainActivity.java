@@ -39,13 +39,7 @@ public class MainActivity extends Activity {
         context = this;
         debugView = (TextView) findViewById(R.id.debugView);
 
-        handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                debugView.setText(msg.obj.toString());
-            }
-        };
+        handler = new MainHandler();
 
         new Thread() {
             @Override
@@ -81,6 +75,7 @@ public class MainActivity extends Activity {
             }
         });
 
+        // 设置闹钟列表
         ListView lv = (ListView) findViewById(R.id.listView);
         final BaseAdapter clockListAdapter = ClockCtrl.getClockListForListView();
         lv.setAdapter(clockListAdapter);
@@ -111,7 +106,7 @@ public class MainActivity extends Activity {
         //activate all clock
         ClockCtrl.activateAllClockItem();
 
-        Toast.makeText(getContext(), getString(R.string.activate_clock), Toast.LENGTH_LONG).show();
+//        Toast.makeText(getContext(), getString(R.string.activate_clock), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -137,7 +132,6 @@ public class MainActivity extends Activity {
             ClockItem item = new ClockItem(t, d, r);
             ClockCtrl.replaceClockItem(position, item);
         }
-//        renderClockListView();
     }
 
     public static void toastClockItem(ClockItem item) {
@@ -176,5 +170,13 @@ public class MainActivity extends Activity {
         ListView lv = (ListView) findViewById(R.id.listView);
         final BaseAdapter clockListAdapter = ClockCtrl.getClockListForListView();
         lv.setAdapter(clockListAdapter);
+    }
+
+    private class MainHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            debugView.setText(msg.obj.toString());
+        }
     }
 }

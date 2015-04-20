@@ -5,35 +5,40 @@ import mine.android.HeavenClock.MainActivity;
 import mine.android.db.DataBase;
 import mine.android.modules.ClockItem;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Heaven on 2015/2/12.
+ * Created by Heaven on 2015/2/12
  */
 public class ClockAPI {
 
+    private static DataBase<ClockItem> db = null;
+
+    private static synchronized DataBase<ClockItem> getDb() {
+        if (db == null) {
+            db = new DataBase<ClockItem>(ClockItem.class, MainActivity.getContext());
+        }
+        return db;
+    }
+
     public static void addClockItemAPI(ClockItem item) {
-        DataBase<ClockItem> db = new DataBase<ClockItem>(ClockItem.class, MainActivity.getContext());
-        db.addItem(Arrays.asList(item));
+        getDb().addItem(Collections.singletonList(item));
     }
 
     public static void delClockItemAPI(int index) {
-        DataBase<ClockItem> db = new DataBase<ClockItem>(ClockItem.class, MainActivity.getContext());
-        List<ClockItem> clockItems = db.readAll();
+        List<ClockItem> clockItems = getDb().readAll();
         clockItems.remove(index);
-        db.replaceAll(clockItems);
+        getDb().replaceAll(clockItems);
     }
 
     public static List<ClockItem> getClockListAPI() {
-        DataBase<ClockItem> db = new DataBase<ClockItem>(ClockItem.class, MainActivity.getContext());
-        return db.readAll();
+        return getDb().readAll();
     }
 
     public static void updateClockItem(int compareId, int field, Object value) {
-        DataBase<ClockItem> db = new DataBase<ClockItem>(ClockItem.class, MainActivity.getContext());
-        List<ClockItem> list = db.readAll();
+        List<ClockItem> list = getDb().readAll();
 
         for (ClockItem ci : list) {
             if (ci.getCompareId() == compareId) {
@@ -43,8 +48,7 @@ public class ClockAPI {
     }
 
     public static void updateClockItem(ClockItem item, int field, Object value) {
-        DataBase<ClockItem> db = new DataBase<ClockItem>(ClockItem.class, MainActivity.getContext());
-        List<ClockItem> clockItems = db.readAll();
+        List<ClockItem> clockItems = getDb().readAll();
 
         int i = 0;
         for (ClockItem ci : clockItems) {
@@ -71,6 +75,6 @@ public class ClockAPI {
             i = i + 1;
         }
 
-        db.replaceAll(clockItems);
+        getDb().replaceAll(clockItems);
     }
 }
