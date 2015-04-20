@@ -18,6 +18,8 @@ public class DataBase<T extends Serializable & Comparable<T>> {
     private File dbPath = null;
     private Context context = null;
 
+    private List<T> cache = null;
+
     public DataBase(Class aClass, Context con) {
         context = con;
         dbPath = new File(context.getFilesDir(), aClass.getSimpleName() + "." + EXT);
@@ -53,15 +55,17 @@ public class DataBase<T extends Serializable & Comparable<T>> {
     }
 
     private synchronized List<T> getFromDB() {
-        List<T> list = new ArrayList<T>();
+        if (cache != null)
+            return  cache;
+        cache = new ArrayList<T>();
 
         if (!dbPath.exists())
-            return list;
+            return cache;
 
         try {
             FileInputStream fis = context.openFileInput(dbPath.getName());
             ObjectInputStream ois = new ObjectInputStream(fis);
-            list = (List<T>) ois.readObject();
+            cache = (List<T>) ois.readObject();
 
             ois.close();
             fis.close();
@@ -74,7 +78,7 @@ public class DataBase<T extends Serializable & Comparable<T>> {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return list;
+        return cache;
     }
 
     private synchronized void putToDB(List<T> list) {
