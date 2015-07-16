@@ -89,13 +89,17 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
     }
 
     public void start() {
+        while (playList.size() < size) {
+            updatePlayList();
+        }
         nextSong();
     }
 
     private void nextSong() {
-        // 如果没有歌曲，则获取歌曲
-        while (playList.peek() == null) {
-            updatePlayList();
+        // 如果没有歌曲，则停止
+        if (playList.peek() == null) {
+            this.stop();
+            return;
         }
 
         // 从播放队列中弹出歌曲并播放
@@ -107,8 +111,9 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
         Random seed = new Random();
         List<ClockSong> gottenList = null;
 
-        // 等概率的获取两个列表
-        if (seed.nextBoolean())
+        // 选取旧歌的概率为
+        double p = 0.3;
+        if (seed.nextDouble() > p)
             gottenList = WebAPI.SongListOperation(CHANNEL_NEW, WebAPI.OP_GET_NEW_LIST);
         else
             gottenList = WebAPI.SongListOperation(CHANNEL_OLD, WebAPI.OP_GET_NEW_LIST);
@@ -116,9 +121,8 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
         // 将获得的播放列表加入播放队列中
         // 只加入一定数量的歌曲
         for (ClockSong item : gottenList) {
-            if (playList.size() > 2 * size)
-                break;
             playList.add(item);
+            Log.i("Add Song", item.getTitle()+" "+playList.size());
         }
 
     }
