@@ -1,11 +1,11 @@
-package mine.android.modules;
+package mine.android.api.modules;
 
 import java.io.Serializable;
 
 /**
  * Created by Heaven on 2015/2/16.
  */
-public class Configuration implements Serializable, Comparable<Configuration> {
+public class Config implements Serializable, Comparable<Config> {
 
     private String doubanEmail = null;
     private String doubanPassword = null;
@@ -13,7 +13,7 @@ public class Configuration implements Serializable, Comparable<Configuration> {
 
 
     @Override
-    public int compareTo(Configuration another) {
+    public int compareTo(Config another) {
         return 0;
     }
 

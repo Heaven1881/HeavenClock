@@ -6,18 +6,11 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application android:label="@string/app_name" android:icon="@drawable/ic_launcher">
-
-        <activity android:name="MainActivity" android:label="@string/app_name" android:screenOrientation="portrait">
+        <activity android:name="mine.android.view.MainView" android:label="嘟旭闹钟" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
-        <activity android:name=".AlarmActivity" android:label="@string/alram_label" android:screenOrientation="portrait"/>
-
-        <activity android:name=".ClockDetailActivity" android:label="@string/setting_label" android:screenOrientation="portrait"/>
-
-        <activity android:name=".SettingActivity" android:screenOrientation="portrait"/>
     </application>
 </manifest>

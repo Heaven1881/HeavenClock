@@ -1,9 +1,8 @@
-package mine.android.db;
+package mine.android.api.database;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import mine.android.api.ContextAPI;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -20,8 +19,8 @@ public class DataBase<T extends Serializable & Comparable<T>> {
 
     private List<T> cache = null;
 
-    public DataBase(Class aClass, Context con) {
-        context = con;
+    public DataBase(Class aClass) {
+        context = ContextAPI.get();
         dbPath = new File(context.getFilesDir(), aClass.getSimpleName() + "." + EXT);
     }
 

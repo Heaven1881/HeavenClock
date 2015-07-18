@@ -1,16 +1,16 @@
-package mine.android.modules;
+package mine.android.api.modules;
 
 /**
  * Created by Heaven on 2015/2/15.
  */
-public class ClockSong {
+public class Song {
     private String title = null;
     private String url = null;
     private String artist = null;
     private int sid = 0;
     private boolean like = false;
 
-    public ClockSong(String url) {
+    public Song(String url) {
         this.url = url;
     }
 

@@ -1,24 +1,32 @@
-package mine.android.HeavenClock;
+package mine.android.view;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import mine.android.HeavenClock.R;
 
 /**
  * Created by Heaven on 15/7/18
  */
 public class MainView extends Activity {
+    private static Context context = null;
     private WebView webView;
+
+    public static Context getContext() {
+        return context;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        context = this;
 
         webView = (WebView) findViewById(R.id.mainView);
 
@@ -50,5 +58,8 @@ public class MainView extends Activity {
             }
         });
 
+        //js java 映射
+//        webView.addJavascriptInterface(new JavascriptUser());
+        webView.loadUrl("file:///android_asset/mainView.html");
     }
 }
