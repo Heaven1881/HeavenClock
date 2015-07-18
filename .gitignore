@@ -1,0 +1,7 @@
+gen/*
+out/*
+.idea/*
+*.jks
+*.apk
+*.backup
+.DS_Store
