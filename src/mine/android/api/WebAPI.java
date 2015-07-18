@@ -119,9 +119,9 @@ public class WebAPI {
         return loginInfo;
     }
 
-//    public static List<Song> remoteOperation(int chanel, char type) {
-//        return remoteOperation(chanel, type, 0);
-//    }
+    public static List<Song> getNewList(int channel) {
+        return remoteOperation(channel, WebAPI.OP_GET_NEW_LIST, 0);
+    }
 
     public static List<Song> remoteOperation(int channel, char type, int sid) {
         Log.i("song oper", "channel=" + channel + " type=" + type + " songId=" + sid);

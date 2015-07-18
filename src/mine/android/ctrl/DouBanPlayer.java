@@ -1,10 +1,10 @@
-package mine.android.controller;
+package mine.android.ctrl;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.util.Log;
 import mine.android.api.WebAPI;
-import mine.android.modules.ClockSong;
+import mine.android.api.modules.Song;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -23,17 +23,17 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
 
     private ExecutorService threadPool = null;
 
-    private Queue<ClockSong> playList = new LinkedList<ClockSong>();
+    private Queue<Song> playList = new LinkedList<Song>();
 
     private int size = 3;
 
     private int playedSong = 0;
 
-    private ClockSong currentSong = null;
+    private Song currentSong = null;
 
     private OnNewSongListener onNewSongListener = null;
 
-    private void playClockSong(ClockSong song) {
+    private void playSong(Song song) {
         try {
             currentSong = song;
 
@@ -71,7 +71,7 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
      *
      * @return
      */
-    public ClockSong getCurrentSong() {
+    public Song getCurrentSong() {
         return currentSong;
     }
 
@@ -103,26 +103,25 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
         }
 
         // 从播放队列中弹出歌曲并播放
-        ClockSong song = playList.poll();
-        playClockSong(song);
+        Song song = playList.poll();
+        playSong(song);
     }
 
     private void updatePlayList() {
         Random seed = new Random();
-        List<ClockSong> gottenList = null;
+        List<Song> gottenList = null;
 
         // 选取旧歌的概率为
         double p = 0.3;
         if (seed.nextDouble() > p)
-            gottenList = WebAPI.SongListOperation(CHANNEL_NEW, WebAPI.OP_GET_NEW_LIST);
+            gottenList = WebAPI.getNewList(CHANNEL_NEW);
         else
-            gottenList = WebAPI.SongListOperation(CHANNEL_OLD, WebAPI.OP_GET_NEW_LIST);
+            gottenList = WebAPI.getNewList(CHANNEL_OLD);
 
         // 将获得的播放列表加入播放队列中
         // 只加入一定数量的歌曲
-        for (ClockSong item : gottenList) {
+        for (Song item : gottenList) {
             playList.add(item);
-            Log.i("Add Song", item.getTitle()+" "+playList.size());
         }
 
     }
@@ -146,7 +145,7 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
         Thread markThread = new Thread() {
             @Override
             public void run() {
-                WebAPI.SongListOperation(-1, op, sid);
+                WebAPI.remoteOperation(-1, op, sid);
             }
         };
         threadPool.execute(markThread);
@@ -169,6 +168,6 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
     }
 
     public interface OnNewSongListener {
-        public void onNewSong(ClockSong song);
+        public void onNewSong(Song song);
     }
 }

@@ -59,7 +59,8 @@ public class MainView extends Activity {
         });
 
         //js java 映射
-//        webView.addJavascriptInterface(new JavascriptUser());
+        webView.addJavascriptInterface(this, this.getClass().getSimpleName());
         webView.loadUrl("file:///android_asset/mainView.html");
+
     }
 }

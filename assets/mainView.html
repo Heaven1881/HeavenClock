@@ -3,29 +3,135 @@
 <head lang="en">
     <meta http-equiv="CONTENT-TYPE" content="text/html" charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Main View</title>
+    <title>主页面</title>
     <link rel="stylesheet" href="jquery.mobile/jquery.mobile-1.4.2.min.css" type="text/css">
+    <link rel="stylesheet" href="css/common.css" type="text/css">
     <script src="js/jquery-1.11.3.min.js" type="text/javascript"></script>
     <script src="jquery.mobile/jquery.mobile-1.4.2.min.js" type="text/javascript"></script>
 </head>
 <body>
 
-<div data-role="page" id="pageone">
-<div data-role="content">
-    <p>Welcome!</p>
-    <a href="#pagetwo" data-rel="dialog">页面②</a>
-</div>
-</div>
-
-<div data-role="page" id="pagetwo">
-    <div data-role="header">
-        <h1></h1>
+<div data-role="page" id="clock">
+    <div data-role="header" data-position="fixed">
+        <h1>闹钟</h1>
     </div>
-
     <div data-role="content">
-        <p>Goodbye!</p>
-        <a href="#pageone">页面①</a>
+        <ul data-role="listview" data-split-icon="delete" data-inset="true">
+            <li>
+                <a href="#">
+                    <div class="clock-li-time">9:00</div>
+                    <div class="clock-li-desc-group">
+                        <strong class="clock-li-desc">每天</strong>
+
+                        <p class="clock-li-desc">描述</p>
+                    </div>
+                    <div class="clock-li-slider">
+                        <select data-role="slider" data-mini="true">
+                            <option value="off" selected>off</option>
+                            <option value="on">on</option>
+                        </select>
+                    </div>
+                    <a href="#">删除</a>
+                </a>
+            </li>
+        </ul>
+        <ul data-role="listview" data-split-icon="delete" data-inset="true">
+            <li>
+                <a href="#">
+                    <div class="clock-li-time">9:00</div>
+                    <div class="clock-li-desc-group">
+                        <strong class="clock-li-desc">每天</strong>
+
+                        <p class="clock-li-desc">描述</p>
+                    </div>
+                    <div class="clock-li-slider">
+                        <select data-role="slider" data-mini="true">
+                            <option value="off" selected>off</option>
+                            <option value="on">on</option>
+                        </select>
+                    </div>
+                    <a href="#">删除</a>
+                </a>
+            </li>
+        </ul>
+
+        <a href="#" class="ui-btn ui-shadow ui-btn-corner-all">添加闹钟</a>
     </div>
+    <div data-role="footer" data-position="fixed">
+        <div data-role="navbar">
+            <ul>
+                <li><a href="#" data-icon="clock">闹钟</a></li>
+                <li><a href="#music" data-icon="heart" data-transition="none">音乐</a></li>
+                <li><a href="#setting" data-icon="gear" data-transition="none">设置</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div data-role="page" id="music">
+    <div data-role="header" data-position="fixed">
+        <h1>音乐</h1>
+    </div>
+    <div data-role="content">
+        <ul data-role="listview" data-filter="true" data-inset="true">
+            <li><a href="#">Adam Kinkaid</a></li>
+            <li><a href="#">Alex Wickerham</a></li>
+            <li><a href="#">Avery Johnson</a></li>
+            <li><a href="#">Bob Cabot</a></li>
+            <li><a href="#">Caleb Booth</a></li>
+            <li><a href="#">Christopher Adams</a></li>
+            <li><a href="#">Culver James</a></li>
+        </ul>
+    </div>
+    <div data-role="footer" data-position="fixed">
+        <div data-role="navbar">
+            <ul>
+                <li><a href="#clock" data-icon="clock" data-transition="none">闹钟</a></li>
+                <li><a href="#" data-icon="heart">音乐</a></li>
+                <li><a href="#setting" data-icon="gear" data-transition="none">设置</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div data-role="page" id="setting">
+    <div data-role="header" data-position="fixed">
+        <h1>设置</h1>
+    </div>
+    <div data-role="content">
+        <a href="#" class="ui-btn ui-shadow ui-btn-corner-all">保存</a>
+        <div data-role="collapsible" data-collapsed-icon="carat-d" data-expanded-icon="carat-u"
+             data-collapsed="false">
+            <legend>账户信息</legend>
+            <label for="douban-email">账户邮箱:</label>
+            <input type="email" id="douban-email" value="">
+            <label for="douban-pwd">密码:</label>
+            <input type="password" id="douban-pwd" value="">
+        </div>
+        <div data-role="collapsible" data-collapsed-icon="carat-d" data-expanded-icon="carat-u"
+             data-collapsed="false">
+            <legend>闹钟设置</legend>
+            <label for="repeat">每次闹钟播放歌曲数:</label>
+            <input type="range" id="repeat" value="3" min="1" max="6" step="1" data-highlight="true">
+            <label for="p-for-new">播放新歌曲的概率:</label>
+            <input type="range" id="p-for-new" value="0.3" min="0" max="1" step="0.1" data-highlight="true">
+        </div>
+        <div data-role="collapsible" data-collapsed="false" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
+            <legend>关于</legend>
+            <p>版本: 2.0</p>
+            <p>说明: 这是嘟嘟和晓旭的闹钟~</p>
+        </div>
+    </div>
+    <div data-role="footer" data-position="fixed">
+        <div data-role="navbar">
+            <ul>
+                <li><a href="#clock" data-icon="clock" data-transition="none">闹钟</a></li>
+                <li><a href="#music" data-icon="heart" data-transition="none">音乐</a></li>
+                <li><a href="#" data-icon="gear">设置</a></li>
+            </ul>
+        </div>
+    </div>
+
 </div>
 
 </body>
