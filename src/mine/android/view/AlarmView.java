@@ -2,7 +2,6 @@ package mine.android.view;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,27 +11,20 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import mine.android.HeavenClock.R;
 import mine.android.ctrl.ClockCtrl;
-import mine.android.ctrl.ConfigCtrl;
 
 /**
- * Created by Heaven on 15/7/18
+ * Created by Heaven on 15/7/19
  */
-public class MainView extends Activity {
-    private static Context context = null;
+public class AlarmView extends Activity {
     private WebView webView;
     private Handler handler = new Handler();
-
-    public static Context getContext() {
-        return context;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        context = this;
+        setContentView(R.layout.alarm);
 
-        webView = (WebView) findViewById(R.id.mainView);
+        webView = (WebView) findViewById(R.id.detailView);
 
         // WebView 设置
         WebSettings settings = webView.getSettings();
@@ -65,8 +57,6 @@ public class MainView extends Activity {
 
         //js java 映射
         webView.addJavascriptInterface(new ClockCtrl(handler, webView), "clock");
-        webView.addJavascriptInterface(new ConfigCtrl(handler, webView), "config");
-        webView.loadUrl("file:///android_asset/mainView.html");
-
+        webView.loadUrl("file:///android_asset/alarmView.html");
     }
 }

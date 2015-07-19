@@ -10,6 +10,7 @@ public class Config implements Serializable, Comparable<Config> {
     private String doubanEmail = null;
     private String doubanPassword = null;
     private int repeatSong = 1;
+    private double pForNew = 0.5;
 
 
     @Override
@@ -39,5 +40,13 @@ public class Config implements Serializable, Comparable<Config> {
 
     public void setRepeatSong(int repeatSong) {
         this.repeatSong = repeatSong;
+    }
+
+    public double getpForNew() {
+        return pForNew;
+    }
+
+    public void setpForNew(double pForNew) {
+        this.pForNew = pForNew;
     }
 }

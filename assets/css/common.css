@@ -1,14 +1,24 @@
-.clock-li-desc-group{
+.clock-li-desc-group {
     float: left;
 }
-.clock-li-time{
+
+.clock-li-time {
     float: left;
     font-size: 2em !important;
     margin-right: 15px;
 }
-.clock-li-desc{
+
+.clock-li-desc {
     margin-top: 0px;
 }
-.clock-li-slider{
+
+.clock-li-slider {
     float: right;
+}
+
+.alarm-time {
+    font-size: 4em;
+    margin-right: auto;
+    margin-left: auto;
+    width: 160px;
 }

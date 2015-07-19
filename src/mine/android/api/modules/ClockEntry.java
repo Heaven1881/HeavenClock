@@ -40,6 +40,14 @@ public class ClockEntry implements Serializable, Comparable<ClockEntry> {
         return weeks;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public enum ClockType {FOR_ONCE, FOR_DAY, FOR_WEEK}
 
     private static int nextId = -1;
@@ -55,6 +63,10 @@ public class ClockEntry implements Serializable, Comparable<ClockEntry> {
     private boolean active = true;
     private ClockType type = ClockType.FOR_ONCE;
     private int weeks = 0x7f;
+
+    public void setWeeks(int weeks) {
+        this.weeks = weeks;
+    }
 
     @Override
     public int compareTo(ClockEntry another) {

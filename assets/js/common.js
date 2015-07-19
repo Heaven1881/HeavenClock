@@ -25,12 +25,14 @@ $(document).on("pageinit", "#setting", function () {
     $("input#clock-reset").click(function () {
         $("div#clock-input-group").hide(100);
     });
+
+    $("a#save-douban").click(saveDouban());
+    $("a#save-setting").click(saveSetting());
+
+    window.config.getSetting("drawSettingView");
 });
 
 $(document).on("pageinit", "#detail", function () {
-    //更新当前时间
-    var current = new Date();
-    $("input#time").val(current.getHours() + ":" + current.getMinutes());
 
     // 仅当选择自定义时出现星期复选框
     $("li#week-checkbox").hide();
@@ -43,5 +45,11 @@ $(document).on("pageinit", "#detail", function () {
         }
     });
 
+    //var clock_id = getUrlParam('clock-id');
+    //if (clock_id != null) {
+    //    window.clock.getClockDetail(clock_id, "callbackClockDetail");
+    //} else {
+    //    var current = new Date();
+    //    $("input#time").val(current.getHours() + ":" + current.getMinutes());
+    //}
 });
-

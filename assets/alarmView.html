@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta http-equiv="CONTENT-TYPE" content="text/html" charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>闹钟页面</title>
+    <link rel="stylesheet" href="jquery.mobile/jquery.mobile-1.4.2.min.css" type="text/css">
+    <link rel="stylesheet" href="css/common.css" type="text/css">
+    <script src="js/jquery-1.11.3.min.js" type="text/javascript"></script>
+    <script src="jquery.mobile/jquery.mobile-1.4.2.min.js" type="text/javascript"></script>
+    <script src="js/library.js" type="text/javascript"></script>
+    <script src="js/common.js" type="text/javascript"></script>
+</head>
+<body>
+
+<div data-role="page" id="alarm">
+    <div data-role="header" data-position="fixed">
+        <h1>时间到!</h1>
+    </div>
+    <div data-role="content">
+        <div>
+            <h1 class="alarm-time">09:00</h1>
+        </div>
+        <ul data-role="listview" data-inset="true">
+            <li>
+                <img src="image/album-bb.jpg">
+                <h2>歌曲名</h2>
+                <p>歌手</p>
+            </li>
+        </ul>
+        <div class="ui-grid-b" data-type="horizontal">
+            <div class="ui-block-a"><a href="#" class="ui-btn ui-btn-corner-all ui-btn-icon-top ui-icon-delete">不喜欢</a></div>
+            <div class="ui-block-b"><a href="#" class="ui-btn ui-btn-corner-all ui-btn-icon-top ui-icon-heart">喜欢</a></div>
+            <div class="ui-block-c"><a href="#" class="ui-btn ui-btn-corner-all ui-btn-icon-top ui-icon-arrow-r">下一首</a></div>
+        </div>
+        <a href="#" class="ui-btn ui-btn-corner-all">关闭闹钟</a>
+    </div>
+</div>
+
+</body>
+</html>
