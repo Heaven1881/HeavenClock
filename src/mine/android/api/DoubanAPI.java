@@ -2,25 +2,25 @@ package mine.android.api;
 
 import android.util.Log;
 import mine.android.HeavenClock.R;
+import mine.android.api.database.DataBase;
 import mine.android.api.modules.Config;
 import mine.android.api.modules.Song;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by Heaven on 2015/2/15.
  */
-public class WebAPI {
+public class DoubanAPI {
     public static LoginInfo loginInfo = null;
     public static final char OP_SKIP = 's';
     public static final char OP_GET_NEW_LIST = 'n';
@@ -31,18 +31,47 @@ public class WebAPI {
     public static final char OP_BYE = 'b';
     public static final char OP_END = 'e';
 
+    private static LoginInfo getLoginInfoFromDB() {
+        DataBase<LoginInfo> db = new DataBase<LoginInfo>(LoginInfo.class);
+        List<LoginInfo> loginInfos = db.readAll();
+        if (loginInfos.size() < 1)
+            return null;
+        else {
+            LoginInfo info = loginInfos.get(0);
+            if (Integer.parseInt(info.expire) > (System.currentTimeMillis()/1000))
+                return info;
+            else
+                return null;
+        }
+    }
+
+    private static void saveToDB(LoginInfo info) {
+        DataBase<LoginInfo> db = new DataBase<LoginInfo>(LoginInfo.class);
+        db.replaceAll(Arrays.asList(info));
+    }
+
     public static LoginInfo getLoginInfo() {
         if (loginInfo != null)
             return loginInfo;
-        synchronized (loginInfo) {
+        synchronized ("loginInfo") {
             if (loginInfo != null)
                 return loginInfo;
 
+            // 获取本地保存的token
+            loginInfo = getLoginInfoFromDB();
+            if (loginInfo != null) {
+                Log.i("login info", "get login info from db");
+                return loginInfo;
+            }
+
+            // 联网获取token
             Config config = ConfigAPI.get();
             try {
                 loginInfo = loginToDouban(config.getDoubanEmail(), config.getDoubanPassword());
-            } catch (IOException ignored) {
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+            saveToDB(loginInfo);
             return loginInfo;
         }
     }
@@ -56,7 +85,7 @@ public class WebAPI {
      * @return 返回请求结果
      * @throws IOException
      */
-    public static String get(String u, String param, boolean post) throws IOException {
+    private static String get(String u, String param, boolean post) throws IOException {
         StringBuilder json = new StringBuilder();
 
         URL url = new URL(u);
@@ -74,7 +103,9 @@ public class WebAPI {
             out.flush();
         }
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
+        InputStream inputStream = uc.getInputStream();
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        BufferedReader in = new BufferedReader(inputStreamReader);
         String inputLine;
         while ((inputLine = in.readLine()) != null) {
             json.append(inputLine);
@@ -120,9 +151,17 @@ public class WebAPI {
     }
 
     public static List<Song> getNewList(int channel) {
-        return remoteOperation(channel, WebAPI.OP_GET_NEW_LIST, 0);
+        return remoteOperation(channel, DoubanAPI.OP_GET_NEW_LIST, 0);
     }
 
+    /**
+     * 远程歌曲操作
+     *
+     * @param channel channel
+     * @param type    type
+     * @param sid     song id
+     * @return 对应的歌曲列表
+     */
     public static List<Song> remoteOperation(int channel, char type, int sid) {
         Log.i("song oper", "channel=" + channel + " type=" + type + " songId=" + sid);
 
@@ -166,9 +205,14 @@ public class WebAPI {
         return retList;
     }
 
-    private static class LoginInfo {
+    private static class LoginInfo implements Serializable, Comparable<LoginInfo> {
         String userId;
         String token;
         String expire;
+
+        @Override
+        public int compareTo(LoginInfo loginInfo) {
+            return 0;
+        }
     }
 }

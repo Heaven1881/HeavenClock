@@ -58,8 +58,7 @@ $(document).on("pageinit", "#detail", function () {
         var current = new Date();
         $("input#time").val(current.getHours() + ":" + current.getMinutes());
         $("a#detail-save").attr("onclick", "saveDetail(0)");
-        $("input#radio-once").attr("checked");
-
+        $("input#radio-once").attr("checked", true).checkboxradio("refresh");
         $("#detail").trigger("create");
     }
 
@@ -68,4 +67,11 @@ $(document).on("pageinit", "#detail", function () {
 
 $(document).on("pageinit", "#clock", function () {
     window.clock.getAllClockEntry("drawClockView");
+});
+
+$(document).on("pageinit", "#alarm", function () {
+    $("#btn-unlike").attr("onclick", "unlikeCurrent()");
+    $("#btn-like").attr("onclick", "markCurrent()");
+    $("#btn-skip").attr("onclick", "skipCurrent()");
+    $("#btn-close").attr("onclick", "closeAlarm()");
 });

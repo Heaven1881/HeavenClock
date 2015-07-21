@@ -97,6 +97,10 @@ public class ClockEntryAPI {
         //写回
         save();
 
+        // 如果是更新active状态,则激活
+        if (entry.isActive())
+            AlarmAPI.activeClock(id);
+
         return true;
     }
 
@@ -111,6 +115,9 @@ public class ClockEntryAPI {
         int entryId = findById(id);
         if (entryId == -1)
             return false;
+
+        // 取消对应的定时器
+        AlarmAPI.cancelClock(id);
 
         // 删除对应entry
         list.remove(entryId);
@@ -135,6 +142,8 @@ public class ClockEntryAPI {
         // 插入
         list.add(entry);
         save();
+
+        AlarmAPI.activeClock(newId);
 
         return true;
     }

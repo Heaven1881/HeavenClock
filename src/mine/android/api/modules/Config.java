@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by Heaven on 2015/2/16.
  */
+@SuppressWarnings("ALL")
 public class Config implements Serializable, Comparable<Config> {
 
     private String doubanEmail = "";

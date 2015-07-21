@@ -19,21 +19,21 @@
     </div>
     <div data-role="content">
         <div>
-            <h1 class="alarm-time">09:00</h1>
+            <h1 id="current-time" class="alarm-time">09:00</h1>
         </div>
         <ul data-role="listview" data-inset="true">
             <li>
                 <img src="image/album-bb.jpg">
-                <h2>歌曲名</h2>
-                <p>歌手</p>
+                <h2 id="current-music">歌曲名(loading...)</h2>
+                <p id="current-artist">歌手(loading...)</p>
             </li>
         </ul>
         <div class="ui-grid-b" data-type="horizontal">
-            <div class="ui-block-a"><a href="#" class="ui-btn ui-btn-corner-all ui-btn-icon-top ui-icon-delete">不喜欢</a></div>
-            <div class="ui-block-b"><a href="#" class="ui-btn ui-btn-corner-all ui-btn-icon-top ui-icon-heart">喜欢</a></div>
-            <div class="ui-block-c"><a href="#" class="ui-btn ui-btn-corner-all ui-btn-icon-top ui-icon-arrow-r">下一首</a></div>
+            <div class="ui-block-a"><a id="btn-unlike" href="#" class="ui-btn ui-btn-corner-all ui-btn-icon-top ui-icon-delete">不喜欢</a></div>
+            <div class="ui-block-b"><a id="btn-like" href="#" class="ui-btn ui-btn-corner-all ui-btn-icon-top ui-icon-heart">喜欢</a></div>
+            <div class="ui-block-c"><a id="btn-skip" href="#" class="ui-btn ui-btn-corner-all ui-btn-icon-top ui-icon-arrow-r">下一首</a></div>
         </div>
-        <a href="#" class="ui-btn ui-btn-corner-all">关闭闹钟</a>
+        <a id="btn-close" href="#" class="ui-btn ui-btn-corner-all">关闭闹钟</a>
     </div>
 </div>
 

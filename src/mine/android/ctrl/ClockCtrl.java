@@ -3,6 +3,7 @@ package mine.android.ctrl;
 import android.os.Handler;
 import android.util.Log;
 import android.webkit.WebView;
+import mine.android.api.AlarmAPI;
 import mine.android.api.ClockEntryAPI;
 import mine.android.api.modules.ClockEntry;
 import org.json.JSONArray;
@@ -22,6 +23,11 @@ public class ClockCtrl {
         this.handler = handler;
     }
 
+    public static String formatTime(int hourOfDay, int minute) {
+        return (hourOfDay < 10 ? "0" + hourOfDay : "" + hourOfDay) + ":"
+                + (minute < 10 ? "0" + minute : "" + minute);
+    }
+
     private JSONObject clockEntryToJsonObject(ClockEntry clockEntry) {
         Map map = new HashMap();
         map.put("id", clockEntry.getId());
@@ -31,8 +37,7 @@ public class ClockCtrl {
 
         int hourOfDay = clockEntry.getHourOfDay();
         int minute = clockEntry.getMinute();
-        String time = (hourOfDay < 10 ? "0" + hourOfDay : "" + hourOfDay) + ":"
-                + (minute < 10 ? "0" + minute : "" + minute);
+        String time = formatTime(hourOfDay, minute);
         map.put("time", time);
 
         map.put("week", clockEntry.getWeeks());
@@ -168,10 +173,14 @@ public class ClockCtrl {
                     Log.i("active false", idStr + ":" + sel);
                     return;
                 } else {
-                    entry.setActive(sel.equals("on"));
+                    boolean on = sel.equals("on");
                     Log.i("active true", idStr + ":" + sel);
+                    if (on) {
+                        AlarmAPI.activeClock(id);
+                    } else {
+                        AlarmAPI.cancelClock(id);
+                    }
                 }
-                ClockEntryAPI.updateClockEntry(entry);
             }
         });
     }

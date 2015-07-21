@@ -1,9 +1,8 @@
-package mine.android.ctrl;
+package mine.android.api;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.util.Log;
-import mine.android.api.WebAPI;
 import mine.android.api.modules.Song;
 
 import java.util.LinkedList;
@@ -18,6 +17,7 @@ import java.util.concurrent.ExecutorService;
 public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener {
     private static int CHANNEL_NEW = 0;
     private static int CHANNEL_OLD = -3;
+    private double p = 0.3;
 
     private MediaPlayer mp = null;
 
@@ -55,8 +55,9 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
         this.onNewSongListener = listener;
     }
 
-    public DouBanPlayer(int size, ExecutorService threadPool) {
+    public DouBanPlayer(int size, double p, ExecutorService threadPool) {
         this.size = size;
+        this.p = p;
 
         mp = new MediaPlayer();
         mp.setAudioStreamType(AudioManager.STREAM_ALARM);
@@ -78,7 +79,7 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
     @Override
     public void onCompletion(MediaPlayer mp) {
         // 更新播放歌曲数
-        markSong(WebAPI.OP_END, currentSong.getSid());
+        markSong(DoubanAPI.OP_END, currentSong.getSid());
 
         if (playedSong >= size) {
             stop();
@@ -89,7 +90,8 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
     }
 
     public void start() {
-        while (playList.size() < size) {
+        int maxTry = 10;
+        while (playList.size() < size && --maxTry > 0) {
             updatePlayList();
         }
         nextSong();
@@ -111,12 +113,13 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
         Random seed = new Random();
         List<Song> gottenList = null;
 
-        // 选取旧歌的概率为
-        double p = 0.3;
-        if (seed.nextDouble() > p)
-            gottenList = WebAPI.getNewList(CHANNEL_NEW);
+        // 选取歌的概率
+        double v = seed.nextDouble();
+        Log.i("p=" + p, "v=" + v);
+        if (v > p)
+            gottenList = DoubanAPI.getNewList(CHANNEL_NEW);
         else
-            gottenList = WebAPI.getNewList(CHANNEL_OLD);
+            gottenList = DoubanAPI.getNewList(CHANNEL_OLD);
 
         // 将获得的播放列表加入播放队列中
         // 只加入一定数量的歌曲
@@ -133,7 +136,7 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
         if (!mp.isPlaying())
             return;
         mp.stop();
-        markSong(WebAPI.OP_SKIP, currentSong.getSid());
+        markSong(DoubanAPI.OP_SKIP, currentSong.getSid());
         nextSong();
     }
 
@@ -145,7 +148,7 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
         Thread markThread = new Thread() {
             @Override
             public void run() {
-                WebAPI.remoteOperation(-1, op, sid);
+                DoubanAPI.remoteOperation(-1, op, sid);
             }
         };
         threadPool.execute(markThread);

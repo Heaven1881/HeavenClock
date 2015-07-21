@@ -117,3 +117,42 @@ function confirmAndDelete(id) {
 function simpleUpdate(content) {
     $("div#" + content).trigger("pageinit");
 }
+
+function drawAlarm(str) {
+    var currentData = eval('(' + str + ')');
+    $("#current-time").text(currentData.time);
+    $("#current-music").text(currentData.music);
+    $("#current-music").attr("data-sid", currentData.sid);
+    $("#current-artist").text(currentData.artist);
+    if (currentData.like) {
+        $("#btn-like").text("已标记");
+        $("#btn-like").attr("onclick", "unmarkCurrent()");
+    } else {
+        $("#btn-like").text("喜欢");
+        $("#btn-like").attr("onclick", "markCurrent()");
+    }
+}
+
+function unlikeCurrent() {
+    window.song.unlikeCurrentSong();
+}
+
+function markCurrent() {
+    $("#btn-like").text("已标记");
+    $("#btn-like").attr("onclick", "unmarkCurrent()");
+    window.song.markCurrentSong();
+}
+
+function unmarkCurrent() {
+    $("#btn-like").text("喜欢");
+    $("#btn-like").attr("onclick", "markCurrent()");
+    window.song.unmarkCurrentSong();
+}
+
+function skipCurrent() {
+    window.song.skipCurrentSong();
+}
+
+function closeAlarm() {
+    window.activity.stop()
+}

@@ -6,6 +6,7 @@ import java.util.Date;
 /**
  * Created by Heaven on 15/7/18
  */
+@SuppressWarnings("ALL")
 public class ClockEntry implements Serializable, Comparable<ClockEntry> {
     public ClockType getType() {
         return type;

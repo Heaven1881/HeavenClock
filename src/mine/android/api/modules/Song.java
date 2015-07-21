@@ -1,9 +1,11 @@
 package mine.android.api.modules;
 
+import java.io.Serializable;
+
 /**
  * Created by Heaven on 2015/2/15.
  */
-public class Song {
+public class Song implements Serializable, Comparable<Song> {
     private String title = null;
     private String url = null;
     private String artist = null;
@@ -52,5 +54,10 @@ public class Song {
 
     public void setLike(boolean like) {
         this.like = like;
+    }
+
+    @Override
+    public int compareTo(Song another) {
+        return this.getSid() - another.getSid();
     }
 }
