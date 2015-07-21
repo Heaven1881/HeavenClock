@@ -7,8 +7,8 @@ import java.io.Serializable;
  */
 public class Config implements Serializable, Comparable<Config> {
 
-    private String doubanEmail = null;
-    private String doubanPassword = null;
+    private String doubanEmail = "";
+    private String doubanPassword = "";
     private int repeatSong = 1;
     private double pForNew = 0.5;
 

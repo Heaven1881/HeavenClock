@@ -17,7 +17,7 @@
     <div data-role="header" data-position="fixed">
         <a href="#" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all" data-rel="back">取消</a>
         <h1>设置闹钟</h1>
-        <a href="#" id="detail-save" class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all">保存</a>
+        <a href="#" id="detail-save" class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all" data-rel="back">保存</a>
     </div>
     <div data-role="content">
         <form>
@@ -32,38 +32,38 @@
                 <li class="ui-field-contain">
                     <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
                         <legend>重复</legend>
-                        <input type="radio" name="type" id="radio-once" value="for-once">
+                        <input type="radio" name="type" id="radio-once" value="once">
                         <label for="radio-once">一次</label>
-                        <input type="radio" name="type" id="radio-every-day" value="for-every-day">
-                        <label for="radio-every-day">每天</label>
-                        <input type="radio" name="type" id="radio-every-week" value="for-every-week">
-                        <label for="radio-every-week">自定义</label>
+                        <input type="radio" name="type" id="radio-day" value="day">
+                        <label for="radio-day">每天</label>
+                        <input type="radio" name="type" id="radio-week" value="week">
+                        <label for="radio-week">自定义</label>
                     </fieldset>
                 </li>
                 <li class="ui-field-contain" id="week-checkbox">
                     <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
                         <legend>星期</legend>
-                        <input type="checkbox" name="repeat-day" id="cb-0" value="son">
+                        <input type="checkbox" name="repeat-day" id="cb-0" value="0">
                         <label for="cb-0">日</label>
-                        <input type="checkbox" name="repeat-day" id="cb-1" value="mon">
+                        <input type="checkbox" name="repeat-day" id="cb-1" value="1">
                         <label for="cb-1">一</label>
-                        <input type="checkbox" name="repeat-day" id="cb-2" value="tue">
+                        <input type="checkbox" name="repeat-day" id="cb-2" value="2">
                         <label for="cb-2">二</label>
-                        <input type="checkbox" name="repeat-day" id="cb-3" value="wed">
+                        <input type="checkbox" name="repeat-day" id="cb-3" value="3">
                         <label for="cb-3">三</label>
-                        <input type="checkbox" name="repeat-day" id="cb-4" value="thu">
+                        <input type="checkbox" name="repeat-day" id="cb-4" value="4">
                         <label for="cb-4">四</label>
-                        <input type="checkbox" name="repeat-day" id="cb-5" value="fri">
+                        <input type="checkbox" name="repeat-day" id="cb-5" value="5">
                         <label for="cb-5">五</label>
-                        <input type="checkbox" name="repeat-day" id="cb-6" value="sat">
+                        <input type="checkbox" name="repeat-day" id="cb-6" value="6">
                         <label for="cb-6">六</label>
                     </fieldset>
                 </li>
             </ul>
             <ul data-role="listview" data-inset="true">
                 <li class="ui-field-contain">
-                    <label for="decs">备注</label>
-                    <input type="text" name="decs" id="decs" value="">
+                    <label for="desc">备注</label>
+                    <input type="text" name="desc" id="desc" value="">
                 </li>
             </ul>
         </form>

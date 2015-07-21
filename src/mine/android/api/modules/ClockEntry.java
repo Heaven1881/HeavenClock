@@ -32,11 +32,10 @@ public class ClockEntry implements Serializable, Comparable<ClockEntry> {
     }
 
     public boolean weeks(int i) {
-        int[] filter = new int[]{1, 2, 4, 8, 16, 32, 64};
-        return (weeks & filter[i]) != 0;
+        return "1".equals(weeks.charAt(i));
     }
 
-    public int getWeeks() {
+    public String getWeeks() {
         return weeks;
     }
 
@@ -57,14 +56,14 @@ public class ClockEntry implements Serializable, Comparable<ClockEntry> {
     }
 
     private int id = 0;
-    private String name = null;
+    private String name = "";
     private int hourOfDay = 0;
     private int minute = 0;
     private boolean active = true;
     private ClockType type = ClockType.FOR_ONCE;
-    private int weeks = 0x7f;
+    private String weeks = "1111111";
 
-    public void setWeeks(int weeks) {
+    public void setWeeks(String weeks) {
         this.weeks = weeks;
     }
 

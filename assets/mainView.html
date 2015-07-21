@@ -17,53 +17,19 @@
     <div data-role="header" data-position="fixed">
         <h1>闹钟</h1>
     </div>
-    <div data-role="content">
-        <ul data-role="listview" data-split-icon="delete" data-inset="true">
-            <li>
-                <a href="detailView.html?clock-id=1" data-transition="slide" rel="external">
-                    <div class="clock-li-time">09:00</div>
-                    <div class="clock-li-desc-group">
-                        <strong class="clock-li-desc">每天</strong>
+    <div data-role="content" id="clock-list"></div>
+    <div data-role="popup" id="delete-confirm" class="ui-content">
+        <h3>确认要删除吗？</h3>
 
-                        <p class="clock-li-desc">描述</p>
-                    </div>
-                    <div class="clock-li-slider">
-                        <select data-role="slider" data-mini="true">
-                            <option value="off" selected>off</option>
-                            <option value="on">on</option>
-                        </select>
-                    </div>
-                    <a href="#delete" data-rel="popup" data-position-to="window" data-transition="pop">删除</a>
-                </a>
-            </li>
-        </ul>
-        <ul data-role="listview" data-split-icon="delete" data-inset="true">
-            <li>
-                <a href="detailView.html?clock-id=2" data-transition="slide" rel="external">
-                    <div class="clock-li-time">14:00</div>
-                    <div class="clock-li-desc-group">
-                        <strong class="clock-li-desc">每天</strong>
-
-                        <p class="clock-li-desc">描述</p>
-                    </div>
-                    <div class="clock-li-slider">
-                        <select data-role="slider" data-mini="true">
-                            <option value="off" selected>off</option>
-                            <option value="on">on</option>
-                        </select>
-                    </div>
-                    <a href="#delete" data-rel="popup" data-position-to="window" data-transition="pop">删除</a>
-                </a>
-            </li>
-        </ul>
-        <a href="detailView.html" class="ui-btn ui-shadow ui-btn-corner-all" data-transition="slide">添加闹钟</a>
-
-        <div data-role="popup" id="delete" class="ui-content">
-            <h3>确认要删除吗？</h3>
-
-            <p>该操作不可撤销</p>
-            <a href="#" class="ui-shadow ui-btn ui-corner-all ui-btn-b ui-btn-inline ui-mini">删除</a>
-            <a href="#" data-rel="back" class="ui-shadow ui-btn ui-corner-all ui-btn-inline ui-mini">取消</a>
+        <div class="ui-grid-a">
+            <div class="ui-block-a">
+                <a id="yes" href="#" data-rel="back"
+                   class="ui-shadow ui-btn ui-corner-all ui-btn-b ui-btn-inline ui-mini">删除</a>
+            </div>
+            <div class="ui-block-b">
+                <a id="cancel" href="#" data-rel="back"
+                   class="ui-shadow ui-btn ui-corner-all ui-btn-inline ui-mini">取消</a>
+            </div>
         </div>
     </div>
     <div data-role="footer" data-position="fixed">
@@ -120,7 +86,8 @@
                     <div class="ui-block-a"><input id="douban-reset" type="reset"
                                                    class="ui-btn ui-shadow ui-btn-corner-all" value="取消">
                     </div>
-                    <div class="ui-block-b"><a href="#" id="save-douban" class="ui-btn ui-shadow ui-btn-corner-all">保存</a></div>
+                    <div class="ui-block-b"><a href="#" id="save-douban"
+                                               class="ui-btn ui-shadow ui-btn-corner-all">保存</a></div>
                 </div>
             </form>
         </div>
@@ -136,7 +103,8 @@
                     <div class="ui-block-a"><input id="clock-reset" type="reset"
                                                    class="ui-btn ui-shadow ui-btn-corner-all" value="取消">
                     </div>
-                    <div class="ui-block-b"><a href="#" id="save-setting" class="ui-btn ui-shadow ui-btn-corner-all">保存</a></div>
+                    <div class="ui-block-b"><a href="#" id="save-setting"
+                                               class="ui-btn ui-shadow ui-btn-corner-all">保存</a></div>
                 </div>
             </form>
         </div>

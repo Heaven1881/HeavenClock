@@ -28,20 +28,19 @@ public class ConfigCtrl {
      * @param callback
      */
     public void getSetting(final String callback) {
-        Config config = ConfigAPI.get();
-
-        Map map = new HashMap();
-        map.put("email", config.getDoubanEmail());
-        map.put("pwd", config.getDoubanPassword());
-        map.put("repeatTime", config.getRepeatSong());
-        map.put("pForNew", config.getpForNew());
-
-        final String jsonStr = new JSONObject(map).toString();
-
-        Log.i("req setting", jsonStr);
         handler.post(new Runnable() {
             @Override
             public void run() {
+                Config config = ConfigAPI.get();
+
+                Map map = new HashMap();
+                map.put("email", config.getDoubanEmail());
+                map.put("pwd", config.getDoubanPassword());
+                map.put("repeatTime", config.getRepeatSong());
+                map.put("pForNew", config.getpForNew());
+
+                final String jsonStr = new JSONObject(map).toString();
+                Log.i("req setting", jsonStr);
                 webView.loadUrl("javascript:" + callback + "('" + jsonStr + "')");
             }
         });
@@ -53,12 +52,17 @@ public class ConfigCtrl {
      * @param email email
      * @param pwd   password
      */
-    public void updateDouban(String email, String pwd) {
-        Config config = ConfigAPI.get();
-        config.setDoubanEmail(email);
-        config.setDoubanPassword(pwd);
-        ConfigAPI.save(config);
-        Log.i("update douban", email + ":" + pwd);
+    public void updateDouban(final String email, final String pwd) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Config config = ConfigAPI.get();
+                config.setDoubanEmail(email);
+                config.setDoubanPassword(pwd);
+                ConfigAPI.save(config);
+                Log.i("update douban", email + ":" + pwd);
+            }
+        });
     }
 
     /**
@@ -67,11 +71,16 @@ public class ConfigCtrl {
      * @param repeatTimeStr 重复此时
      * @param pForNewStr    新歌概率
      */
-    public void updateSetting(String repeatTimeStr, String pForNewStr) {
-        Config config = ConfigAPI.get();
-        config.setRepeatSong(Integer.parseInt(repeatTimeStr));
-        config.setpForNew(Double.parseDouble(pForNewStr));
-        ConfigAPI.save(config);
-        Log.i("update setting", repeatTimeStr + ":" + pForNewStr);
+    public void updateSetting(final String repeatTimeStr, final String pForNewStr) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Config config = ConfigAPI.get();
+                config.setRepeatSong(Integer.parseInt(repeatTimeStr));
+                config.setpForNew(Double.parseDouble(pForNewStr));
+                ConfigAPI.save(config);
+                Log.i("update setting", repeatTimeStr + ":" + pForNewStr);
+            }
+        });
     }
 }

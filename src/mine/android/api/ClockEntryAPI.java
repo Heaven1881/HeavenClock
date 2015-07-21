@@ -18,7 +18,7 @@ public class ClockEntryAPI {
         nextId = 0;
         for (ClockEntry entry : list) {
             if (entry.getId() > nextId) {
-                nextId = entry.getId() + 1;
+                nextId = entry.getId();
             }
         }
     }
@@ -80,14 +80,11 @@ public class ClockEntryAPI {
     /**
      * 更新clockEntry的信息
      *
-     * @param id    对应的id
      * @param entry clock entry
      * @return ture则成功，false则失败
      */
-    public static synchronized boolean updateClockEntry(int id, ClockEntry entry) {
-        // 检查id 与 entry 是否一致
-        if (entry.getId() != id)
-            return false;
+    public static synchronized boolean updateClockEntry(ClockEntry entry) {
+        int id = entry.getId();
 
         // 检查id是否存在
         int entryId = findById(id);

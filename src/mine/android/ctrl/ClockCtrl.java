@@ -31,15 +31,11 @@ public class ClockCtrl {
 
         int hourOfDay = clockEntry.getHourOfDay();
         int minute = clockEntry.getMinute();
-        String time = (hourOfDay < 10 ? "0" + hourOfDay : "" + hourOfDay)
+        String time = (hourOfDay < 10 ? "0" + hourOfDay : "" + hourOfDay) + ":"
                 + (minute < 10 ? "0" + minute : "" + minute);
         map.put("time", time);
 
-        boolean[] week = new boolean[7];
-        for (int i = 0; i < 7; i++) {
-            week[i] = clockEntry.weeks(i);
-        }
-        map.put("week", week);
+        map.put("week", clockEntry.getWeeks());
 
         return new JSONObject(map);
     }
@@ -50,15 +46,15 @@ public class ClockCtrl {
      * @param id       闹钟id
      * @param callback 回调函数
      */
-    public void getClockDetail(String id, final String callback) {
-        Log.i("getClockDetail", "id=" + Integer.parseInt(id));
-
-        ClockEntry clockEntry = ClockEntryAPI.getById(Integer.parseInt(id));
-        final String jsonStr = clockEntryToJsonObject(clockEntry).toString();
+    public void getClockDetail(final String id, final String callback) {
 
         handler.post(new Runnable() {
             @Override
             public void run() {
+                ClockEntry clockEntry = ClockEntryAPI.getById(Integer.parseInt(id));
+                final String jsonStr = clockEntryToJsonObject(clockEntry).toString();
+
+                Log.i("req clockEntry", jsonStr);
                 webView.loadUrl("javascript:" + callback + "('" + jsonStr + "')");
             }
         });
@@ -69,65 +65,113 @@ public class ClockCtrl {
      *
      * @param idStr id
      */
-    public void deleteClockById(String idStr) {
-        int id = Integer.parseInt(idStr);
-        ClockEntryAPI.deleteClockEntry(id);
+    public void deleteClockById(final String idStr) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                int id = Integer.parseInt(idStr);
+                ClockEntryAPI.deleteClockEntry(id);
+                Log.i("delete entry", idStr);
+                webView.loadUrl("javascript:simpleUpdate('clock')");
+            }
+        });
     }
 
     /**
      * 添加clock entry, 若id==0则表示添加，否则为更新
-     * @param hourStr 小时
+     *
+     * @param hourStr   小时
      * @param minuteStr 分钟
-     * @param typeStr 闹钟类别
-     * @param weekStr 自定义标记
-     * @param nameStr 备注
+     * @param typeStr   闹钟类别
+     * @param weekStr   自定义标记
+     * @param nameStr   备注
      */
-    public void updateClockEntry(String idStr, String hourStr, String minuteStr, String typeStr,
-                              String weekStr, String nameStr) {
-        int id = Integer.parseInt(idStr);
-        int hour = Integer.parseInt(hourStr);
-        int minute = Integer.parseInt(minuteStr);
-        int week = Integer.parseInt(weekStr);
+    public void updateClockEntry(final String idStr, final String hourStr, final String minuteStr, final String typeStr,
+                                 final String weekStr, final String nameStr) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                int id = Integer.parseInt(idStr);
+                int hour = Integer.parseInt(hourStr);
+                int minute = Integer.parseInt(minuteStr);
 
-        ClockEntry entry = new ClockEntry();
-        entry.setHourOfDay(hour);
-        entry.setMinute(minute);
-        if ("once".equals(typeStr)) {
-            entry.setType(ClockEntry.ClockType.FOR_ONCE);
-        } else if ("day".equals(typeStr)) {
-            entry.setType(ClockEntry.ClockType.FOR_DAY);
-        } else if ("week".equals(typeStr)) {
-            entry.setType(ClockEntry.ClockType.FOR_WEEK);
-        }
-        entry.setWeeks(week);
-        entry.setName(nameStr);
+                ClockEntry entry = new ClockEntry();
+                entry.setId(id);
+                entry.setHourOfDay(hour);
+                entry.setMinute(minute);
+                if ("once".equals(typeStr)) {
+                    entry.setType(ClockEntry.ClockType.FOR_ONCE);
+                } else if ("day".equals(typeStr)) {
+                    entry.setType(ClockEntry.ClockType.FOR_DAY);
+                } else if ("week".equals(typeStr)) {
+                    entry.setType(ClockEntry.ClockType.FOR_WEEK);
+                }
+                String[] sl = weekStr.split(",");
+                String buf = "";
+                for (String s : sl) {
+                    buf += s;
+                }
+                entry.setWeeks(buf);
+                entry.setName(nameStr);
 
-        if (id == 0) {
-            ClockEntryAPI.addClockEntry(entry);
-        } else {
-            ClockEntryAPI.updateClockEntry(id, entry);
-        }
+                boolean result = false;
+                if (id == 0) {
+                    result = ClockEntryAPI.addClockEntry(entry);
+                    Log.i("add entry " + result, idStr + " " + hourStr + " " + minuteStr + " " + typeStr + " " + buf + " " + nameStr);
+                } else {
+                    result = ClockEntryAPI.updateClockEntry(entry);
+                    Log.i("update entry " + result, idStr + " " + hourStr + " " + minuteStr + " " + typeStr + " " + buf + " " + nameStr);
+                }
+                webView.loadUrl("javascript:simpleUpdate('clock')");
+            }
+        });
     }
 
     /**
      * 获取所有clock列表
+     *
      * @param callback 回调函数
      */
     public void getAllClockEntry(final String callback) {
-        List<ClockEntry> clockEntries = ClockEntryAPI.get();
-        Collections.sort(clockEntries);
-
-        List jsons = new ArrayList();
-        for (ClockEntry entry : clockEntries) {
-            JSONObject json = clockEntryToJsonObject(entry);
-            jsons.add(json);
-        }
-        JSONArray jsonArray = new JSONArray(jsons);
-        final String arrayStr = jsonArray.toString();
         handler.post(new Runnable() {
             @Override
             public void run() {
+                List<ClockEntry> clockEntries = ClockEntryAPI.get();
+                Collections.sort(clockEntries);
+
+                List jsons = new ArrayList();
+                for (ClockEntry entry : clockEntries) {
+                    JSONObject json = clockEntryToJsonObject(entry);
+                    jsons.add(json);
+                }
+                JSONArray jsonArray = new JSONArray(jsons);
+                final String arrayStr = jsonArray.toString();
+                Log.i("req all entry", arrayStr);
                 webView.loadUrl("javascript:" + callback + "('" + arrayStr + "')");
+            }
+        });
+    }
+
+    /**
+     * 激活指定id的闹钟
+     *
+     * @param idStr id
+     * @param sel   status
+     */
+    public void activeClock(final String idStr, final String sel) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                int id = Integer.parseInt(idStr);
+                ClockEntry entry = ClockEntryAPI.getById(id);
+                if (entry == null) {
+                    Log.i("active false", idStr + ":" + sel);
+                    return;
+                } else {
+                    entry.setActive(sel.equals("on"));
+                    Log.i("active true", idStr + ":" + sel);
+                }
+                ClockEntryAPI.updateClockEntry(entry);
             }
         });
     }
