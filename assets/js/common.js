@@ -3,32 +3,33 @@
  */
 
 $(document).on("pageinit", "#setting", function () {
+    window.console.info("on pageinit setting");
     $("div#douban-input-group").hide();
     $("input#douban-email").on("input", function () {
-        $("div#douban-input-group").show(100);
+        $("div#douban-input-group").show(500);
     });
     $("input#douban-pwd").on("input", function () {
-        $("div#douban-input-group").show(100);
+        $("div#douban-input-group").show(500);
     });
     $("input#douban-reset").click(function () {
-        $("div#douban-input-group").hide(100);
+        $("div#douban-input-group").hide(500);
     });
     $("a#save-douban").click(function () {
-        $("div#douban-input-group").hide(100);
+        $("div#douban-input-group").hide(500);
     });
 
     $("div#clock-input-group").hide();
     $("input#repeat-time").change(function () {
-        $("div#clock-input-group").show(100);
+        $("div#clock-input-group").show(500);
     });
     $("input#p-for-new").change(function () {
-        $("div#clock-input-group").show(100);
+        $("div#clock-input-group").show(500);
     });
     $("input#clock-reset").click(function () {
-        $("div#clock-input-group").hide(100);
+        $("div#clock-input-group").hide(500);
     });
     $("a#save-setting").click(function () {
-        $("div#clock-input-group").hide(100);
+        $("div#clock-input-group").hide(500);
     });
 
     $("a#save-douban").attr("onclick", "saveDouban()");
@@ -38,6 +39,7 @@ $(document).on("pageinit", "#setting", function () {
 });
 
 $(document).on("pageinit", "#detail", function () {
+    window.console.info("on pageinit detail");
 
     // 仅当选择自定义时出现星期复选框
     $("li#week-checkbox").hide();
@@ -66,6 +68,7 @@ $(document).on("pageinit", "#detail", function () {
 });
 
 $(document).on("pageinit", "#clock", function () {
+    window.console.info("on pageinit clock");
     window.clock.getAllClockEntry("drawClockView");
 });
 

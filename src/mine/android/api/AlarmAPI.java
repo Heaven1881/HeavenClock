@@ -90,10 +90,6 @@ public class AlarmAPI {
      */
     public static void activeClock(int id) {
         ClockEntry clockEntry = ClockEntryAPI.getById(id);
-        if (!clockEntry.isActive()) {
-            clockEntry.setActive(true);
-            ClockEntryAPI.updateClockEntry(clockEntry);
-        }
         Calendar nextAlarmTime = getNextAlarmTime(clockEntry);
         Log.i("next alarm time for id: " + id, nextAlarmTime.getTime().toString());
         setTimer(id, nextAlarmTime);
@@ -107,10 +103,6 @@ public class AlarmAPI {
     public static void cancelClock(int id) {
         Log.i("cancel clock", "" + id);
         ClockEntry clockEntry = ClockEntryAPI.getById(id);
-        if (clockEntry != null && clockEntry.isActive()) { //这里clockEntry有可能已经删除了
-            clockEntry.setActive(false);
-            ClockEntryAPI.updateClockEntry(clockEntry);
-        }
         cancelTimer(id);
     }
 }

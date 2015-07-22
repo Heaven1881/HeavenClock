@@ -2,10 +2,16 @@ package mine.android.view;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.KeyEvent;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -68,5 +74,24 @@ public class MainView extends Activity {
         webView.addJavascriptInterface(new ConfigCtrl(handler, webView), "config");
         webView.loadUrl("file:///android_asset/mainView.html");
 
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            PackageManager packageManager = getPackageManager();
+            ResolveInfo homeInfo = packageManager.resolveActivity(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME), 0);
+            ActivityInfo ai = homeInfo.activityInfo;
+
+            Intent startIntent = new Intent(Intent.ACTION_MAIN);
+            startIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+            startIntent.setComponent(new ComponentName(ai.packageName, ai.name));
+
+            startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(startIntent);
+
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

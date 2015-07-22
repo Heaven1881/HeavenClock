@@ -75,6 +75,7 @@ public class ClockCtrl {
             @Override
             public void run() {
                 int id = Integer.parseInt(idStr);
+                AlarmAPI.cancelClock(id);
                 ClockEntryAPI.deleteClockEntry(id);
                 Log.i("delete entry", idStr);
                 webView.loadUrl("javascript:simpleUpdate('clock')");
@@ -119,12 +120,14 @@ public class ClockCtrl {
                 entry.setWeeks(buf);
                 entry.setName(nameStr);
 
-                boolean result = false;
+                int result = -1;
                 if (id == 0) {
                     result = ClockEntryAPI.addClockEntry(entry);
+                    AlarmAPI.activeClock(result);
                     Log.i("add entry " + result, idStr + " " + hourStr + " " + minuteStr + " " + typeStr + " " + buf + " " + nameStr);
                 } else {
                     result = ClockEntryAPI.updateClockEntry(entry);
+                    AlarmAPI.activeClock(result);
                     Log.i("update entry " + result, idStr + " " + hourStr + " " + minuteStr + " " + typeStr + " " + buf + " " + nameStr);
                 }
                 webView.loadUrl("javascript:simpleUpdate('clock')");

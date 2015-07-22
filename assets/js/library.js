@@ -99,6 +99,7 @@ function drawClockView(str) {
     }
     $("div#clock-list").append("<a href=\"detailView.html\" class=\"ui-btn ui-shadow ui-btn-corner-all\" data-transition=\"slide\">添加闹钟</a>");
     $("div#clock-list").trigger("create");
+    window.console.info("draw clock view done");
 }
 
 function switchActive(id) {

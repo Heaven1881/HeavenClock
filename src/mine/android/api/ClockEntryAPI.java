@@ -83,13 +83,13 @@ public class ClockEntryAPI {
      * @param entry clock entry
      * @return ture则成功，false则失败
      */
-    public static synchronized boolean updateClockEntry(ClockEntry entry) {
+    public static synchronized int updateClockEntry(ClockEntry entry) {
         int id = entry.getId();
 
         // 检查id是否存在
         int entryId = findById(id);
         if (entryId == -1)
-            return false;
+            return -1;
 
         // 若存在，则替换对应的entry
         list.remove(entryId);
@@ -97,11 +97,7 @@ public class ClockEntryAPI {
         //写回
         save();
 
-        // 如果是更新active状态,则激活
-        if (entry.isActive())
-            AlarmAPI.activeClock(id);
-
-        return true;
+        return entryId;
     }
 
     /**
@@ -110,21 +106,18 @@ public class ClockEntryAPI {
      * @param id id
      * @return true代表成功
      */
-    public static synchronized boolean deleteClockEntry(int id) {
+    public static synchronized int deleteClockEntry(int id) {
         // 检查id是否存在
         int entryId = findById(id);
         if (entryId == -1)
-            return false;
-
-        // 取消对应的定时器
-        AlarmAPI.cancelClock(id);
+            return -1;
 
         // 删除对应entry
         list.remove(entryId);
         // 写回
         save();
 
-        return true;
+        return id;
     }
 
     /**
@@ -134,7 +127,7 @@ public class ClockEntryAPI {
      * @param entry entry
      * @return true代表成功
      */
-    public static synchronized boolean addClockEntry(ClockEntry entry) {
+    public static synchronized int addClockEntry(ClockEntry entry) {
         // 分配新id
         int newId = getNextId();
         entry.setId(newId);
@@ -143,8 +136,6 @@ public class ClockEntryAPI {
         list.add(entry);
         save();
 
-        AlarmAPI.activeClock(newId);
-
-        return true;
+        return newId;
     }
 }
