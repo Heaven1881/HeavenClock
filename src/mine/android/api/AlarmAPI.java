@@ -27,9 +27,6 @@ public class AlarmAPI {
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
 
-        if (!clockEntry.isActive())
-            return null;
-
         switch (clockEntry.getType()) {
             case FOR_ONCE:
             case FOR_DAY:
