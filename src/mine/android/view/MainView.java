@@ -17,6 +17,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import mine.android.HeavenClock.R;
+import mine.android.api.AlarmAPI;
 import mine.android.ctrl.ClockCtrl;
 import mine.android.ctrl.ConfigCtrl;
 
@@ -74,8 +75,10 @@ public class MainView extends Activity {
         webView.addJavascriptInterface(new ConfigCtrl(handler, webView), "config");
         webView.loadUrl("file:///android_asset/mainView.html");
 
+        AlarmAPI.activeAllClock();
     }
 
+    @SuppressWarnings("NullableProblems")
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {

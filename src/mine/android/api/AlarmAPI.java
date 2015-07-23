@@ -9,6 +9,7 @@ import mine.android.api.modules.ClockEntry;
 import mine.android.view.AlarmView;
 
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by Heaven on 15/7/21
@@ -101,5 +102,17 @@ public class AlarmAPI {
         Log.i("cancel clock", "" + id);
         ClockEntry clockEntry = ClockEntryAPI.getById(id);
         cancelTimer(id);
+    }
+
+    /**
+     * 检查并激活所有闹钟
+     */
+    public static void activeAllClock() {
+        List<ClockEntry> clockEntries = ClockEntryAPI.get();
+        for (ClockEntry entry : clockEntries) {
+            if (entry.isActive()) {
+                activeClock(entry.getId());
+            }
+        }
     }
 }
