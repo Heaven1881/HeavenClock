@@ -33,6 +33,7 @@ public class SongCtrl implements DouBanPlayer.OnNewSongListener {
             @Override
             public void run() {
                 player.markCurrentSong(DoubanAPI.OP_BYE);
+                player.skipCurrentSong();
             }
         });
     }
