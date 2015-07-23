@@ -14,7 +14,7 @@
 <body>
 
 <div data-role="page" id="clock">
-    <div data-role="header" data-position="fixed">
+    <div data-role="header" data-position="fixed" data-id="p-header" data-theme="b">
         <h1>闹钟</h1>
     </div>
     <div data-role="content" id="clock-list"></div>
@@ -32,19 +32,19 @@
             </div>
         </div>
     </div>
-    <div data-role="footer" data-position="fixed" class="ui-body-b">
+    <div data-role="footer" data-position="fixed" class="ui-body-b" data-id="p-toolbar">
         <div data-role="navbar">
             <ul>
                 <li><a data-icon="clock" class="ui-btn-active ui-state-persist">闹钟</a></li>
-                <li><a href="#music" data-icon="heart" data-transition="slide">音乐</a></li>
-                <li><a href="#setting" data-icon="gear" data-transition="slide">设置</a></li>
+                <li><a class="show-page-loading-msg" data-textonly="false" data-textvisible="true" data-msgtext="" data-inline="true"  href="#music" data-icon="heart" data-transition="slide">音乐</a></li>
+                <li><a class="show-page-loading-msg" data-textonly="false" data-textvisible="true" data-msgtext="" data-inline="true" href="#setting" data-icon="gear" data-transition="slide">设置</a></li>
             </ul>
         </div>
     </div>
 </div>
 
 <div data-role="page" id="music">
-    <div data-role="header" data-position="fixed">
+    <div data-role="header" data-position="fixed" data-id="p-header" data-theme="b">
         <h1>音乐</h1>
     </div>
     <div data-role="content">
@@ -58,19 +58,19 @@
             <li><a href="#">Culver James</a></li>
         </ul>
     </div>
-    <div data-role="footer" data-position="fixed" class="ui-body-b">
+    <div data-role="footer" data-position="fixed" class="ui-body-b" data-id="p-toolbar">
         <div data-role="navbar">
             <ul>
-                <li><a href="#clock" data-icon="clock" data-transition="slide" data-direction="reverse">闹钟</a></li>
+                <li><a class="show-page-loading-msg" data-textonly="false" data-textvisible="true" data-msgtext="" data-inline="true" href="#clock" data-icon="clock" data-transition="slide" data-direction="reverse">闹钟</a></li>
                 <li><a data-icon="heart" class="ui-btn-active ui-state-persist">音乐</a></li>
-                <li><a href="#setting" data-icon="gear" data-transition="slide">设置</a></li>
+                <li><a class="show-page-loading-msg" data-textonly="false" data-textvisible="true" data-msgtext="" data-inline="true" href="#setting" data-icon="gear" data-transition="slide">设置</a></li>
             </ul>
         </div>
     </div>
 </div>
 
 <div data-role="page" id="setting">
-    <div data-role="header" data-position="fixed">
+    <div data-role="header" data-position="fixed" data-id="p-header" data-theme="b">
         <h1>设置</h1>
     </div>
     <div data-role="content">
@@ -115,11 +115,11 @@
             <p>说明: 这是嘟嘟和晓旭的闹钟~</p>
         </div>
     </div>
-    <div data-role="footer" data-position="fixed" class="ui-body-b">
+    <div data-role="footer" data-position="fixed" class="ui-body-b" data-id="p-toolbar">
         <div data-role="navbar">
             <ul>
-                <li><a href="#clock" data-icon="clock" data-transition="slide" data-direction="reverse">闹钟</a></li>
-                <li><a href="#music" data-icon="heart" data-transition="slide" data-direction="reverse">音乐</a></li>
+                <li><a class="show-page-loading-msg" data-textonly="false" data-textvisible="true" data-msgtext="" data-inline="true" href="#clock" data-icon="clock" data-transition="slide" data-direction="reverse">闹钟</a></li>
+                <li><a class="show-page-loading-msg" data-textonly="false" data-textvisible="true" data-msgtext="" data-inline="true" href="#music" data-icon="heart" data-transition="slide" data-direction="reverse">音乐</a></li>
                 <li><a data-icon="gear" class="ui-btn-active ui-state-persist">设置</a></li>
             </ul>
         </div>
