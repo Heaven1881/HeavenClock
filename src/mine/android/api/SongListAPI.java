@@ -8,7 +8,6 @@ import java.util.List;
 /**
  * Created by Heaven on 15/7/21
  */
-@Deprecated
 public class SongListAPI {
     private static List<Song> list = null;
 
@@ -17,7 +16,7 @@ public class SongListAPI {
         db.replaceAll(list);
     }
 
-    private static List<Song> get() {
+    public static List<Song> get() {
         if (list != null)
             return list;
         synchronized ("ClockEntry") {
@@ -41,5 +40,26 @@ public class SongListAPI {
                 return song;
         }
         return null;
+    }
+
+    /**
+     * 添加歌曲
+     * @param song song
+     */
+    public static void addSong(Song song) {
+        List<Song> songs = get();
+        songs.add(song);
+        save();
+    }
+
+    /**
+     * 清理多余歌曲
+     */
+    public static void deleteExtraSong() {
+        int historySong = ConfigAPI.get().getHistorySong();
+        List<Song> songs = get();
+        while (songs.size() > historySong) {
+            songs.remove(0);
+        }
     }
 }

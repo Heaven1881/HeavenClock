@@ -17,7 +17,7 @@ function drawClockDetail(str) {
     if (clockItem.for == "FOR_WEEK") {
         $("li#week-checkbox").show();
         var week = clockItem.week;
-        for (i in week) {
+        for (var i in week) {
             if (week[i] == "1") {
                 $("#cb-" + i).attr("checked", true).checkboxradio("refresh");
             }
@@ -44,7 +44,8 @@ function saveDouban() {
 function saveSetting() {
     var repeatTime = $("input#repeat-time").val();
     var pForNew = $("input#p-for-new").val();
-    window.config.updateSetting(repeatTime, pForNew);
+    var historySong = $("input#history-song").val();
+    window.config.updateSetting(repeatTime, pForNew, historySong);
 }
 
 function saveDetail(id) {
@@ -64,7 +65,7 @@ function saveDetail(id) {
 function drawClockView(str) {
     $("div#clock-list").empty();
     var clockList = eval('(' + str + ')');
-    for (i in clockList) {
+    for (var i in clockList) {
         var id = clockList[i].id;
         var name = clockList[i].name;
         var type = clockList[i].for;
@@ -107,6 +108,14 @@ function switchActive(id) {
     window.clock.activeClock(id, status);
 }
 
+function drawMusicList(str) {
+    var musicList = eval('(' + str + ')').songHistory;
+    for (var i in musicList) {
+        var content = '<li><a href="'+musicList[i].url+'">'+musicList[i].name+'</a></li>';
+        $("#music-list").append(content);
+    }
+    $("#music-list").listview("refresh");
+}
 
 function confirmAndDelete(id) {
     $("#delete-confirm").popup("open");

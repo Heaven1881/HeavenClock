@@ -5,8 +5,11 @@ import android.util.Log;
 import android.webkit.WebView;
 import mine.android.api.AlarmAPI;
 import mine.android.api.ClockEntryAPI;
+import mine.android.api.SongListAPI;
 import mine.android.api.modules.ClockEntry;
+import mine.android.api.modules.Song;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -29,20 +32,18 @@ public class ClockCtrl {
     }
 
     private JSONObject clockEntryToJsonObject(ClockEntry clockEntry) {
-        Map map = new HashMap();
-        map.put("id", clockEntry.getId());
-        map.put("name", clockEntry.getName());
-        map.put("for", clockEntry.getType());
-        map.put("active", clockEntry.isActive());
-
-        int hourOfDay = clockEntry.getHourOfDay();
-        int minute = clockEntry.getMinute();
-        String time = formatTime(hourOfDay, minute);
-        map.put("time", time);
-
-        map.put("week", clockEntry.getWeeks());
-
-        return new JSONObject(map);
+        JSONObject json = new JSONObject();
+        try {
+            json.put("id", clockEntry.getId());
+            json.put("name", clockEntry.getName());
+            json.put("for", clockEntry.getType());
+            json.put("active", clockEntry.isActive());
+            json.put("time", formatTime(clockEntry.getHourOfDay(), clockEntry.getMinute()));
+            json.put("week", clockEntry.getWeeks());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
     }
 
     /**
@@ -184,6 +185,32 @@ public class ClockCtrl {
                         AlarmAPI.cancelClock(id);
                     }
                 }
+            }
+        });
+    }
+
+    public void getHistory(final String callback) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                List<Song> songs = SongListAPI.get();
+
+                JSONObject jsons = new JSONObject();
+                try {
+                    for (Song song : songs) {
+                        JSONObject json = new JSONObject();
+                        json.put("url", song.getUrl());
+                        json.put("name", song.getTitle());
+                        json.put("sid", song.getSid());
+
+                        jsons.accumulate("songHistory", json);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                String jsonStr = jsons.toString();
+                Log.i("req music list", jsonStr);
+                webView.loadUrl("javascript:" + callback + "('" + jsonStr + "')");
             }
         });
     }

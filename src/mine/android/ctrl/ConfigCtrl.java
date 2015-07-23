@@ -71,15 +71,16 @@ public class ConfigCtrl {
      * @param repeatTimeStr 重复此时
      * @param pForNewStr    新歌概率
      */
-    public void updateSetting(final String repeatTimeStr, final String pForNewStr) {
+    public void updateSetting(final String repeatTimeStr, final String pForNewStr, final String historySong) {
         handler.post(new Runnable() {
             @Override
             public void run() {
                 Config config = ConfigAPI.get();
                 config.setRepeatSong(Integer.parseInt(repeatTimeStr));
                 config.setpForNew(Double.parseDouble(pForNewStr));
+                config.setHistorySong(Integer.parseInt(historySong));
                 ConfigAPI.save(config);
-                Log.i("update setting", repeatTimeStr + ":" + pForNewStr);
+                Log.i("update setting", repeatTimeStr + ":" + pForNewStr + ":" + historySong);
             }
         });
     }

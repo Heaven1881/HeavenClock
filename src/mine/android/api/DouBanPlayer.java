@@ -167,6 +167,7 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
     public void stop() {
         if (mp.isPlaying())
             mp.stop();
+
         mp.release();
     }
 

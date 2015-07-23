@@ -20,6 +20,7 @@ import mine.android.HeavenClock.R;
 import mine.android.api.AlarmAPI;
 import mine.android.ctrl.ClockCtrl;
 import mine.android.ctrl.ConfigCtrl;
+import mine.android.ctrl.SongCtrl;
 
 /**
  * Created by Heaven on 15/7/18

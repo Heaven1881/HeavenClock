@@ -5,11 +5,15 @@ import android.util.Log;
 import android.webkit.WebView;
 import mine.android.api.DouBanPlayer;
 import mine.android.api.DoubanAPI;
+import mine.android.api.SongListAPI;
 import mine.android.api.modules.ClockEntry;
 import mine.android.api.modules.Song;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -71,19 +75,24 @@ public class SongCtrl implements DouBanPlayer.OnNewSongListener {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Map<String, Object> map = new HashMap<String, Object>();
-                map.put("time", ClockCtrl.formatTime(entry.getHourOfDay(), entry.getMinute()));
-                map.put("music", song.getTitle());
-                map.put("artist", song.getArtist());
-                map.put("like", song.isLike());
-                map.put("sid", song.getSid());
-                String jsonStr = new JSONObject(map).toString();
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("time", ClockCtrl.formatTime(entry.getHourOfDay(), entry.getMinute()));
+                    json.put("music", song.getTitle());
+                    json.put("artist", song.getArtist());
+                    json.put("like", song.isLike());
+                    json.put("sid", song.getSid());
+                } catch (JSONException ignored) {
+                }
+                String jsonStr = json.toString();
                 webView.loadUrl("javascript:drawAlarm('" + jsonStr + "')");
+
                 Log.i("mp3 url   :", song.getUrl());
                 Log.i("mp3 title :", song.getTitle());
                 Log.i("mp3 artist:", song.getArtist());
                 Log.i("mp3 sid   :", String.valueOf(song.getSid()));
                 Log.i("mp3 like  :", String.valueOf(song.isLike()));
+                SongListAPI.addSong(song);
             }
         });
     }
@@ -91,4 +100,6 @@ public class SongCtrl implements DouBanPlayer.OnNewSongListener {
     public void setEntry(ClockEntry entry) {
         this.entry = entry;
     }
+
+
 }

@@ -3,39 +3,45 @@
  */
 
 $(document).on("pageinit", "#setting", function () {
-    window.console.info("on pageinit setting");
     $("div#douban-input-group").hide();
     $("input#douban-email").on("input", function () {
-        $("div#douban-input-group").show(500);
+        $("div#douban-input-group").show(200);
     });
     $("input#douban-pwd").on("input", function () {
-        $("div#douban-input-group").show(500);
+        $("div#douban-input-group").show(200);
     });
     $("input#douban-reset").click(function () {
-        $("div#douban-input-group").hide(500);
+        $("div#douban-input-group").hide(200);
     });
     $("a#save-douban").click(function () {
-        $("div#douban-input-group").hide(500);
+        $("div#douban-input-group").hide(200);
     });
 
     $("div#clock-input-group").hide();
     $("input#repeat-time").change(function () {
-        $("div#clock-input-group").show(500);
+        $("div#clock-input-group").show(200);
     });
     $("input#p-for-new").change(function () {
-        $("div#clock-input-group").show(500);
+        $("div#clock-input-group").show(200);
+    });
+    $("input#history-song").change(function () {
+        $("div#clock-input-group").show(200);
     });
     $("input#clock-reset").click(function () {
-        $("div#clock-input-group").hide(500);
+        $("div#clock-input-group").hide(200);
     });
     $("a#save-setting").click(function () {
-        $("div#clock-input-group").hide(500);
+        $("div#clock-input-group").hide(200);
     });
 
     $("a#save-douban").attr("onclick", "saveDouban()");
     $("a#save-setting").attr("onclick", "saveSetting()")
 
     window.config.getSetting("drawSettingView");
+});
+
+$(document).on("pageinit", "#music", function () {
+    window.clock.getHistory("drawMusicList");
 });
 
 $(document).on("pageinit", "#detail", function () {

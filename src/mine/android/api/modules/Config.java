@@ -12,11 +12,20 @@ public class Config implements Serializable, Comparable<Config> {
     private String doubanPassword = "";
     private int repeatSong = 1;
     private double pForNew = 0.5;
+    private int historySong = 10;
 
 
     @Override
     public int compareTo(Config another) {
         return 0;
+    }
+
+    public void setHistorySong(int historySong) {
+        this.historySong = historySong;
+    }
+
+    public int getHistorySong() {
+        return historySong;
     }
 
     public String getDoubanPassword() {
