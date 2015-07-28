@@ -138,4 +138,38 @@ public class ClockEntryAPI {
 
         return newId;
     }
+
+
+    public static final int FIELD_ACTIVE = 0;
+    public static final int FIELD_NAME = 1;
+    public static final int FIELD_HOUR = 2;
+    public static final int FIELD_MINUTE = 3;
+    public static final int FIELD_TYPE = 4;
+    public static final int FIELD_WEEK = 5;
+    public static void updateField(int id, int field, Object value) {
+        ClockEntry clockEntry = getById(id);
+        switch (field) {
+            case FIELD_ACTIVE:
+                clockEntry.setActive((Boolean) value);
+                break;
+            case FIELD_NAME:
+                clockEntry.setName((String) value);
+                break;
+            case FIELD_HOUR:
+                clockEntry.setHourOfDay((Integer) value);
+                break;
+            case FIELD_MINUTE:
+                clockEntry.setMinute((Integer) value);
+                break;
+            case FIELD_TYPE:
+                clockEntry.setType((ClockEntry.ClockType) value);
+                break;
+            case FIELD_WEEK:
+                clockEntry.setWeeks((String) value);
+                break;
+            default:
+                assert (false);
+        }
+        updateClockEntry(clockEntry);
+    }
 }

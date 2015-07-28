@@ -32,7 +32,7 @@ function drawSettingView(str) {
     $("input#douban-pwd").val(config.pwd);
     $("input#repeat-time").val(config.repeatTime).slider("refresh");
     $("input#p-for-new").val(config.pForNew).slider("refresh");
-    $("input#histoory-song").val(config.historySong).slider("refresh");
+    $("input#history-song").val(config.historySong).slider("refresh");
     $("div#clock-input-group").hide(100);
 }
 
@@ -64,6 +64,7 @@ function saveDetail(id) {
 }
 
 function drawClockView(str) {
+    alert("start!");
     $("div#clock-list").empty();
     var clockList = eval('(' + str + ')');
     for (var i in clockList) {
@@ -112,7 +113,7 @@ function switchActive(id) {
 function drawMusicList(str) {
     var musicList = eval('(' + str + ')').songHistory;
     for (var i in musicList) {
-        var content = '<li><a href="'+musicList[i].url+'">'+musicList[i].name+'</a></li>';
+        var content = '<li><a href="' + musicList[i].url + '">' + musicList[i].name + '</a></li>';
         $("#music-list").append(content);
     }
     $("#music-list").listview("refresh");

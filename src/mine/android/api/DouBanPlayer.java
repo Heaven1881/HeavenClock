@@ -116,7 +116,7 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
         // 选取歌的概率
         double v = seed.nextDouble();
         Log.i("p=" + p, "v=" + v);
-        if (v > p)
+        if (v < p)
             gottenList = DoubanAPI.getNewList(CHANNEL_NEW);
         else
             gottenList = DoubanAPI.getNewList(CHANNEL_OLD);

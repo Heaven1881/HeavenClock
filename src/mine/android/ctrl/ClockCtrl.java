@@ -181,8 +181,10 @@ public class ClockCtrl {
                     Log.i("active true", idStr + ":" + sel);
                     if (on) {
                         AlarmAPI.activeClock(id);
+                        ClockEntryAPI.updateField(id, ClockEntryAPI.FIELD_ACTIVE, true);
                     } else {
                         AlarmAPI.cancelClock(id);
+                        ClockEntryAPI.updateField(id, ClockEntryAPI.FIELD_ACTIVE, false);
                     }
                 }
             }
