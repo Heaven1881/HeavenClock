@@ -33,7 +33,7 @@ public class ClockEntry implements Serializable, Comparable<ClockEntry> {
     }
 
     public boolean weeks(int i) {
-        return "1".equals(weeks.charAt(i));
+        return weeks.charAt(i) == '1';
     }
 
     public String getWeeks() {

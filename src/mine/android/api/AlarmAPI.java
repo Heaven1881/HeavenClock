@@ -38,13 +38,15 @@ public class AlarmAPI {
                 }
                 break;
             case FOR_WEEK:
-                int startDay = c.get(Calendar.DAY_OF_WEEK);
+                int startDay = c.get(Calendar.DAY_OF_WEEK) - 1;
                 if (c.getTimeInMillis() < System.currentTimeMillis()) {
+                    c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) + 1);
                     startDay = (startDay + 1) % 7;
                 }
-                for (int i = startDay; i < 7; i++) {
-                    if (clockEntry.weeks(i % 7)) {
-                        c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) + (c.get(Calendar.DAY_OF_WEEK) - startDay));
+                for (int i = 0; i < 7; i++) {
+                    int day = startDay + i;
+                    if (clockEntry.weeks(day % 7)) {
+                        c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) + i);
                         break;
                     }
                 }
@@ -89,13 +91,14 @@ public class AlarmAPI {
      */
     public static void activeClock(int id) {
         ClockEntry clockEntry = ClockEntryAPI.getById(id);
+        if (clockEntry == null)
+            return;
         Calendar nextAlarmTime = getNextAlarmTime(clockEntry);
         Log.i("next alarm time for id: " + id, nextAlarmTime.getTime().toString());
         setTimer(id, nextAlarmTime);
 
         // make toast
         Calendar current = Calendar.getInstance();
-        int divHour = nextAlarmTime.get(Calendar.HOUR_OF_DAY) - current.get(Calendar.HOUR_OF_DAY);
         current.setTimeInMillis(nextAlarmTime.getTimeInMillis() - current.getTimeInMillis());
 
         // TRAP: 这里使用非常粗鲁的方式强行将时间本地化
