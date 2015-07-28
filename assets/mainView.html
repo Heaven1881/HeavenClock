@@ -36,8 +36,10 @@
         <div data-role="navbar">
             <ul>
                 <li><a data-icon="clock" class="ui-btn-active ui-state-persist">闹钟</a></li>
-                <li><a class="show-page-loading-msg" data-textonly="false" data-textvisible="true" data-msgtext="" data-inline="true"  href="#music" data-icon="heart" data-transition="slide">音乐</a></li>
-                <li><a class="show-page-loading-msg" data-textonly="false" data-textvisible="true" data-msgtext="" data-inline="true" href="#setting" data-icon="gear" data-transition="slide">设置</a></li>
+                <li><a class="show-page-loading-msg" data-textonly="false" data-textvisible="true" data-msgtext=""
+                       data-inline="true" href="#music" data-icon="heart" data-transition="slide">音乐</a></li>
+                <li><a class="show-page-loading-msg" data-textonly="false" data-textvisible="true" data-msgtext=""
+                       data-inline="true" href="#setting" data-icon="gear" data-transition="slide">设置</a></li>
             </ul>
         </div>
     </div>
@@ -48,14 +50,18 @@
         <h1>音乐</h1>
     </div>
     <div data-role="content">
-        <ul data-role="listview" id="music-list" data-filter="true" data-inset="true"></ul>
+        <audio id="simpleAudio"><source id="audio-src" src="" type="audio/mpeg"></audio>
+        <ul data-role="listview" id="music-list" data-filter="true" data-inset="true" data-autodividers="true"></ul>
     </div>
     <div data-role="footer" data-position="fixed" class="ui-body-b" data-id="p-toolbar">
         <div data-role="navbar">
             <ul>
-                <li><a class="show-page-loading-msg" data-textonly="false" data-textvisible="true" data-msgtext="" data-inline="true" href="#clock" data-icon="clock" data-transition="slide" data-direction="reverse">闹钟</a></li>
+                <li><a class="show-page-loading-msg" data-textonly="false" data-textvisible="true" data-msgtext=""
+                       data-inline="true" href="#clock" data-icon="clock" data-transition="slide"
+                       data-direction="reverse">闹钟</a></li>
                 <li><a data-icon="heart" class="ui-btn-active ui-state-persist">音乐</a></li>
-                <li><a class="show-page-loading-msg" data-textonly="false" data-textvisible="true" data-msgtext="" data-inline="true" href="#setting" data-icon="gear" data-transition="slide">设置</a></li>
+                <li><a class="show-page-loading-msg" data-textonly="false" data-textvisible="true" data-msgtext=""
+                       data-inline="true" href="#setting" data-icon="gear" data-transition="slide">设置</a></li>
             </ul>
         </div>
     </div>
@@ -66,7 +72,8 @@
         <h1>设置</h1>
     </div>
     <div data-role="content">
-        <div data-role="collapsible" data-theme="b" data-collapsed="false" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
+        <div data-role="collapsible" data-theme="b" data-collapsed="false" data-collapsed-icon="carat-d"
+             data-expanded-icon="carat-u">
             <legend>豆瓣信息</legend>
             <form>
                 <label for="douban-email">账户邮箱:</label>
@@ -83,7 +90,8 @@
                 </div>
             </form>
         </div>
-        <div data-role="collapsible" data-theme="b" data-collapsed="false" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
+        <div data-role="collapsible" data-theme="b" data-collapsed="false" data-collapsed-icon="carat-d"
+             data-expanded-icon="carat-u">
             <legend>闹钟设置</legend>
             <form>
                 <label for="repeat-time">每次闹钟播放歌曲数:</label>
@@ -102,7 +110,8 @@
                 </div>
             </form>
         </div>
-        <div data-role="collapsible" data-theme="b" data-collapsed="false" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
+        <div data-role="collapsible" data-theme="b" data-collapsed="false" data-collapsed-icon="carat-d"
+             data-expanded-icon="carat-u">
             <legend>关于</legend>
             <p>版本: 2.0</p>
 
@@ -112,8 +121,12 @@
     <div data-role="footer" data-position="fixed" class="ui-body-b" data-id="p-toolbar">
         <div data-role="navbar">
             <ul>
-                <li><a class="show-page-loading-msg" data-textonly="false" data-textvisible="true" data-msgtext="" data-inline="true" href="#clock" data-icon="clock" data-transition="slide" data-direction="reverse">闹钟</a></li>
-                <li><a class="show-page-loading-msg" data-textonly="false" data-textvisible="true" data-msgtext="" data-inline="true" href="#music" data-icon="heart" data-transition="slide" data-direction="reverse">音乐</a></li>
+                <li><a class="show-page-loading-msg" data-textonly="false" data-textvisible="true" data-msgtext=""
+                       data-inline="true" href="#clock" data-icon="clock" data-transition="slide"
+                       data-direction="reverse">闹钟</a></li>
+                <li><a class="show-page-loading-msg" data-textonly="false" data-textvisible="true" data-msgtext=""
+                       data-inline="true" href="#music" data-icon="heart" data-transition="slide"
+                       data-direction="reverse">音乐</a></li>
                 <li><a data-icon="gear" class="ui-btn-active ui-state-persist">设置</a></li>
             </ul>
         </div>

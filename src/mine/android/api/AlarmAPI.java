@@ -10,6 +10,7 @@ import mine.android.view.AlarmView;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * Created by Heaven on 15/7/21
@@ -91,6 +92,17 @@ public class AlarmAPI {
         Calendar nextAlarmTime = getNextAlarmTime(clockEntry);
         Log.i("next alarm time for id: " + id, nextAlarmTime.getTime().toString());
         setTimer(id, nextAlarmTime);
+
+        // make toast
+        Calendar current = Calendar.getInstance();
+        int divHour = nextAlarmTime.get(Calendar.HOUR_OF_DAY) - current.get(Calendar.HOUR_OF_DAY);
+        current.setTimeInMillis(nextAlarmTime.getTimeInMillis() - current.getTimeInMillis());
+
+        // TRAP: 这里使用非常粗鲁的方式强行将时间本地化
+        current.set(Calendar.HOUR_OF_DAY, current.get(Calendar.HOUR_OF_DAY) - 8);
+
+        String line = "闹钟将在" + (current.get(Calendar.DAY_OF_YEAR) - 1) + "天" + current.get(Calendar.HOUR_OF_DAY) + "小时" + current.get(Calendar.MINUTE) + "分之后响";
+        ContextAPI.makeToast(line);
     }
 
     /**

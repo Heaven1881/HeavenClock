@@ -3,6 +3,7 @@ package mine.android.ctrl;
 import android.os.Handler;
 import android.util.Log;
 import android.webkit.WebView;
+import mine.android.api.ContextAPI;
 import mine.android.api.DouBanPlayer;
 import mine.android.api.DoubanAPI;
 import mine.android.api.SongListAPI;
@@ -38,6 +39,7 @@ public class SongCtrl implements DouBanPlayer.OnNewSongListener {
             public void run() {
                 player.markCurrentSong(DoubanAPI.OP_BYE);
                 player.skipCurrentSong();
+                ContextAPI.makeToast("歌曲标记为不再播放");
             }
         });
     }
@@ -47,6 +49,7 @@ public class SongCtrl implements DouBanPlayer.OnNewSongListener {
             @Override
             public void run() {
                 player.markCurrentSong(DoubanAPI.OP_MARK_AS_LIKE);
+                ContextAPI.makeToast("已标记为喜欢");
             }
         });
     }
@@ -56,6 +59,7 @@ public class SongCtrl implements DouBanPlayer.OnNewSongListener {
             @Override
             public void run() {
                 player.markCurrentSong(DoubanAPI.OP_DMARK_LIKE);
+                ContextAPI.makeToast("已取消标记");
             }
         });
     }

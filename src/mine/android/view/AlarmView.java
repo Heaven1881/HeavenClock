@@ -41,10 +41,7 @@ public class AlarmView extends Activity {
         webView = (WebView) findViewById(R.id.detailView);
 
         // 初始化播放器
-        ExecutorService pool = Executors.newSingleThreadExecutor();
-        Config config = ConfigAPI.get();
-        player = new DouBanPlayer(config.getRepeatSong(), config.getpForNew(), pool);
-
+        player = DouBanPlayer.get();
 
         // WebView 设置
         WebSettings settings = webView.getSettings();
@@ -110,4 +107,5 @@ public class AlarmView extends Activity {
             }
         });
     }
+
 }

@@ -64,7 +64,6 @@ function saveDetail(id) {
 }
 
 function drawClockView(str) {
-    alert("start!");
     $("div#clock-list").empty();
     var clockList = eval('(' + str + ')');
     for (var i in clockList) {
@@ -112,11 +111,33 @@ function switchActive(id) {
 
 function drawMusicList(str) {
     var musicList = eval('(' + str + ')').songHistory;
+    $("#music-list").append("<a id='stop-btn' href=\"#\" class=\"ui-btn ui-shadow ui-btn-corner-all\" onclick='simpleStop()'>停止播放</a>");
     for (var i in musicList) {
-        var content = '<li><a href="' + musicList[i].url + '">' + musicList[i].name + '</a></li>';
-        $("#music-list").append(content);
+        var $el = $('<li><a><h2></h2><p></p></a></li>');
+        $el.find('a').attr('data-ad', musicList[i].playedTime)
+            .attr('onclick', 'simplePlay("' + musicList[i].url + '")');
+        $el.find('h2').text(musicList[i].name);
+        $el.find('p').text(musicList[i].artist);
+        $("#music-list").append($el);
     }
-    $("#music-list").listview("refresh");
+    $("#stop-btn").hide();
+    $("#music-list").listview({
+        autodividers: true,
+        autodividersSelector: function (li) {
+            var out = $(li).find('a').attr('data-ad');
+            return out;
+        }
+    }).listview("refresh");
+}
+
+function simplePlay(url) {
+    $("#stop-btn").show();
+    window.simplePlayer.simplePlay(url);
+}
+
+function simpleStop() {
+    $("#stop-btn").hide();
+    window.simplePlayer.simpleStop();
 }
 
 function confirmAndDelete(id) {

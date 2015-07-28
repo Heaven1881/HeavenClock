@@ -11,6 +11,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -18,6 +19,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import mine.android.HeavenClock.R;
 import mine.android.api.AlarmAPI;
+import mine.android.api.DouBanPlayer;
 import mine.android.ctrl.ClockCtrl;
 import mine.android.ctrl.ConfigCtrl;
 import mine.android.ctrl.SongCtrl;
@@ -74,9 +76,30 @@ public class MainView extends Activity {
         //js java 映射
         webView.addJavascriptInterface(new ClockCtrl(handler, webView), "clock");
         webView.addJavascriptInterface(new ConfigCtrl(handler, webView), "config");
+        webView.addJavascriptInterface(this, "simplePlayer");
         webView.loadUrl("file:///android_asset/mainView.html");
 
         AlarmAPI.activeAllClock();
+    }
+
+    public void simplePlay(final String url) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                DouBanPlayer.get().simplePlay(url);
+                Log.i("simple player", "start");
+            }
+        });
+    }
+
+    public void simpleStop() {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                DouBanPlayer.get().simpleStop();
+                Log.i("simple player", "stop");
+            }
+        });
     }
 
     @SuppressWarnings("NullableProblems")

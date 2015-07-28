@@ -195,7 +195,9 @@ public class ClockCtrl {
         handler.post(new Runnable() {
             @Override
             public void run() {
+                SongListAPI.deleteExtraSong();
                 List<Song> songs = SongListAPI.get();
+                Collections.reverse(songs);
 
                 JSONObject jsons = new JSONObject();
                 try {
@@ -203,6 +205,10 @@ public class ClockCtrl {
                         JSONObject json = new JSONObject();
                         json.put("url", song.getUrl());
                         json.put("name", song.getTitle());
+                        json.put("artist", song.getArtist());
+                        Calendar c = Calendar.getInstance();
+                        c.setTime(song.getPlayTime());
+                        json.put("playedTime", (c.get(Calendar.MONTH)+1)+"月"+(c.get(Calendar.DAY_OF_MONTH))+"日");
                         json.put("sid", song.getSid());
 
                         jsons.accumulate("songHistory", json);

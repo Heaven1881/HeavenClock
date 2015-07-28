@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.webkit.WebView;
 import mine.android.api.ConfigAPI;
+import mine.android.api.ContextAPI;
 import mine.android.api.modules.Config;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,6 +66,9 @@ public class ConfigCtrl {
                 config.setDoubanEmail(email);
                 config.setDoubanPassword(pwd);
                 ConfigAPI.save(config);
+
+                String line = "账户信息已保存";
+                ContextAPI.makeToast(line);
                 Log.i("update douban", email + ":" + pwd);
             }
         });
@@ -85,6 +89,8 @@ public class ConfigCtrl {
                 config.setpForNew(Double.parseDouble(pForNewStr));
                 config.setHistorySong(Integer.parseInt(historySong));
                 ConfigAPI.save(config);
+                String line = "闹钟设置已保存";
+                ContextAPI.makeToast(line);
                 Log.i("update setting", repeatTimeStr + ":" + pForNewStr + ":" + historySong);
             }
         });

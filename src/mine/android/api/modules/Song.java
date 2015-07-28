@@ -1,6 +1,9 @@
 package mine.android.api.modules;
 
+import android.provider.ContactsContract;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by Heaven on 2015/2/15.
@@ -10,6 +13,7 @@ public class Song implements Serializable, Comparable<Song> {
     private String url = null;
     private String artist = null;
     private int sid = 0;
+    private Date playTime = new Date();
     private boolean like = false;
 
     public Song(String url) {
@@ -58,6 +62,14 @@ public class Song implements Serializable, Comparable<Song> {
 
     @Override
     public int compareTo(Song another) {
-        return this.getSid() - another.getSid();
+        return (int) (another.getPlayTime().getTime() - this.playTime.getTime());
+    }
+
+    public Date getPlayTime() {
+        return playTime;
+    }
+
+    public void setPlayTime(Date playTime) {
+        this.playTime = playTime;
     }
 }

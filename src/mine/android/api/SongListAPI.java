@@ -3,6 +3,7 @@ package mine.android.api;
 import mine.android.api.database.DataBase;
 import mine.android.api.modules.Song;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,6 +49,7 @@ public class SongListAPI {
      */
     public static void addSong(Song song) {
         List<Song> songs = get();
+        song.setPlayTime(new Date());
         songs.add(song);
         save();
     }

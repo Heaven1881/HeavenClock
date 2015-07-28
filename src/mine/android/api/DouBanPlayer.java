@@ -3,13 +3,16 @@ package mine.android.api;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.util.Log;
+import mine.android.api.modules.Config;
 import mine.android.api.modules.Song;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Heaven on 2015/4/14.
@@ -18,6 +21,8 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
     private static int CHANNEL_NEW = 0;
     private static int CHANNEL_OLD = -3;
     private double p = 0.3;
+
+    private static DouBanPlayer player = null;
 
     private MediaPlayer mp = null;
 
@@ -32,6 +37,30 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
     private Song currentSong = null;
 
     private OnNewSongListener onNewSongListener = null;
+
+    public static DouBanPlayer get() {
+        if (player != null) {
+            return player;
+        }
+        ExecutorService pool = Executors.newSingleThreadExecutor();
+        Config config = ConfigAPI.get();
+        player = new DouBanPlayer(config.getRepeatSong(), config.getpForNew(), pool);
+        return player;
+    }
+
+    public void simplePlay(String url) {
+        try {
+            currentSong = null;
+            mp.reset();
+            mp.setDataSource(url);
+            mp.prepareAsync();
+        } catch (IOException ignored) {
+        }
+    }
+
+    public void simpleStop() {
+        mp.reset();
+    }
 
     private void playSong(Song song) {
         try {
@@ -55,7 +84,7 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
         this.onNewSongListener = listener;
     }
 
-    public DouBanPlayer(int size, double p, ExecutorService threadPool) {
+    private DouBanPlayer(int size, double p, ExecutorService threadPool) {
         this.size = size;
         this.p = p;
 
