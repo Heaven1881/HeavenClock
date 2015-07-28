@@ -32,6 +32,7 @@ function drawSettingView(str) {
     $("input#douban-pwd").val(config.pwd);
     $("input#repeat-time").val(config.repeatTime).slider("refresh");
     $("input#p-for-new").val(config.pForNew).slider("refresh");
+    $("input#histoory-song").val(config.historySong).slider("refresh");
     $("div#clock-input-group").hide(100);
 }
 

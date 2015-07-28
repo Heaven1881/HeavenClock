@@ -5,6 +5,7 @@ import android.util.Log;
 import android.webkit.WebView;
 import mine.android.api.ConfigAPI;
 import mine.android.api.modules.Config;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -33,13 +34,17 @@ public class ConfigCtrl {
             public void run() {
                 Config config = ConfigAPI.get();
 
-                Map map = new HashMap();
-                map.put("email", config.getDoubanEmail());
-                map.put("pwd", config.getDoubanPassword());
-                map.put("repeatTime", config.getRepeatSong());
-                map.put("pForNew", config.getpForNew());
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("email", config.getDoubanEmail());
+                    json.put("pwd", config.getDoubanPassword());
+                    json.put("repeatTime", config.getRepeatSong());
+                    json.put("pForNew", config.getpForNew());
+                    json.put("historySong", config.getHistorySong());
+                } catch (JSONException ignored) {
+                }
 
-                final String jsonStr = new JSONObject(map).toString();
+                final String jsonStr = json.toString();
                 Log.i("req setting", jsonStr);
                 webView.loadUrl("javascript:" + callback + "('" + jsonStr + "')");
             }
