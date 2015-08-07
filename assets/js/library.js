@@ -148,7 +148,8 @@ function confirmAndDelete(id) {
 }
 
 function simpleUpdate(content) {
-    $("div#" + content).trigger("pageinit");
+    console.info("try to reload");
+    window.clock.getAllClockEntry("drawClockView");
 }
 
 function drawAlarm(str) {

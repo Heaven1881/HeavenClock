@@ -48,20 +48,6 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
         return player;
     }
 
-    public void simplePlay(String url) {
-        try {
-            currentSong = null;
-            mp.reset();
-            mp.setDataSource(url);
-            mp.prepareAsync();
-        } catch (IOException ignored) {
-        }
-    }
-
-    public void simpleStop() {
-        mp.reset();
-    }
-
     private void playSong(Song song) {
         try {
             currentSong = song;
@@ -162,9 +148,7 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
      * 跳过当前歌曲，播放下一首
      */
     public void skipCurrentSong() {
-        if (!mp.isPlaying())
-            return;
-        mp.stop();
+        mp.reset();
         markSong(DoubanAPI.OP_SKIP, currentSong.getSid());
         nextSong();
     }
@@ -194,9 +178,7 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
     }
 
     public void stop() {
-        if (mp.isPlaying())
-            mp.stop();
-
+        mp.reset();
         mp.release();
     }
 

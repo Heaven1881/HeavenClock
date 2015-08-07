@@ -50,7 +50,7 @@ public class DoubanAPI {
         db.replaceAll(Arrays.asList(info));
     }
 
-    public static LoginInfo getLoginInfo() {
+    public static LoginInfo getLoginInfo(boolean refresh) {
         if (loginInfo != null)
             return loginInfo;
         synchronized ("loginInfo") {
@@ -58,10 +58,12 @@ public class DoubanAPI {
                 return loginInfo;
 
             // 获取本地保存的token
-            loginInfo = getLoginInfoFromDB();
-            if (loginInfo != null) {
-                Log.i("login info", "get login info from db");
-                return loginInfo;
+            if (!refresh) {
+                loginInfo = getLoginInfoFromDB();
+                if (loginInfo != null) {
+                    Log.i("login info", "get login info from db");
+                    return loginInfo;
+                }
             }
 
             // 联网获取token
@@ -71,7 +73,8 @@ public class DoubanAPI {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            saveToDB(loginInfo);
+            if (loginInfo != null)
+                saveToDB(loginInfo);
             return loginInfo;
         }
     }
@@ -140,7 +143,7 @@ public class DoubanAPI {
             JSONObject logRet = new JSONObject(retStr);
             if (logRet.getInt("r") != 0) {
                 Log.e("login error", "can not login to douban");
-                return loginInfo;
+                return null;
             }
             loginInfo.expire = logRet.getString("expire");
             loginInfo.token = logRet.getString("token");
@@ -168,7 +171,7 @@ public class DoubanAPI {
         String url = ContextAPI.get().getString(R.string.get_list_url);
         List<Song> retList = new ArrayList<Song>();
         try {
-            LoginInfo loginInfo = getLoginInfo();
+            LoginInfo loginInfo = getLoginInfo(false);
 
             String result = get(url,
                     ("app_name=" + "radio_desktop_win" + "&")
@@ -205,7 +208,7 @@ public class DoubanAPI {
         return retList;
     }
 
-    private static class LoginInfo implements Serializable, Comparable<LoginInfo> {
+    public static class LoginInfo implements Serializable, Comparable<LoginInfo> {
         String userId;
         String token;
         String expire;

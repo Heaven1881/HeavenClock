@@ -9,6 +9,8 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -19,10 +21,13 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import mine.android.HeavenClock.R;
 import mine.android.api.AlarmAPI;
+import mine.android.api.ContextAPI;
 import mine.android.api.DouBanPlayer;
 import mine.android.ctrl.ClockCtrl;
 import mine.android.ctrl.ConfigCtrl;
 import mine.android.ctrl.SongCtrl;
+
+import java.io.IOException;
 
 /**
  * Created by Heaven on 15/7/18
@@ -31,6 +36,7 @@ public class MainView extends Activity {
     private static Context context = null;
     private WebView webView;
     private Handler handler = new Handler();
+    private MediaPlayer mp = null;
 
     public static Context getContext() {
         return context;
@@ -43,6 +49,15 @@ public class MainView extends Activity {
         context = this;
 
         webView = (WebView) findViewById(R.id.mainView);
+
+        mp = new MediaPlayer();
+        mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                mp.start();
+            }
+        });
 
         // WebView 设置
         WebSettings settings = webView.getSettings();
@@ -86,7 +101,13 @@ public class MainView extends Activity {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                DouBanPlayer.get().simplePlay(url);
+                try {
+                    mp.reset();
+                    mp.setDataSource(url);
+                    mp.prepareAsync();
+                } catch (IOException ignored) {
+                }
+                ContextAPI.makeToast("歌曲正在播放，请稍后...");
                 Log.i("simple player", "start");
             }
         });
@@ -96,7 +117,7 @@ public class MainView extends Activity {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                DouBanPlayer.get().simpleStop();
+                mp.reset();
                 Log.i("simple player", "stop");
             }
         });

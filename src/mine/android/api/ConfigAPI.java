@@ -20,4 +20,18 @@ public class ConfigAPI {
         DataBase<Config> db = new DataBase<Config>(Config.class);
         db.replaceAll(Arrays.asList(config));
     }
+
+    public static void checkDoubanInfo() {
+        new Thread() {
+            @Override
+            public void run() {
+                DoubanAPI.LoginInfo loginInfo = DoubanAPI.getLoginInfo(true);
+                if (loginInfo == null) {
+                    ContextAPI.makeToast("该账户和密码可能有问题~");
+                } else {
+                    ContextAPI.makeToast("账户已经通过验证~");
+                }
+            }
+        }.start();
+    }
 }

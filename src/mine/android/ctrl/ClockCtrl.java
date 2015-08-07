@@ -197,7 +197,7 @@ public class ClockCtrl {
             public void run() {
                 SongListAPI.deleteExtraSong();
                 List<Song> songs = SongListAPI.get();
-                Collections.reverse(songs);
+//                Collections.reverse(songs);
 
                 JSONObject jsons = new JSONObject();
                 try {

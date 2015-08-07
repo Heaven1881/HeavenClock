@@ -104,6 +104,7 @@ public class AlarmView extends Activity {
             public void run() {
                 player.stop();
                 AlarmView.this.finish();
+                webView.loadUrl("javascript:simpleUpdate('clock')");
             }
         });
     }

@@ -61,7 +61,7 @@ public class SongListAPI {
         int historySong = ConfigAPI.get().getHistorySong();
         List<Song> songs = get();
         while (songs.size() > historySong) {
-            songs.remove(0);
+            songs.remove(songs.size() - 1);
         }
     }
 }
