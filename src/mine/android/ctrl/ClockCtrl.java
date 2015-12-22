@@ -138,27 +138,18 @@ public class ClockCtrl {
 
     /**
      * 获取所有clock列表
-     *
-     * @param callback 回调函数
      */
-    public void getAllClockEntry(final String callback) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                List<ClockEntry> clockEntries = ClockEntryAPI.get();
-                Collections.sort(clockEntries);
+    public String getAllClockEntry() {
+        List<ClockEntry> clockEntries = ClockEntryAPI.get();
+        Collections.sort(clockEntries);
 
-                List jsons = new ArrayList();
-                for (ClockEntry entry : clockEntries) {
-                    JSONObject json = clockEntryToJsonObject(entry);
-                    jsons.add(json);
-                }
-                JSONArray jsonArray = new JSONArray(jsons);
-                final String arrayStr = jsonArray.toString();
-                Log.i("req all entry", arrayStr);
-                webView.loadUrl("javascript:" + callback + "('" + arrayStr + "')");
-            }
-        });
+        List jsons = new ArrayList();
+        for (ClockEntry entry : clockEntries) {
+            JSONObject json = clockEntryToJsonObject(entry);
+            jsons.add(json);
+        }
+        JSONArray jsonArray = new JSONArray(jsons);
+        return jsonArray.toString();
     }
 
     /**
@@ -191,35 +182,58 @@ public class ClockCtrl {
         });
     }
 
-    public void getHistory(final String callback) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                SongListAPI.deleteExtraSong();
-                List<Song> songs = SongListAPI.get();
+    public String getHistory() {
+        SongListAPI.deleteExtraSong();
+        List<Song> songs = SongListAPI.get();
 //                Collections.reverse(songs);
 
-                JSONObject jsons = new JSONObject();
-                try {
-                    for (Song song : songs) {
-                        JSONObject json = new JSONObject();
-                        json.put("url", song.getUrl());
-                        json.put("name", song.getTitle());
-                        json.put("artist", song.getArtist());
-                        Calendar c = Calendar.getInstance();
-                        c.setTime(song.getPlayTime());
-                        json.put("playedTime", (c.get(Calendar.MONTH)+1)+"月"+(c.get(Calendar.DAY_OF_MONTH))+"日");
-                        json.put("sid", song.getSid());
+        JSONObject jsons = new JSONObject();
+        try {
+            for (Song song : songs) {
+                JSONObject json = new JSONObject();
+                json.put("url", song.getUrl());
+                json.put("name", song.getTitle());
+                json.put("artist", song.getArtist());
+                Calendar c = Calendar.getInstance();
+                c.setTime(song.getPlayTime());
+                json.put("playedTime", (c.get(Calendar.MONTH) + 1) + "月" + (c.get(Calendar.DAY_OF_MONTH)) + "日");
+                json.put("sid", song.getSid());
 
-                        jsons.accumulate("songHistory", json);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                String jsonStr = jsons.toString();
-                Log.i("req music list", jsonStr);
-                webView.loadUrl("javascript:" + callback + "('" + jsonStr + "')");
+                jsons.accumulate("songHistory", json);
             }
-        });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String jsonStr = jsons.toString();
+        return jsonStr;
+//        handler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                SongListAPI.deleteExtraSong();
+//                List<Song> songs = SongListAPI.newInstance();
+////                Collections.reverse(songs);
+//
+//                JSONObject jsons = new JSONObject();
+//                try {
+//                    for (Song song : songs) {
+//                        JSONObject json = new JSONObject();
+//                        json.put("url", song.getUrl());
+//                        json.put("name", song.getTitle());
+//                        json.put("artist", song.getArtist());
+//                        Calendar c = Calendar.getInstance();
+//                        c.setTime(song.getPlayTime());
+//                        json.put("playedTime", (c.newInstance(Calendar.MONTH) + 1) + "月" + (c.newInstance(Calendar.DAY_OF_MONTH)) + "日");
+//                        json.put("sid", song.getSid());
+//
+//                        jsons.accumulate("songHistory", json);
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                String jsonStr = jsons.toString();
+//                Log.i("req music list", jsonStr);
+//                webView.loadUrl("javascript:" + callback + "('" + jsonStr + "')");
+//            }
+//        });
     }
 }

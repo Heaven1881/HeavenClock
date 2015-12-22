@@ -22,7 +22,7 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
     private static int CHANNEL_OLD = -3;
     private double p = 0.3;
 
-    private static DouBanPlayer player = null;
+//    private static DouBanPlayer player = null;
 
     private MediaPlayer mp = null;
 
@@ -38,14 +38,10 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
 
     private OnNewSongListener onNewSongListener = null;
 
-    public static DouBanPlayer get() {
-        if (player != null) {
-            return player;
-        }
+    public static DouBanPlayer newInstance() {
         ExecutorService pool = Executors.newSingleThreadExecutor();
         Config config = ConfigAPI.get();
-        player = new DouBanPlayer(config.getRepeatSong(), config.getpForNew(), pool);
-        return player;
+        return new DouBanPlayer(config.getRepeatSong(), config.getpForNew(), pool);
     }
 
     private void playSong(Song song) {
@@ -59,8 +55,11 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
             playedSong++;
 
             mp.reset();
+            Log.d("mp-status", "reset");
             mp.setDataSource(song.getUrl());
+            Log.d("mp-status", "setDataSource");
             mp.prepareAsync();
+            Log.d("mp-status", "prepareAsync");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -105,6 +104,8 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
     }
 
     public void start() {
+        DoubanAPI.getLoginInfo(true);
+
         int maxTry = 10;
         while (playList.size() < size && --maxTry > 0) {
             updatePlayList();
@@ -130,7 +131,7 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
 
         // 选取歌的概率
         double v = seed.nextDouble();
-        Log.i("p=" + p, "v=" + v);
+//        Log.i("p=" + p, "v=" + v);
         if (v < p)
             gottenList = DoubanAPI.getNewList(CHANNEL_NEW);
         else
@@ -149,6 +150,7 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
      */
     public void skipCurrentSong() {
         mp.reset();
+        Log.d("mp-status", "reset");
         markSong(DoubanAPI.OP_SKIP, currentSong.getSid());
         nextSong();
     }
@@ -170,6 +172,7 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
     @Override
     public void onPrepared(MediaPlayer mp) {
         mp.start();
+        Log.d("mp-status", "start");
         Log.i("Douban", "onPrepared");
     }
 
@@ -178,8 +181,13 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener, MediaPlay
     }
 
     public void stop() {
-        mp.reset();
+        if (mp.isPlaying()) {
+            mp.stop();
+            Log.d("mp-status", "stop");
+        }
         mp.release();
+        Log.d("mp-status", "release");
+
     }
 
     public interface OnNewSongListener {

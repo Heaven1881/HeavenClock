@@ -1,5 +1,6 @@
 package mine.android.api;
 
+import android.util.Log;
 import mine.android.api.database.DataBase;
 import mine.android.api.modules.ClockEntry;
 
@@ -146,8 +147,13 @@ public class ClockEntryAPI {
     public static final int FIELD_MINUTE = 3;
     public static final int FIELD_TYPE = 4;
     public static final int FIELD_WEEK = 5;
+
     public static void updateField(int id, int field, Object value) {
         ClockEntry clockEntry = getById(id);
+        if (clockEntry == null) {
+            Log.e("ClockEntryAPI", "Cannot find clockEntry by id(" + id + ")");
+            return;
+        }
         switch (field) {
             case FIELD_ACTIVE:
                 clockEntry.setActive((Boolean) value);

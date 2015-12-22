@@ -117,7 +117,7 @@ public class MainView extends Activity {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                mp.reset();
+                mp.stop();
                 Log.i("simple player", "stop");
             }
         });

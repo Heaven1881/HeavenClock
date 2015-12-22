@@ -61,7 +61,7 @@ public class DoubanAPI {
             if (!refresh) {
                 loginInfo = getLoginInfoFromDB();
                 if (loginInfo != null) {
-                    Log.i("login info", "get login info from db");
+                    Log.i("login info", "newInstance login info from db");
                     return loginInfo;
                 }
             }
@@ -134,7 +134,7 @@ public class DoubanAPI {
 
         StringBuilder param = new StringBuilder();
         try {
-            param.append("app_name=" + "radio_desktop_win" + "&");
+            param.append("app_name=" + "radio_android" + "&");
             param.append("version=" + 100 + "&");
             param.append("email=").append(email).append("&");
             param.append("password=").append(password);
@@ -174,14 +174,14 @@ public class DoubanAPI {
             LoginInfo loginInfo = getLoginInfo(false);
 
             String result = get(url,
-                    ("app_name=" + "radio_desktop_win" + "&")
+                    ("app_name=" + "radio_android" + "&")
                             + "version=" + 100 + "&" + "user_id=" + loginInfo.userId + "&"
                             + "expire=" + loginInfo.expire + "&"
                             + "token=" + loginInfo.token + "&"
                             + "channel=" + channel + "&"
                             + "type=" + type + "&"
                             + "sid=" + sid,
-                    true);
+                    false);
 
             JSONObject response = new JSONObject(result);
             if (response.getInt("r") != 0) {

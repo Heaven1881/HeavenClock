@@ -14,16 +14,9 @@ import android.webkit.WebViewClient;
 import mine.android.HeavenClock.R;
 import mine.android.api.AlarmAPI;
 import mine.android.api.ClockEntryAPI;
-import mine.android.api.ConfigAPI;
 import mine.android.api.DouBanPlayer;
 import mine.android.api.modules.ClockEntry;
-import mine.android.api.modules.Config;
-import mine.android.api.modules.Song;
-import mine.android.ctrl.ClockCtrl;
 import mine.android.ctrl.SongCtrl;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Created by Heaven on 15/7/19
@@ -41,7 +34,7 @@ public class AlarmView extends Activity {
         webView = (WebView) findViewById(R.id.detailView);
 
         // 初始化播放器
-        player = DouBanPlayer.get();
+        player = DouBanPlayer.newInstance();
 
         // WebView 设置
         WebSettings settings = webView.getSettings();
@@ -104,7 +97,7 @@ public class AlarmView extends Activity {
             public void run() {
                 player.stop();
                 AlarmView.this.finish();
-                webView.loadUrl("javascript:simpleUpdate('clock')");
+                webView.loadUrl("javascript:drawClockView()");
             }
         });
     }

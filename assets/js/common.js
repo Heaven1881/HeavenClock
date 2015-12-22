@@ -41,7 +41,8 @@ $(document).on("pageinit", "#setting", function () {
 });
 
 $(document).on("pageinit", "#music", function () {
-    window.clock.getHistory("drawMusicList");
+    //window.clock.getHistory("drawMusicList");
+    drawMusicList();
 });
 
 $(document).on("pageinit", "#detail", function () {
@@ -75,7 +76,7 @@ $(document).on("pageinit", "#detail", function () {
 
 $(document).on("pageinit", "#clock", function () {
     window.console.info("on pageinit clock");
-    window.clock.getAllClockEntry("drawClockView");
+    drawClockView();
 });
 
 $(document).on("pageinit", "#alarm", function () {
