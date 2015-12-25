@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>xuer clock</title>
+
+    <!-- Sets initial viewport load and disables zooming  -->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+
+    <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <!-- Include the compiled Ratchet CSS -->
+    <link href="ratchet/css/ratchet.min.css" rel="stylesheet">
+    <link href="css/common.css" rel="stylesheet">
+
+    <!-- Include the compiled Ratchet JS -->
+    <script src="ratchet/js/ratchet.min.js"></script>
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/handlebars-v4.0.5.js"></script>
+    <script src="js/_Publisher.js"></script>
+    <script src="js/timer.js"></script>
+</head>
+<body>
+
+<!-- Make sure all your bars are the first things in your <body> -->
+<header class="bar bar-nav">
+    <h1 class="title">闹钟</h1>
+</header>
+
+<!-- Wrap all non-bar HTML in the .content div (this is actually what scrolls) -->
+<div class="content">
+    <script id="main-pad-template" type="text/x-handlebars-template">
+        <div class="content-padded">
+            <div class="rat-alarm-space-up"></div>
+            <div class="rat-alarm-time"><b>{{time}}</b></div>
+            <div class="rat-alarm-space-mid"></div>
+        </div>
+        <div class="card">
+            <ul class="table-view">
+                <li class="table-view-cell media">
+                    <img class="media-object pull-left" src="http://placehold.it/42x42">
+
+                    <div class="media-body">
+                        {{music}}
+                        <p>{{artist}}</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="content-padded">
+            <button class="btn rat-btn-block btn-primary btn-outlined" id="ctrl-next">
+                <span class="icon icon-right"></span>
+            </button>
+            <button class="btn rat-btn-block btn-negative btn-outlined" id="ctrl-like">
+                <span class="icon {{mkstart like}}" id="like-status"></span>
+            </button>
+            <button class="btn rat-btn-block " id="ctrl-bye">
+                <span class="icon icon-trash"></span>
+            </button>
+            <button class="btn btn-block btn-outlined" id="ctrl-close">关闭闹钟</button>
+        </div>
+    </script>
+    <div id="main-pad"></div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>xuer clock</title>
+
+    <!-- Sets initial viewport load and disables zooming  -->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+
+    <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <!-- Include the compiled Ratchet CSS -->
+    <link href="ratchet/css/ratchet.min.css" rel="stylesheet">
+    <link href="css/common.css" rel="stylesheet">
+
+    <!-- Include the compiled Ratchet JS -->
+    <script src="ratchet/js/ratchet.min.js"></script>
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/handlebars-v4.0.5.js"></script>
+    <script src="js/_Publisher.js"></script>
+    <script src="js/detail.js"></script>
+</head>
+<body>
+
+<!-- Make sure all your bars are the first things in your <body> -->
+<header class="bar bar-nav">
+    <a class="icon icon-left-nav pull-left" href="clocks.html" id="back" data-ignore="push"></a>
+    <a class="icon icon-check pull-right" id="ctrl-modify-confirm"></a>
+
+    <h1 class="title">编辑闹钟</h1>
+</header>
+
+<!-- Wrap all non-bar HTML in the .content div (this is actually what scrolls) -->
+<div class="content">
+    <script id="clock-detail-template" type="text/x-handlebars-template">
+        <div id="clock-cid" data-cid="{{cid}}"></div>
+        <div class="content-padded">
+            <p>时间</p>
+            <input type="time" name="time" id="input-create-time" value="{{time}}">
+        </div>
+
+        <div class="content-padded">
+            <p>重复</p>
+            <label class="rat-clock-new-repeat-label">
+                <input type="radio" name="repeat" value="FOR_ONCE" {{#eq for 'FOR_ONCE'}} checked="checked" {{else}} {{/eq}}>
+                <span>一次</span>
+            </label>
+            <label class="rat-clock-new-repeat-label">
+                <input type="radio" name="repeat" value="FOR_DAY" {{#eq for 'FOR_DAY'}} checked="checked" {{else}} {{/eq}}>
+                <span>每天</span>
+            </label>
+            <label class="rat-clock-new-repeat-label">
+                <input type="radio" name="repeat" value="FOR_WEEK" {{#eq for 'FOR_WEEK'}} checked="checked" {{else}} {{/eq}}>
+                <span>每周</span>
+            </label>
+        </div>
+
+        <!--<div class="content-padded">-->
+            <!--<p>星期</p>-->
+            <!--<label class="rat-clock-new-week-label"><input type="checkbox" name="week"><span>一</span></label>-->
+            <!--<label class="rat-clock-new-week-label"><input type="checkbox" name="week"><span>二</span></label>-->
+            <!--<label class="rat-clock-new-week-label"><input type="checkbox" name="week"><span>三</span></label>-->
+            <!--<label class="rat-clock-new-week-label"><input type="checkbox" name="week"><span>四</span></label>-->
+            <!--<label class="rat-clock-new-week-label"><input type="checkbox" name="week"><span>五</span></label>-->
+            <!--<label class="rat-clock-new-week-label"><input type="checkbox" name="week"><span>六</span></label>-->
+            <!--<label class="rat-clock-new-week-label"><input type="checkbox" name="week"><span>日</span></label>-->
+        <!--</div>-->
+
+        <div class="content-padded">
+            <p>备注</p>
+            <input type="text" name="desc" value="{{name}}">
+        </div>
+
+        <div class="content-padded">
+            <a class="btn btn-negative btn-block" id="ctrl-delete-clock">删除该闹钟</a>
+        </div>
+    </script>
+    <form id="clock-detail"></form>
+</div>
+</div>
+
+</body>
+</html>

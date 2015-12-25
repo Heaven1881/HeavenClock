@@ -1,7 +1,7 @@
 gen/*
+test/gen/*
 out/*
+test/bin/*
 .idea/*
 *.jks
 *.apk
-*.backup
-.DS_Store
