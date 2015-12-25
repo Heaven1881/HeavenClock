@@ -26,6 +26,8 @@ import mine.android.api.DouBanPlayer;
 import mine.android.ctrl.ClockCtrl;
 import mine.android.ctrl.ConfigCtrl;
 import mine.android.ctrl.SongCtrl;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -89,38 +91,34 @@ public class MainView extends Activity {
         });
 
         //js java 映射
-        webView.addJavascriptInterface(new ClockCtrl(handler, webView), "clock");
-        webView.addJavascriptInterface(new ConfigCtrl(handler, webView), "config");
-        webView.addJavascriptInterface(this, "simplePlayer");
-        webView.loadUrl("file:///android_asset/mainView.html");
+        webView.addJavascriptInterface(new ClockCtrl(handler, webView), "ClockCtrl");
+        webView.addJavascriptInterface(new ConfigCtrl(handler, webView), "ConfigCtrl");
+        webView.addJavascriptInterface(this, "Activity");
+        webView.loadUrl("file:///android_asset/clocks.html");
 
         AlarmAPI.activeAllClock();
     }
 
-    public void simplePlay(final String url) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    mp.reset();
-                    mp.setDataSource(url);
-                    mp.prepareAsync();
-                } catch (IOException ignored) {
-                }
-                ContextAPI.makeToast("歌曲正在播放，请稍后...");
-                Log.i("simple player", "start");
-            }
-        });
+    public void simplePlay(String jsonStr) {
+        try {
+            JSONObject json = new JSONObject(jsonStr);
+            String surl = json.getString("surl");
+            mp.reset();
+            mp.setDataSource(surl);
+            mp.prepareAsync();
+
+            ContextAPI.makeToast("歌曲正在播放，请稍后...");
+            Log.i("simplePlay", jsonStr);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void simpleStop() {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                mp.stop();
-                Log.i("simple player", "stop");
-            }
-        });
+        if (mp.isPlaying()) {
+            mp.stop();
+            Log.i("simpleStop", "stop");
+        }
     }
 
     @SuppressWarnings("NullableProblems")

@@ -70,15 +70,16 @@ public class AlarmView extends Activity {
         ClockEntry entry = ClockEntryAPI.getById(id);
         if (entry.getType() == ClockEntry.ClockType.FOR_ONCE) {
             AlarmAPI.cancelClock(id);
+            ClockEntryAPI.updateField(id, ClockEntryAPI.FIELD_ACTIVE, false);
         }
 
         SongCtrl songCtrl = new SongCtrl(handler, webView, player);
         songCtrl.setEntry(entry);
 
         //js java 映射
-        webView.addJavascriptInterface(songCtrl, "song");
-        webView.addJavascriptInterface(this, "activity");
-        webView.loadUrl("file:///android_asset/alarmView.html");
+        webView.addJavascriptInterface(songCtrl, "SongCtrl");
+        webView.addJavascriptInterface(this, "Activity");
+        webView.loadUrl("file:///android_asset/timer.html");
 
         Log.i("AlarmActivity", "STARTED");
 

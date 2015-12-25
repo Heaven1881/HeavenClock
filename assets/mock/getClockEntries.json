@@ -1,0 +1,20 @@
+{
+  "clock_entries": [
+    {
+      "cid": 19,
+      "active": false,
+      "time": "06:40",
+      "for": "FOR_ONCE",
+      "week": "0000000",
+      "name": "起床"
+    },
+    {
+      "cid": 20,
+      "active": true,
+      "time": "07:13",
+      "for": "FOR_DAY",
+      "week": "0000000",
+      "name": "再次起床"
+    }
+  ]
+}

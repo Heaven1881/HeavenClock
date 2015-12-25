@@ -34,7 +34,7 @@ public class ClockCtrl {
     private JSONObject clockEntryToJsonObject(ClockEntry clockEntry) {
         JSONObject json = new JSONObject();
         try {
-            json.put("id", clockEntry.getId());
+            json.put("cid", clockEntry.getId());
             json.put("name", clockEntry.getName());
             json.put("for", clockEntry.getType());
             json.put("active", clockEntry.isActive());
@@ -48,10 +48,29 @@ public class ClockCtrl {
 
     /**
      * 获取闹钟信息
+     * @param jsonStr data
+     */
+    public String getClockEntry(String jsonStr) {
+        try {
+            JSONObject json = new JSONObject(jsonStr);
+            int cid = json.getInt("cid");
+            ClockEntry entry = ClockEntryAPI.getById(cid);
+            String entryStr = clockEntryToJsonObject(entry).toString();
+            Log.i("getClockEntry", entryStr);
+            return entryStr;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "{}";
+    }
+
+    /**
+     * 获取闹钟信息
      *
      * @param id       闹钟id
      * @param callback 回调函数
      */
+    @Deprecated
     public void getClockDetail(final String id, final String callback) {
 
         handler.post(new Runnable() {
@@ -67,10 +86,27 @@ public class ClockCtrl {
     }
 
     /**
+     * 删除clock entry
+     * @param jsonStr cid
+     */
+    public void deleteClockEntry(String jsonStr) {
+        try {
+            JSONObject json = new JSONObject(jsonStr);
+            int cid = json.getInt("cid");
+            AlarmAPI.cancelClock(cid);
+            ClockEntryAPI.deleteClockEntry(cid);
+            Log.i("deleteClockEntry", jsonStr);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * 删除对应id的entry
      *
      * @param idStr id
      */
+    @Deprecated
     public void deleteClockById(final String idStr) {
         handler.post(new Runnable() {
             @Override
@@ -85,6 +121,45 @@ public class ClockCtrl {
     }
 
     /**
+     * 修改clock entry 若cid==0则表示添加
+     *
+     * @param jsonStr json str
+     */
+    public void setClockEntry(String jsonStr) {
+        try {
+            Log.i("debug", jsonStr);
+            JSONObject json = new JSONObject(jsonStr);
+            int cid = json.getInt("cid");
+            ClockEntry entry = new ClockEntry();
+            entry.setId(json.getInt("cid"));
+            entry.setHourOfDay(Integer.parseInt(json.getString("time").split(":")[0]));
+            entry.setMinute(Integer.parseInt(json.getString("time").split(":")[1]));
+            String typeStr = json.getString("repeat");
+            if ("FOR_ONCE".equals(typeStr)) {
+                entry.setType(ClockEntry.ClockType.FOR_ONCE);
+            } else if ("FOR_DAY".equals(typeStr)) {
+                entry.setType(ClockEntry.ClockType.FOR_DAY);
+            } else if ("FOR_WEEK".equals(typeStr)) {
+                entry.setType(ClockEntry.ClockType.FOR_WEEK);
+            }
+            entry.setName(json.getString("desc"));
+
+            int result;
+            if (cid == 0) {
+                result = ClockEntryAPI.addClockEntry(entry);
+                AlarmAPI.activeClock(result);
+                Log.i("add entry " + result, jsonStr);
+            } else {
+                result = ClockEntryAPI.updateClockEntry(entry);
+                AlarmAPI.activeClock(result);
+                Log.i("update entry " + result, jsonStr);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * 添加clock entry, 若id==0则表示添加，否则为更新
      *
      * @param hourStr   小时
@@ -93,6 +168,7 @@ public class ClockCtrl {
      * @param weekStr   自定义标记
      * @param nameStr   备注
      */
+    @Deprecated
     public void updateClockEntry(final String idStr, final String hourStr, final String minuteStr, final String typeStr,
                                  final String weekStr, final String nameStr) {
         handler.post(new Runnable() {
@@ -139,17 +215,48 @@ public class ClockCtrl {
     /**
      * 获取所有clock列表
      */
-    public String getAllClockEntry() {
+    public String getClockEntries() {
         List<ClockEntry> clockEntries = ClockEntryAPI.get();
-        Collections.sort(clockEntries);
 
-        List jsons = new ArrayList();
-        for (ClockEntry entry : clockEntries) {
-            JSONObject json = clockEntryToJsonObject(entry);
-            jsons.add(json);
+        JSONObject jsons = new JSONObject();
+        JSONArray ja = new JSONArray();
+        try {
+            for (ClockEntry entry : clockEntries) {
+                JSONObject json = clockEntryToJsonObject(entry);
+                ja.put(json);
+            }
+            jsons.put("clock_entries", ja);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        JSONArray jsonArray = new JSONArray(jsons);
-        return jsonArray.toString();
+        String jsonStr = jsons.toString();
+        Log.i("getClockEntries", jsonStr);
+        return jsonStr;
+    }
+
+    /**
+     * 激活闹钟
+     * @param jsonStr data
+     */
+    public void activeClock(String jsonStr) {
+        try {
+            JSONObject json = new JSONObject(jsonStr);
+            int cid = json.getInt("cid");
+            ClockEntry entry = ClockEntryAPI.getById(cid);
+            if (entry == null) {
+                Log.i("active false", jsonStr);
+            } else {
+                if (json.getBoolean("active")) {
+                    AlarmAPI.activeClock(cid);
+                } else {
+                    AlarmAPI.cancelClock(cid);
+                }
+                ClockEntryAPI.updateField(cid, ClockEntryAPI.FIELD_ACTIVE, json.getBoolean("active"));
+                Log.i("active success", jsonStr);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -158,6 +265,7 @@ public class ClockCtrl {
      * @param idStr id
      * @param sel   status
      */
+    @Deprecated
     public void activeClock(final String idStr, final String sel) {
         handler.post(new Runnable() {
             @Override
@@ -185,55 +293,25 @@ public class ClockCtrl {
     public String getHistory() {
         SongListAPI.deleteExtraSong();
         List<Song> songs = SongListAPI.get();
-//                Collections.reverse(songs);
 
         JSONObject jsons = new JSONObject();
+        JSONArray ja = new JSONArray();
         try {
             for (Song song : songs) {
                 JSONObject json = new JSONObject();
                 json.put("url", song.getUrl());
                 json.put("name", song.getTitle());
                 json.put("artist", song.getArtist());
-                Calendar c = Calendar.getInstance();
-                c.setTime(song.getPlayTime());
-                json.put("playedTime", (c.get(Calendar.MONTH) + 1) + "月" + (c.get(Calendar.DAY_OF_MONTH)) + "日");
+                json.put("playedTime", song.getPlayTime().getTime());
                 json.put("sid", song.getSid());
-
-                jsons.accumulate("songHistory", json);
+                ja.put(json);
             }
+            jsons.put("song_history", ja);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         String jsonStr = jsons.toString();
+        Log.i("getHistory", jsonStr);
         return jsonStr;
-//        handler.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                SongListAPI.deleteExtraSong();
-//                List<Song> songs = SongListAPI.newInstance();
-////                Collections.reverse(songs);
-//
-//                JSONObject jsons = new JSONObject();
-//                try {
-//                    for (Song song : songs) {
-//                        JSONObject json = new JSONObject();
-//                        json.put("url", song.getUrl());
-//                        json.put("name", song.getTitle());
-//                        json.put("artist", song.getArtist());
-//                        Calendar c = Calendar.getInstance();
-//                        c.setTime(song.getPlayTime());
-//                        json.put("playedTime", (c.newInstance(Calendar.MONTH) + 1) + "月" + (c.newInstance(Calendar.DAY_OF_MONTH)) + "日");
-//                        json.put("sid", song.getSid());
-//
-//                        jsons.accumulate("songHistory", json);
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//                String jsonStr = jsons.toString();
-//                Log.i("req music list", jsonStr);
-//                webView.loadUrl("javascript:" + callback + "('" + jsonStr + "')");
-//            }
-//        });
     }
 }

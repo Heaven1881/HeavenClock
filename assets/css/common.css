@@ -22,3 +22,45 @@
     margin-left: auto;
     width: 160px;
 }
+
+.rat-clock-li-time {
+    float: left;
+    margin-right: 15px;
+    font-size: 2em !important;
+    padding-bottom: 8px;
+    padding-top: 8px;
+}
+
+.rat-clock-new-repeat-label {
+    margin-right: 10px;
+}
+
+.rat-clock-new-week-label {
+    margin-right: 10px;
+}
+
+.rat-alarm-time {
+    font-size: 4em;
+    margin-right: auto;
+    margin-left: auto;
+    width: 160px;
+}
+
+.rat-alarm-space-up {
+    height: 100px;
+}
+
+.rat-alarm-space-mid {
+    height: 100px;
+}
+
+.rat-btn-block {
+    float: left;
+    display: block;
+    width: 102.3px;
+    padding: 15px 0;
+    margin-bottom: 10px;
+    margin-right: 5px;
+    margin-left: 5px;
+    font-size: 18px;
+}

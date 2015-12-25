@@ -34,44 +34,51 @@ public class SongCtrl implements DouBanPlayer.OnNewSongListener {
     }
 
     public void unlikeCurrentSong() {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                player.markCurrentSong(DoubanAPI.OP_BYE);
-                player.skipCurrentSong();
-                ContextAPI.makeToast("歌曲标记为不再播放");
-            }
-        });
+        player.markCurrentSong(DoubanAPI.OP_BYE);
+        player.skipCurrentSong();
+        ContextAPI.makeToast("歌曲标记为不再播放");
     }
 
     public void markCurrentSong() {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                player.markCurrentSong(DoubanAPI.OP_MARK_AS_LIKE);
-                ContextAPI.makeToast("已标记为喜欢");
-            }
-        });
+        player.markCurrentSong(DoubanAPI.OP_MARK_AS_LIKE);
+        ContextAPI.makeToast("已标记为喜欢");
     }
 
     public void unmarkCurrentSong() {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                player.markCurrentSong(DoubanAPI.OP_DMARK_LIKE);
-                ContextAPI.makeToast("已取消标记");
-            }
-        });
+        player.markCurrentSong(DoubanAPI.OP_DMARK_LIKE);
+        ContextAPI.makeToast("已取消标记");
     }
 
     public void skipCurrentSong() {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                player.markCurrentSong(DoubanAPI.OP_SKIP);
-                player.skipCurrentSong();
+        player.markCurrentSong(DoubanAPI.OP_SKIP);
+        player.skipCurrentSong();
+    }
+
+    public String getCurrentSongAndClock() {
+        Song song = player.getCurrentSong();
+        JSONObject json = new JSONObject();
+
+        try {
+            json.put("time", ClockCtrl.formatTime(entry.getHourOfDay(), entry.getMinute()));
+            if (song == null) {      // 若当前没有正在播放的歌曲
+                json.put("music", "Loading...");
+                json.put("artist", "Loading...");
+                json.put("like", false);
+                json.put("sid", 0);
+            } else {
+                json.put("music", song.getTitle());
+                json.put("artist", song.getArtist());
+                json.put("like", song.isLike());
+                json.put("sid", song.getSid());
             }
-        });
+
+            String jsonStr = json.toString();
+            Log.i("getCurrentSongAndClock", jsonStr);
+            return jsonStr;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "{}";
     }
 
     @Override
@@ -79,17 +86,7 @@ public class SongCtrl implements DouBanPlayer.OnNewSongListener {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                JSONObject json = new JSONObject();
-                try {
-                    json.put("time", ClockCtrl.formatTime(entry.getHourOfDay(), entry.getMinute()));
-                    json.put("music", song.getTitle());
-                    json.put("artist", song.getArtist());
-                    json.put("like", song.isLike());
-                    json.put("sid", song.getSid());
-                } catch (JSONException ignored) {
-                }
-                String jsonStr = json.toString();
-                webView.loadUrl("javascript:drawAlarm('" + jsonStr + "')");
+                webView.loadUrl("javascript:doUpdate()");
 
                 Log.i("mp3 url   :", song.getUrl());
                 Log.i("mp3 title :", song.getTitle());
