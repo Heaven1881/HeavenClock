@@ -26,9 +26,10 @@ var LISTENER_CONFIGS = {
         var data = {
             cid: 0,
             time: $('input[name=time]').val(),
-            repeat: $('input[name=repeat]:checked').val(),
-            week: '',
-            desc: $('input[name=desc]').val()
+            type: $('input[name=repeat]:checked').val(),
+            week: "",
+            desc: $('input[name=desc]').val(),
+            active: true
         };
 
         if (data.repeat == 'FOR_WEEK') {

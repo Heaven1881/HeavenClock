@@ -1,22 +1,17 @@
 package mine.android.view;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import mine.android.HeavenClock.R;
 import mine.android.api.AlarmAPI;
-import mine.android.api.ClockEntryAPI;
-import mine.android.api.DouBanPlayer;
-import mine.android.api.modules.ClockEntry;
-import mine.android.ctrl.SongCtrl;
+import mine.android.api.ClockAPI;
+import mine.android.api.ContextAPI;
+import mine.android.api.modules.Json;
+import mine.android.ctrl.PlayCtrl;
 
 /**
  * Created by Heaven on 15/7/19
@@ -24,7 +19,7 @@ import mine.android.ctrl.SongCtrl;
 public class AlarmView extends Activity {
     private WebView webView;
     private Handler handler = new Handler();
-    private DouBanPlayer player = null;
+    private PlayCtrl playCtrl = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,75 +27,57 @@ public class AlarmView extends Activity {
         setContentView(R.layout.alarm);
 
         webView = (WebView) findViewById(R.id.detailView);
-
-        // 初始化播放器
-        player = DouBanPlayer.newInstance();
-
-        // WebView 设置
-        WebSettings settings = webView.getSettings();
-        settings.setSupportZoom(true);
-        settings.setDefaultZoom(WebSettings.ZoomDensity.FAR);
-        settings.setJavaScriptEnabled(true);
-        settings.setDomStorageEnabled(true);
-
-        // 设置加载过程显示的进入信息
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("loading...");
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                progressDialog.dismiss();
-            }
-
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                progressDialog.show();
-            }
-        });
-
-        webView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                progressDialog.setMessage(newProgress + "%");
-            }
-        });
+        ContextAPI.initWebView(webView);
 
         Intent intent = getIntent();
-        int id = intent.getIntExtra("id", -1);
-        ClockEntry entry = ClockEntryAPI.getById(id);
-        if (entry.getType() == ClockEntry.ClockType.FOR_ONCE) {
-            AlarmAPI.cancelClock(id);
-            ClockEntryAPI.updateField(id, ClockEntryAPI.FIELD_ACTIVE, false);
-        }
+        int cid = intent.getIntExtra("cid", -1);
+        Json clock = ClockAPI.getClockEntryById(cid);
+        this.onClockAlarm(clock);
 
-        SongCtrl songCtrl = new SongCtrl(handler, webView, player);
-        songCtrl.setEntry(entry);
+        playCtrl = new PlayCtrl(handler, webView);
+        playCtrl.setClock(clock);
 
         //js java 映射
-        webView.addJavascriptInterface(songCtrl, "SongCtrl");
+        webView.addJavascriptInterface(playCtrl, "PlayCtrl");
         webView.addJavascriptInterface(this, "Activity");
         webView.loadUrl("file:///android_asset/timer.html");
 
-        Log.i("AlarmActivity", "STARTED");
-
-        new Thread(){
-            @Override
-            public void run() {
-                player.start();
-            }
-        }.start();
-
-    }
-
-    public void stop() {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                player.stop();
-                AlarmView.this.finish();
-                webView.loadUrl("javascript:drawClockView()");
+                try {
+                    AlarmView.this.playCtrl.start();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
+
     }
 
+    /**
+     * 事件处理函数，用于处理一个闹钟成功触发的事件
+     *
+     * @param clock json
+     */
+    private void onClockAlarm(Json clock) {
+        if (!clock.getBoolean("active"))    // 不可能触发一个没有激活的闹钟
+            assert false;
+        String type = clock.getString("type");
+        int cid = clock.getInt("cid");
+        if (type.equals("FOR_ONCE")) { // 闹钟是一次性的，则修改闹钟激活状态
+            ClockAPI.setClockEntryActive(cid, false);
+        } else {                        // 否则 设置下一次定时器
+            long nextAlarm = AlarmAPI.caculateNextAlarm(clock);
+            AlarmAPI.setTimer(cid, nextAlarm);
+        }
+    }
+
+    /**
+     * 关闭当前Activity
+     */
+    public void closeActivity() {
+        playCtrl.stop();
+        AlarmView.this.finish();
+    }
 }

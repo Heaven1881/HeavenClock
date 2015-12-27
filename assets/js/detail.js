@@ -23,9 +23,10 @@ var LISTENER_CONFIGS = {
         var data = {
             cid: $('div#clock-cid').attr('data-cid'),
             time: $('input[name=time]').val(),
-            repeat: $('input[name=repeat]:checked').val(),
+            type: $('input[name=repeat]:checked').val(),
             week: '',
-            desc: $('input[name=desc]').val()
+            desc: $('input[name=desc]').val(),
+            active: true
         };
 
         if (data.repeat == 'FOR_WEEK') {
