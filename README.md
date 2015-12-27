@@ -9,3 +9,5 @@
 注意：
 - 这个app只是一个调用服务的方式，其中的音乐和服务归豆瓣所有
 
+豆瓣fm API 参考自:
+- https://github.com/zonyitoo/doubanfm-qt/wiki/%E8%B1%86%E7%93%A3FM-API
