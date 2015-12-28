@@ -94,12 +94,12 @@ public class PlayCtrl implements DouBanPlayer.OnNewSongListener {
             @Override
             public void run() {
                 Json currentSong = PlayCtrl.this.player.getCurrentSong();
+                player.skipCurrentSong();
                 DoubanAPI.report(Json.create(
                         "channel", 0,
                         "sid", currentSong.getInt("sid"),
                         "type", "b"
                 ));
-                player.skipCurrentSong();
             }
         });
         ContextAPI.makeToast("歌曲标记为不再播放");
@@ -139,13 +139,13 @@ public class PlayCtrl implements DouBanPlayer.OnNewSongListener {
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
+                player.skipCurrentSong();
                 Json currentSong = PlayCtrl.this.player.getCurrentSong();
                 DoubanAPI.report(Json.create(
                         "channel", 0,
                         "sid", currentSong.getString("sid"),
                         "type", "s"
                 ));
-                player.skipCurrentSong();
             }
         });
 
@@ -178,13 +178,18 @@ public class PlayCtrl implements DouBanPlayer.OnNewSongListener {
 
     @Override
     public void onNewSong(Json song) {
-        handler.post(new Runnable() {
+        threadPool.execute(new Runnable() {
             @Override
             public void run() {
                 Log.i("PlayCtrl", String.format("title:%s", song.getString("title")));
                 Log.i("PlayCtrl", String.format("like:%d", song.getInt("like")));
                 SongHistoryAPI.recordSongEntry(song);
-                webView.loadUrl("javascript:doUpdate()");
+            }
+        });
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                webView.reload();
             }
         });
     }

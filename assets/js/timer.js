@@ -43,10 +43,6 @@ $(document).ready(function () {
 
 });
 
-function doUpdate() {
-    location = location;
-}
-
 Handlebars.registerHelper('mkstart', function (intLike) {
     if (intLike == 1) {
         return 'icon-star-filled';

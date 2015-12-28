@@ -35,9 +35,15 @@ public class MainView extends Activity {
     private static ExecutorService threadPool = null;
     private Handler handler = new Handler();
     private SimplePlayer player = null;
+    private static boolean active = false;
+    private static Intent serviceIntent;
 
     public static Context getContext() {
         return context;
+    }
+
+    public static boolean isActive() {
+        return active;
     }
 
     @Override
@@ -45,6 +51,8 @@ public class MainView extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         context = this;
+
+        MainView.active = true;
 
         // 初始化线程池
         if (threadPool == null)
@@ -145,5 +153,17 @@ public class MainView extends Activity {
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        webView.reload();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MainView.active = false;
     }
 }

@@ -8,6 +8,7 @@ import android.util.Log;
 import mine.android.api.modules.Json;
 import mine.android.api.modules.JsonArray;
 import mine.android.view.AlarmView;
+import mine.android.view.CallAlarm;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -56,12 +57,14 @@ public class AlarmAPI {
      * @param cid 闹钟id
      */
     public static void setTimer(int cid, long timestamp) {
-        Intent intent = new Intent(ContextAPI.get(), AlarmView.class);
+        Intent intent = new Intent(ContextAPI.get(), CallAlarm.class);
         intent.putExtra("cid", cid);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(ContextAPI.get(), cid, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(ContextAPI.get(), cid, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) ContextAPI.get().getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, timestamp, pendingIntent);
+
+
     }
 
     /**
@@ -70,8 +73,8 @@ public class AlarmAPI {
      * @param cid cid
      */
     public static void cancelTimer(int cid) {
-        Intent intent = new Intent(ContextAPI.get(), AlarmView.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(ContextAPI.get(), cid, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        Intent intent = new Intent(ContextAPI.get(), CallAlarm.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(ContextAPI.get(), cid, intent, 0);
         AlarmManager alarmManager = (AlarmManager) ContextAPI.get().getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
     }
