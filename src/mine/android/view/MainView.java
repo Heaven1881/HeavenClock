@@ -36,7 +36,6 @@ public class MainView extends Activity {
     private Handler handler = new Handler();
     private SimplePlayer player = null;
     private static boolean active = false;
-    private static Intent serviceIntent;
 
     public static Context getContext() {
         return context;
