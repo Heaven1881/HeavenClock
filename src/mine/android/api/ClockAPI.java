@@ -66,7 +66,9 @@ public class ClockAPI {
      */
     public static Json deleteClockEntryById(int id) {
         loadData();
-        return dataSet.remove(id);
+        Json ret = dataSet.remove(id);
+        saveData();
+        return ret;
     }
 
     /**
@@ -95,6 +97,7 @@ public class ClockAPI {
         loadData();
         Json clock = dataSet.get(id);
         clock.put("active", active);
+        saveData();
     }
 
     /**
