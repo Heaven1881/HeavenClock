@@ -44,17 +44,17 @@
         <div class="content-padded">
             <p>重复</p>
             <label class="rat-clock-new-repeat-label">
-                <input type="radio" name="repeat" value="FOR_ONCE" {{#eq for 'FOR_ONCE'}} checked="checked" {{else}} {{/eq}}>
+                <input type="radio" name="repeat" value="FOR_ONCE" {{#eq type 'FOR_ONCE'}} checked="checked" {{else}} {{/eq}}>
                 <span>一次</span>
             </label>
             <label class="rat-clock-new-repeat-label">
-                <input type="radio" name="repeat" value="FOR_DAY" {{#eq for 'FOR_DAY'}} checked="checked" {{else}} {{/eq}}>
+                <input type="radio" name="repeat" value="FOR_DAY" {{#eq type 'FOR_DAY'}} checked="checked" {{else}} {{/eq}}>
                 <span>每天</span>
             </label>
-            <label class="rat-clock-new-repeat-label">
-                <input type="radio" name="repeat" value="FOR_WEEK" {{#eq for 'FOR_WEEK'}} checked="checked" {{else}} {{/eq}}>
-                <span>每周</span>
-            </label>
+            <!--<label class="rat-clock-new-repeat-label">-->
+                <!--<input type="radio" name="repeat" value="FOR_WEEK" {{#eq type 'FOR_WEEK'}} checked="checked" {{else}} {{/eq}}>-->
+                <!--<span>每周</span>-->
+            <!--</label>-->
         </div>
 
         <!--<div class="content-padded">-->
@@ -70,7 +70,7 @@
 
         <div class="content-padded">
             <p>备注</p>
-            <input type="text" name="desc" value="{{name}}">
+            <input type="text" name="desc" value="{{desc}}">
         </div>
 
         <div class="content-padded">

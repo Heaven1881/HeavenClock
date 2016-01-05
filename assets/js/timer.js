@@ -2,32 +2,35 @@ var DATA_CONFIGS = [
     {
         src: '#main-pad-template',
         dst: '#main-pad',
-        data: SongCtrl.getCurrentSongAndClock()
+        data: PlayCtrl.getCurrentSongAndClock(),
+        ajax: {
+            url: "mock/getCurrentSongAndClock.json" // for debug
+        }
     }
 ];
 
 var LISTENER_CONFIGS = {
     '#ctrl-next': function (e) {
-        SongCtrl.skipCurrentSong();
+        PlayCtrl.skipCurrentSong();
     },
     '#ctrl-like': function (e) {
         var $like = $('#like-status');
         var bolLike = $like.hasClass('icon-star-filled');
         if (bolLike) {
-            SongCtrl.unmarkCurrentSong();
+            PlayCtrl.unrateCurrentSong();
             $like.removeClass('icon-star-filled');
             $like.addClass('icon-star');
         } else {
-            SongCtrl.markCurrentSong();
+            PlayCtrl.rateCurrentSong();
             $like.addClass('icon-star-filled');
             $like.removeClass('icon-star');
         }
     },
     '#ctrl-bye': function (e) {
-        SongCtrl.unlikeCurrentSong()
+        PlayCtrl.byeCurrentSong()
     },
     '#ctrl-close': function (e) {
-        Activity.stop()
+        Activity.closeActivity()
     }
 };
 
@@ -40,12 +43,8 @@ $(document).ready(function () {
 
 });
 
-function doUpdate() {
-    location = location;
-}
-
-Handlebars.registerHelper('mkstart', function (bolLike) {
-    if (bolLike) {
+Handlebars.registerHelper('mkstart', function (intLike) {
+    if (intLike == 1) {
         return 'icon-star-filled';
     } else {
         return 'icon-star';

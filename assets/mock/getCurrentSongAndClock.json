@@ -1,0 +1,38 @@
+{
+  "clock": {
+    "active": false,
+    "time": "17:06",
+    "desc": "",
+    "type": "FOR_ONCE",
+    "cid": "1",
+    "week": ""
+  },
+  "song": {
+    "sid": "1455000",
+    "sha256": "bc99af00122a92c6740f104a8afad4256219c3f8efb88ba00f595eaa3db76f8f",
+    "singers": [
+      {
+        "id": "9462",
+        "is_site_artist": false,
+        "related_site_id": 0,
+        "name": "何洁"
+      }
+    ],
+    "status": 0,
+    "album": "\/subject\/2082992\/",
+    "aid": "2082992",
+    "like": 0,
+    "url": "http:\/\/mr7.doubanio.com\/769b546f9bf7b9f36a40888e046a3b9f\/0\/fm\/song\/p1455000_128k.mp4",
+    "alert_msg": "",
+    "file_ext": "mp4",
+    "picture": "http:\/\/img3.doubanio.com\/lpic\/s2766429.jpg",
+    "title": "爱是喜欢你",
+    "albumtitle": "明明不是Angel",
+    "kbps": "128",
+    "subtype": "",
+    "length": 218,
+    "ssid": "ba4e",
+    "artist": "何洁",
+    "played_time": 1451235974
+  }
+}

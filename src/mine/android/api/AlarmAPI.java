@@ -5,129 +5,109 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import mine.android.api.modules.ClockEntry;
+import mine.android.api.modules.Json;
+import mine.android.api.modules.JsonArray;
 import mine.android.view.AlarmView;
+import mine.android.view.CallAlarm;
 
 import java.util.Calendar;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.Date;
 
 /**
  * Created by Heaven on 15/7/21
  */
 public class AlarmAPI {
+
     /**
-     * 获取闹钟下一次的激活时间
+     * 获取下次激活的事件
      *
-     * @param clockEntry entry
-     * @return calendar
+     * @param clock clock
+     * @return long
      */
-    private static Calendar getNextAlarmTime(ClockEntry clockEntry) {
+    public static long caculateNextAlarm(Json clock) {
+        String time = clock.getString("time");
+        String type = clock.getString("type");
+
+        String[] t = time.split(":");
         Calendar c = Calendar.getInstance();
-        c.set(Calendar.HOUR_OF_DAY, clockEntry.getHourOfDay());
-        c.set(Calendar.MINUTE, clockEntry.getMinute());
+        c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(t[0]));
+        c.set(Calendar.MINUTE, Integer.parseInt(t[1]));
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
 
-        switch (clockEntry.getType()) {
-            case FOR_ONCE:
-            case FOR_DAY:
-                if (c.getTimeInMillis() < System.currentTimeMillis()) {
-                    c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) + 1);
-                    Log.i("alarmAPI", "add one day for once and day");
-                }
-                break;
-            case FOR_WEEK:
-                int startDay = c.get(Calendar.DAY_OF_WEEK) - 1;
-                if (c.getTimeInMillis() < System.currentTimeMillis()) {
-                    c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) + 1);
-                    startDay = (startDay + 1) % 7;
-                }
-                for (int i = 0; i < 7; i++) {
-                    int day = startDay + i;
-                    if (clockEntry.weeks(day % 7)) {
-                        c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) + i);
-                        break;
-                    }
-                }
-                break;
-            default:
-                assert (false);
+        long timestamp = c.getTimeInMillis();
+
+        if (timestamp > System.currentTimeMillis()) // 如果timestemp在当前时间之后,则直接返回
+            return timestamp;
+
+        // 否则，加一天
+        if (type.equals("FOR_ONCE") || type.equals("FOR_DAY")) {
+            long ONE_DAY_MILLISECOND = 24 * 3600 * 1000;
+            timestamp += ONE_DAY_MILLISECOND;
+        } else if (type.equals("FOR_WEEK")) {
+            // TODO ....
         }
-        return c;
+        Log.i("next alarm", String.valueOf(new Date(timestamp)));
+        return timestamp;
     }
 
     /**
      * 为闹钟设置定时器
      *
-     * @param id       闹钟id
-     * @param calendar 时间
+     * @param cid 闹钟id
      */
-    private static void setTimer(int id, Calendar calendar) {
-        Intent intent = new Intent(ContextAPI.get(), AlarmView.class);
-        intent.putExtra("id", id);
+    public static void setTimer(int cid, long timestamp) {
+        Intent intent = new Intent(ContextAPI.get(), CallAlarm.class);
+        intent.putExtra("cid", cid);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(ContextAPI.get(), id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(ContextAPI.get(), cid, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) ContextAPI.get().getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, timestamp, pendingIntent);
+
+
     }
 
     /**
      * 取消定时器
      *
-     * @param id id
+     * @param cid cid
      */
-    private static void cancelTimer(int id) {
-        Intent intent = new Intent(ContextAPI.get(), AlarmView.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(ContextAPI.get(), id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+    public static void cancelTimer(int cid) {
+        Intent intent = new Intent(ContextAPI.get(), CallAlarm.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(ContextAPI.get(), cid, intent, 0);
         AlarmManager alarmManager = (AlarmManager) ContextAPI.get().getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
     }
 
-    /**
-     * 激活闹钟
-     *
-     * @param id id
-     */
-    public static void activeClock(int id) {
-        ClockEntry clockEntry = ClockEntryAPI.getById(id);
-        if (clockEntry == null)
+    public static void setTimerByClockId(int cid) {
+        Json clock = ClockAPI.getClockEntryById(cid);
+        if (clock == null) {
+            Log.e("setTimer", String.format("clock not find [id=%d]", cid));
             return;
-        Calendar nextAlarmTime = getNextAlarmTime(clockEntry);
-        Log.i("next alarm time for id: " + id, nextAlarmTime.getTime().toString());
-        setTimer(id, nextAlarmTime);
+        }
+        long timestamp = caculateNextAlarm(clock);
+        setTimer(cid, timestamp);
 
         // make toast
-        Calendar current = Calendar.getInstance();
-        current.setTimeInMillis(nextAlarmTime.getTimeInMillis() - current.getTimeInMillis());
-
-        // TRAP: 这里使用非常粗鲁的方式强行将时间本地化
-        current.set(Calendar.HOUR_OF_DAY, current.get(Calendar.HOUR_OF_DAY) - 8);
-
-        String line = "闹钟将在" + (current.get(Calendar.DAY_OF_YEAR) - 1) + "天" + current.get(Calendar.HOUR_OF_DAY) + "小时" + current.get(Calendar.MINUTE) + "分之后响";
+        timestamp -= System.currentTimeMillis();
+        String line = String.format("闹钟将在%d小时%d分后响",
+                timestamp / (1000 * 3600),
+                (timestamp % (1000 * 3600) / (60 * 1000)));
         ContextAPI.makeToast(line);
     }
 
-    /**
-     * 取消闹钟
-     *
-     * @param id id
-     */
-    public static void cancelClock(int id) {
-        Log.i("cancel clock", "" + id);
-        ClockEntry clockEntry = ClockEntryAPI.getById(id);
-        cancelTimer(id);
+    public static void cancelTimerByClockId(int cid) {
+        cancelTimer(cid);
     }
 
-    /**
-     * 检查并激活所有闹钟
-     */
-    public static void activeAllClock() {
-        List<ClockEntry> clockEntries = ClockEntryAPI.get();
-        for (ClockEntry entry : clockEntries) {
-            if (entry.isActive()) {
-                activeClock(entry.getId());
+    public static void setTimerForAllClock() {
+        JsonArray clocks = ClockAPI.getClockEntries();
+        for (Json clock : clocks) {
+            if (clock.getBoolean("active")) {
+                long timestamp = caculateNextAlarm(clock);
+                setTimer(clock.getInt("cid"), timestamp);
             }
         }
+        ContextAPI.makeToast("已为所有闹钟设置定时器");
     }
 }

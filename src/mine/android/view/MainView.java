@@ -1,35 +1,30 @@
 package mine.android.view;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import mine.android.HeavenClock.R;
 import mine.android.api.AlarmAPI;
 import mine.android.api.ContextAPI;
-import mine.android.api.DouBanPlayer;
+import mine.android.api.modules.Json;
 import mine.android.ctrl.ClockCtrl;
 import mine.android.ctrl.ConfigCtrl;
-import mine.android.ctrl.SongCtrl;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Heaven on 15/7/18
@@ -37,11 +32,17 @@ import java.io.IOException;
 public class MainView extends Activity {
     private static Context context = null;
     private WebView webView;
+    private static ExecutorService threadPool = null;
     private Handler handler = new Handler();
-    private MediaPlayer mp = null;
+    private SimplePlayer player = null;
+    private static boolean active = false;
 
     public static Context getContext() {
         return context;
+    }
+
+    public static boolean isActive() {
+        return active;
     }
 
     @Override
@@ -50,45 +51,16 @@ public class MainView extends Activity {
         setContentView(R.layout.main);
         context = this;
 
+        MainView.active = true;
+
+        // 初始化线程池
+        if (threadPool == null)
+            threadPool = Executors.newCachedThreadPool();
+
+        player = new SimplePlayer();
+
         webView = (WebView) findViewById(R.id.mainView);
-
-        mp = new MediaPlayer();
-        mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mediaPlayer) {
-                mp.start();
-            }
-        });
-
-        // WebView 设置
-        WebSettings settings = webView.getSettings();
-        settings.setSupportZoom(true);
-        settings.setDefaultZoom(WebSettings.ZoomDensity.FAR);
-        settings.setJavaScriptEnabled(true);
-        settings.setDomStorageEnabled(true);
-
-        // 设置加载过程显示的进入信息
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("loading...");
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                progressDialog.dismiss();
-            }
-
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                progressDialog.show();
-            }
-        });
-
-        webView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                progressDialog.setMessage(newProgress + "%");
-            }
-        });
+        ContextAPI.initWebView(webView);
 
         //js java 映射
         webView.addJavascriptInterface(new ClockCtrl(handler, webView), "ClockCtrl");
@@ -96,32 +68,73 @@ public class MainView extends Activity {
         webView.addJavascriptInterface(this, "Activity");
         webView.loadUrl("file:///android_asset/clocks.html");
 
-        AlarmAPI.activeAllClock();
-    }
-
-    public void simplePlay(String jsonStr) {
+        // 激活所有闹钟的定时器
         try {
-            JSONObject json = new JSONObject(jsonStr);
-            String surl = json.getString("surl");
-            mp.reset();
-            mp.setDataSource(surl);
-            mp.prepareAsync();
-
-            ContextAPI.makeToast("歌曲正在播放，请稍后...");
-            Log.i("simplePlay", jsonStr);
+            AlarmAPI.setTimerForAllClock();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public void simplePlay(String jsonStr) {
+        Log.i("simplePlay", jsonStr);
+        threadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                Looper.prepare();
+                Json json = Json.parse(jsonStr);
+                String surl = json.getString("surl");
+                try {
+                    MainView.this.player.playUrl(surl);
+                } catch (IOException e) {
+                    ContextAPI.makeToast("时间过去太久，链接好像失效了...");
+                }
+                ContextAPI.makeToast("歌曲正在播放，请稍后...");
+            }
+        });
+
+    }
+
     public void simpleStop() {
-        if (mp.isPlaying()) {
-            mp.stop();
-            Log.i("simpleStop", "stop");
+        Log.i("simpleStop", "stop");
+        threadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                MainView.this.player.stop();
+            }
+        });
+    }
+
+    /**
+     * 简单的播放器
+     */
+    private class SimplePlayer {
+        private MediaPlayer mp = null;
+        public SimplePlayer() {
+            this.mp = new MediaPlayer();
+            mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    mp.start();
+                }
+            });
+        }
+
+        public void playUrl(String url) throws IOException {
+            if (mp.isPlaying())
+                mp.stop();
+            mp.reset();
+            mp.setDataSource(url);
+            mp.prepareAsync();
+        }
+
+        public void stop() {
+            if (mp.isPlaying())
+                mp.stop();
         }
     }
 
-    @SuppressWarnings("NullableProblems")
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -139,5 +152,17 @@ public class MainView extends Activity {
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        webView.reload();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MainView.active = false;
     }
 }

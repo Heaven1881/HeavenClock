@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="mine.android.HeavenClock"
-          android:versionCode="1" android:versionName="2.15">
+          android:versionCode="1" android:versionName="3.02">
     <uses-sdk android:minSdkVersion="14"/>
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
-    <application android:label="旭儿闹钟" android:icon="@drawable/icon" android:theme="@android:style/Theme.NoTitleBar">
-        <activity android:name="mine.android.view.MainView" android:label="旭儿闹钟" android:screenOrientation="portrait">
+    <application android:label="旭宝闹钟" android:icon="@drawable/icon" android:theme="@android:style/Theme.NoTitleBar">
+        <activity android:name="mine.android.view.MainView" android:label="旭宝闹钟" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity android:name="mine.android.view.AlarmView" android:screenOrientation="portrait"/>
+        <receiver android:name="mine.android.view.CallAlarm"/>
     </application>
 </manifest>

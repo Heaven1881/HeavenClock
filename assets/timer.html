@@ -34,17 +34,17 @@
     <script id="main-pad-template" type="text/x-handlebars-template">
         <div class="content-padded">
             <div class="rat-alarm-space-up"></div>
-            <div class="rat-alarm-time"><b>{{time}}</b></div>
+            <div class="rat-alarm-time"><b>{{clock.time}}</b></div>
             <div class="rat-alarm-space-mid"></div>
         </div>
         <div class="card">
             <ul class="table-view">
                 <li class="table-view-cell media">
-                    <img class="media-object pull-left" src="http://placehold.it/42x42">
+                    <img class="media-object pull-left" src="{{song.picture}}" height="128px">
 
                     <div class="media-body">
-                        {{music}}
-                        <p>{{artist}}</p>
+                        {{song.title}}
+                        <p>{{song.artist}}</p>
                     </div>
                 </li>
             </ul>
@@ -54,7 +54,7 @@
                 <span class="icon icon-right"></span>
             </button>
             <button class="btn rat-btn-block btn-negative btn-outlined" id="ctrl-like">
-                <span class="icon {{mkstart like}}" id="like-status"></span>
+                <span class="icon {{mkstart song.like}}" id="like-status"></span>
             </button>
             <button class="btn rat-btn-block " id="ctrl-bye">
                 <span class="icon icon-trash"></span>
