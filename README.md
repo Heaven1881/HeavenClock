@@ -1,6 +1,13 @@
 # HeavenClock
-This is my first android app! it is a clock
+这是我自己写的一个android的闹钟，闹钟的音乐使用豆瓣的API自动推荐
 
-I just want to make my own clock app
+功能：
+- 基于豆瓣fm的推荐，让你每天都能听到豆瓣推荐的歌曲作为闹钟
+- 支持标记红心歌曲，标记不喜欢的歌曲，并实时将信息反馈，让推荐的闹钟音乐更符合你的口味
+- 自动记录历史，可以重听最近的闹钟
 
-target： download music for everyday alarm clock 
+注意：
+- 这个app只是一个调用服务的方式，其中的音乐和服务归豆瓣所有
+
+豆瓣fm API 参考自:
+- https://github.com/zonyitoo/doubanfm-qt/wiki/%E8%B1%86%E7%93%A3FM-API
