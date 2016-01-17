@@ -30,5 +30,9 @@ $(document).ready(function () {
     );
     publisher.init();
 
-    $('#ctrl-stop-play').hide();
+    if (Activity.isPlaying()) {
+        $('#ctrl-stop-play').show();
+    } else {
+        $('#ctrl-stop-play').hide();
+    }
 });

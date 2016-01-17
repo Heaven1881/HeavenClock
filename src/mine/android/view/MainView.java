@@ -92,7 +92,10 @@ public class MainView extends Activity {
                 ContextAPI.makeToast("歌曲正在播放，请稍后...");
             }
         });
+    }
 
+    public boolean isPlaying() {
+        return this.player.isPlaying();
     }
 
     public void simpleStop() {
@@ -110,6 +113,8 @@ public class MainView extends Activity {
      */
     private class SimplePlayer {
         private MediaPlayer mp = null;
+        private String currentUrl = null;
+
         public SimplePlayer() {
             this.mp = new MediaPlayer();
             mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -124,14 +129,21 @@ public class MainView extends Activity {
         public void playUrl(String url) throws IOException {
             if (mp.isPlaying())
                 mp.stop();
+            currentUrl = url;
             mp.reset();
             mp.setDataSource(url);
             mp.prepareAsync();
         }
 
         public void stop() {
-            if (mp.isPlaying())
+            if (mp.isPlaying()) {
                 mp.stop();
+                currentUrl = null;
+            }
+        }
+
+        public boolean isPlaying() {
+            return currentUrl != null;
         }
     }
 
