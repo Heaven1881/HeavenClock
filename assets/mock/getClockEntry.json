@@ -1,0 +1,8 @@
+{
+  "cid": 1,
+  "type": "FOR_WEEK",
+  "time": "09:30",
+  "active": true,
+  "week": "3,4,6",
+  "desc": "起床"
+}

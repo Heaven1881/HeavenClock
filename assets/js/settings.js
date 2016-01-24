@@ -4,7 +4,8 @@ var DATA_CONFIGS = [
         dst: '#setting-form',
         data: ConfigCtrl.getSettings(),
         ajax: {
-            url: 'mock/getSettings.json'
+            url: 'mock/getSettings.json',
+            async: false,
         }
     }
 ];
@@ -29,5 +30,9 @@ $(document).ready(function () {
         LISTENER_CONFIGS
     );
     publisher.init();
+
+    $('#repeat-slider').slider({
+
+    });
 
 });

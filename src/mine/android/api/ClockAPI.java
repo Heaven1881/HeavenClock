@@ -10,6 +10,10 @@ import java.util.TreeMap;
  * Created by Heaven on 15/7/19
  */
 public class ClockAPI {
+    public static String WEEKDAY[] = {
+            "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+    };
+
     /* json example
         {
             "cid": 1,

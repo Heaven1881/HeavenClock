@@ -19,7 +19,8 @@
     <script src="ratchet/js/ratchet.min.js"></script>
     <script src="js/jquery-1.11.3.min.js"></script>
     <script src="js/handlebars-v4.0.5.js"></script>
-    <script src="js/_Publisher.js"></script>
+    <script src="js/_publisher.js"></script>
+    <script src="js/compoment.js"></script>
     <script src="js/clocks.js"></script>
 </head>
 <body>
@@ -90,22 +91,22 @@
                         <input type="radio" name="repeat" value="FOR_DAY">
                         <span>每天</span>
                     </label>
-                    <!--<label class="rat-clock-new-repeat-label">-->
-                        <!--<input type="radio" name="repeat" value="FOR_WEEK">-->
-                        <!--<span>每周</span>-->
-                    <!--</label>-->
+                    <label class="rat-clock-new-repeat-label">
+                        <input type="radio" name="repeat" value="FOR_WEEK">
+                        <span>每周</span>
+                    </label>
                 </div>
 
-                <!--<div class="content-padded" id="input-week-group">-->
-                    <!--<p>星期</p>-->
-                    <!--<label class="rat-clock-new-week-label"><input type="checkbox" name="week" value="1"><span>一</span></label>-->
-                    <!--<label class="rat-clock-new-week-label"><input type="checkbox" name="week" value="2"><span>二</span></label>-->
-                    <!--<label class="rat-clock-new-week-label"><input type="checkbox" name="week" value="3"><span>三</span></label>-->
-                    <!--<label class="rat-clock-new-week-label"><input type="checkbox" name="week" value="4"><span>四</span></label>-->
-                    <!--<label class="rat-clock-new-week-label"><input type="checkbox" name="week" value="5"><span>五</span></label>-->
-                    <!--<label class="rat-clock-new-week-label"><input type="checkbox" name="week" value="6"><span>六</span></label>-->
-                    <!--<label class="rat-clock-new-week-label"><input type="checkbox" name="week" value="7"><span>日</span></label>-->
-                <!--</div>-->
+                <div class="content-padded" id="input-week-group">
+                    <p>星期</p>
+                    <label class="rat-clock-new-week-label"><input type="checkbox" name="week" value="1"><span>一</span></label>
+                    <label class="rat-clock-new-week-label"><input type="checkbox" name="week" value="2"><span>二</span></label>
+                    <label class="rat-clock-new-week-label"><input type="checkbox" name="week" value="3"><span>三</span></label>
+                    <label class="rat-clock-new-week-label"><input type="checkbox" name="week" value="4"><span>四</span></label>
+                    <label class="rat-clock-new-week-label"><input type="checkbox" name="week" value="5"><span>五</span></label>
+                    <label class="rat-clock-new-week-label"><input type="checkbox" name="week" value="6"><span>六</span></label>
+                    <label class="rat-clock-new-week-label"><input type="checkbox" name="week" value="0"><span>日</span></label>
+                </div>
 
                 <div class="content-padded">
                     <p>备注</p>

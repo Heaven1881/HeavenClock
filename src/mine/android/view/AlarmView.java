@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.webkit.WebView;
 import mine.android.HeavenClock.R;
 import mine.android.api.AlarmAPI;
@@ -68,7 +67,7 @@ public class AlarmView extends Activity {
         if (type.equals("FOR_ONCE")) { // 闹钟是一次性的，则修改闹钟激活状态
             ClockAPI.setClockEntryActive(cid, false);
         } else {                        // 否则 设置下一次定时器
-            long nextAlarm = AlarmAPI.caculateNextAlarm(clock);
+            long nextAlarm = AlarmAPI.calculateNextAlarm(clock);
             AlarmAPI.setTimer(cid, nextAlarm);
         }
     }

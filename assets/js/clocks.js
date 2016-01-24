@@ -3,9 +3,10 @@ var DATA_CONFIGS = [
         src: '#clock-list-template',
         dst: '#div-clock-list',
         data: ClockCtrl.getClockEntries(),
-        ajax: {
-            url: 'mock/getClockEntries.json',
-        }
+        //ajax: {
+        //    url: 'mock/getClockEntries.json',
+        //    async: false
+        //}
     }
 ];
 
@@ -32,7 +33,7 @@ var LISTENER_CONFIGS = {
             active: true
         };
 
-        if (data.repeat == 'FOR_WEEK') {
+        if (data.type == 'FOR_WEEK') {
             var week = [];
             $('input[name=week]:checked').each(function () {
                 week.push($(this).val());
@@ -68,24 +69,8 @@ $(document).ready(function () {
     );
     publisher.init();
 
-    $('#input-week-group').hide();
-
-});
-
-Handlebars.registerHelper('clockRepeat', function (strFor) {
-    switch (strFor) {
-        case 'FOR_ONCE':
-            return '一次';
-        case 'FOR_DAY':
-            return '每天'
+    if ($('input[name=repeat]:checked').val() != 'FOR_WEEK') {
+        $('#input-week-group').hide();
     }
 
-});
-
-Handlebars.registerHelper('clockActive', function (bolActive) {
-    if (bolActive) {
-        return 'active';
-    } else {
-        return '';
-    }
 });
