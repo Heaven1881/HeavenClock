@@ -32,22 +32,17 @@
 <!-- Wrap all non-bar HTML in the .content div (this is actually what scrolls) -->
 <div class="content">
     <script id="main-pad-template" type="text/x-handlebars-template">
-        <div class="content-padded">
-            <div class="rat-alarm-space-up"></div>
-            <div class="rat-alarm-time"><b>{{clock.time}}</b></div>
-            <div class="rat-alarm-space-mid"></div>
-        </div>
-        <div class="card">
-            <ul class="table-view">
-                <li class="table-view-cell media">
-                    <img class="media-object pull-left" src="{{song.picture}}" height="128px">
+        <div class="alarm-time">{{clock.time}}</div>
 
-                    <div class="media-body">
-                        {{song.title}}
-                        <p>{{song.artist}}</p>
-                    </div>
-                </li>
-            </ul>
+        <div class="song-card">
+            <div class="song-pic">
+                <img src="{{song.picture}}">
+            </div>
+            <div class="sp"></div>
+            <div class="song-detail">
+                <p class="song-title">{{song.title}}</p>
+                <p class="song-artist">{{song.artist}}</p>
+            </div>
         </div>
         <div class="content-padded">
             <button class="btn rat-btn-block btn-primary btn-outlined" id="ctrl-next">

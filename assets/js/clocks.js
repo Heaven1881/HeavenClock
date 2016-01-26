@@ -2,11 +2,11 @@ var DATA_CONFIGS = [
     {
         src: '#clock-list-template',
         dst: '#div-clock-list',
-        data: ClockCtrl.getClockEntries(),
-        //ajax: {
-        //    url: 'mock/getClockEntries.json',
-        //    async: false
-        //}
+        //data: ClockCtrl.getClockEntries(),
+        ajax: {
+            url: 'mock/getClockEntries.json',
+            async: false
+        }
     }
 ];
 

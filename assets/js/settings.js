@@ -2,7 +2,7 @@ var DATA_CONFIGS = [
     {
         src: '#setting-form-template',
         dst: '#setting-form',
-        data: ConfigCtrl.getSettings(),
+        //data: ConfigCtrl.getSettings(),
         ajax: {
             url: 'mock/getSettings.json',
             async: false,

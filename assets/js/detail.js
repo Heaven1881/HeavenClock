@@ -2,9 +2,9 @@ var DATA_CONFIGS = [
     {
         src: '#clock-detail-template',
         dst: '#clock-detail',
-        data: ClockCtrl.getClockEntry(JSON.stringify({
-            cid: getUrlParam('cid')
-        })),
+        //data: ClockCtrl.getClockEntry(JSON.stringify({
+        //    cid: getUrlParam('cid')
+        //})),
         ajax: {
             url: 'mock/getClockEntry.json',
             async: false
