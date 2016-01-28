@@ -39,7 +39,8 @@ public class AlarmView extends Activity {
         //js java 映射
         webView.addJavascriptInterface(playCtrl, "PlayCtrl");
         webView.addJavascriptInterface(this, "Activity");
-        webView.loadUrl("file:///android_asset/timer.html");
+//        webView.loadUrl("file:///android_asset/timer.html");
+        webView.loadUrl("file:///android_asset/dev/alarm.html");
 
         handler.post(new Runnable() {
             @Override

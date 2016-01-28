@@ -20,7 +20,7 @@ public class ClockAPI {
             "type": "FOR_ONCE" | "FOR_DAY" | "FOR_WEEK",
             "time": "09:30",
             "active": true,
-            "week_option": "3,4,6"
+            "week": "3,4,6"
             "desc": "起床"
         }
      */

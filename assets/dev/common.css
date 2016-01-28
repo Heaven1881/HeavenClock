@@ -1,0 +1,61 @@
+/*
+* 闹钟列表样式
+*/
+.clock-content {
+    height: 3rem;
+}
+
+.clock-time {
+    height: 3rem;
+    width: 3rem;
+    float: left;
+    text-align: center;
+}
+
+.clock-time p {
+    font-size: 1rem;
+    margin: .75rem 0;
+}
+
+.clock-sep {
+    content: ' ';
+    background: #ccc;
+    display: block;
+    float: left;
+    height: 80%;
+    top: 10%;
+    width: .05rem;
+    position: relative;
+}
+
+.clock-title {
+    display: block;
+    height: 3rem;
+    padding: .6rem .5rem .6rem 3.5rem;
+}
+
+.clock-title p {
+    font-size: .5rem;
+    color: #555;
+    margin: auto;
+}
+
+.clock-option {
+    height: 3rem;
+    position: absolute;
+    right: .7rem;
+    top: .7rem;
+}
+
+.song-picture {
+    text-align: center;
+}
+
+.song-picture img {
+    height: 8rem;
+}
+
+.alarm-time {
+    text-align: center;
+    font-size: 2rem;
+}

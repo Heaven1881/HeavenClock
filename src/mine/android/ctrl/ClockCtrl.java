@@ -97,7 +97,6 @@ public class ClockCtrl {
                 "song_history", array
         );
         Log.i("getHistory", String.format("length = %d", array.length()));
-        String jsonStr = json.toString();
-        return jsonStr;
+        return json.toString();
     }
 }

@@ -18,6 +18,7 @@ import android.webkit.WebView;
 import mine.android.HeavenClock.R;
 import mine.android.api.AlarmAPI;
 import mine.android.api.ContextAPI;
+import mine.android.api.SongHistoryAPI;
 import mine.android.api.modules.Json;
 import mine.android.ctrl.ClockCtrl;
 import mine.android.ctrl.ConfigCtrl;
@@ -66,7 +67,8 @@ public class MainView extends Activity {
         webView.addJavascriptInterface(new ClockCtrl(handler, webView), "ClockCtrl");
         webView.addJavascriptInterface(new ConfigCtrl(handler, webView), "ConfigCtrl");
         webView.addJavascriptInterface(this, "Activity");
-        webView.loadUrl("file:///android_asset/clocks.html");
+//        webView.loadUrl("file:///android_asset/clocks.htm");
+        webView.loadUrl("file:///android_asset/dev/index.html");
 
         // 激活所有闹钟的定时器
         try {
@@ -76,9 +78,29 @@ public class MainView extends Activity {
         }
     }
 
+    public String simplePlayByPlayedTime(String jsonStr) {
+        Log.i("simplePlaByPlayedTime", jsonStr);
+        Json json = Json.parse(jsonStr);
+        Json song = SongHistoryAPI.getSongEntry(json.getInt("played_time"));
+        String url = song.getString("url");
+        new Thread() {
+            @Override
+            public void run() {
+                Looper.prepare();
+                try {
+                    MainView.this.player.playUrl(url);
+                } catch (IOException e) {
+                    ContextAPI.makeToast("时间过去太久，链接好像失效了...");
+                }
+                ContextAPI.makeToast("歌曲正在播放，请稍后...");
+            }
+        }.start();
+        return song.toString();
+    }
+
     public void simplePlay(String jsonStr) {
         Log.i("simplePlay", jsonStr);
-        threadPool.execute(new Runnable() {
+        new Thread() {
             @Override
             public void run() {
                 Looper.prepare();
@@ -91,7 +113,7 @@ public class MainView extends Activity {
                 }
                 ContextAPI.makeToast("歌曲正在播放，请稍后...");
             }
-        });
+        }.start();
     }
 
     public boolean isPlaying() {
@@ -139,6 +161,8 @@ public class MainView extends Activity {
             if (mp.isPlaying()) {
                 mp.stop();
                 currentUrl = null;
+            } else {
+                ContextAPI.makeToast("当前没有播放音乐");
             }
         }
 
@@ -147,24 +171,24 @@ public class MainView extends Activity {
         }
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            PackageManager packageManager = getPackageManager();
-            ResolveInfo homeInfo = packageManager.resolveActivity(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME), 0);
-            ActivityInfo ai = homeInfo.activityInfo;
-
-            Intent startIntent = new Intent(Intent.ACTION_MAIN);
-            startIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-            startIntent.setComponent(new ComponentName(ai.packageName, ai.name));
-
-            startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(startIntent);
-
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if (keyCode == KeyEvent.KEYCODE_BACK) {
+//            PackageManager packageManager = getPackageManager();
+//            ResolveInfo homeInfo = packageManager.resolveActivity(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME), 0);
+//            ActivityInfo ai = homeInfo.activityInfo;
+//
+//            Intent startIntent = new Intent(Intent.ACTION_MAIN);
+//            startIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+//            startIntent.setComponent(new ComponentName(ai.packageName, ai.name));
+//
+//            startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            startActivity(startIntent);
+//
+//            return true;
+//        }
+//        return super.onKeyDown(keyCode, event);
+//    }
 
     @Override
     protected void onResume() {

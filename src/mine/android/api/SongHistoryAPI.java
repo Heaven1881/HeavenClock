@@ -88,4 +88,9 @@ public class SongHistoryAPI {
         });
         return JsonArray.create(songs);
     }
+
+    public static Json getSongEntry(int playeredTime) {
+        loadData();
+        return dataSet.get(playeredTime);
+    }
 }

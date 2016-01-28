@@ -2,19 +2,27 @@
   "clock_entries": [
     {
       "cid": 19,
-      "active": false,
+      "active": true,
       "time": "06:40",
       "type": "FOR_ONCE",
-      "week": "0000000",
+      "week": "",
       "desc": "起床"
     },
     {
       "cid": 20,
-      "active": true,
+      "active": false,
       "time": "07:13",
       "type": "FOR_DAY",
-      "week": "0000000",
+      "week": "",
       "desc": "再次起床"
+    },
+    {
+      "cid": 21,
+      "active": true,
+      "time": "09:47",
+      "type": "FOR_WEEK",
+      "week": "3,5,0",
+      "desc": "休息时间"
     }
   ]
 }

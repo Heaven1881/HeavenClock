@@ -28,8 +28,8 @@ public class AlarmAPI {
 
         String[] t = time.split(":");
         Calendar c = Calendar.getInstance();
-        c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(t[0]));
-        c.set(Calendar.MINUTE, Integer.parseInt(t[1]));
+        c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(t[0].trim()));
+        c.set(Calendar.MINUTE, Integer.parseInt(t[1].trim()));
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
 

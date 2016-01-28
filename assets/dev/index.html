@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>旭宝闹闹</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <link rel="stylesheet" href="sui/css/sm.css">
+    <link rel="stylesheet" href="sui/css/sm-extend.min.css">
+    <link rel="stylesheet" href="common.css">
+
+</head>
+<body>
+
+<div class="page-group">
+    <div class="page page-current" id="page-clockList">
+        <!-- 标题栏 -->
+        <header class="bar bar-nav">
+            <a class="icon icon-menu pull-left open-panel" data-panel=".setting-panel"></a>
+            <a class="icon icon-app pull-right open-panel" data-panel=".player-panel"></a>
+            <h1 class="title">闹钟</h1>
+        </header>
+
+        <!-- 工具栏 -->
+        <nav class="bar bar-tab">
+            <a class="tab-item active">
+                <span class="icon icon-clock"></span>
+                <span class="tab-label">闹钟</span>
+            </a>
+            <a class="tab-item" href="#page-songHistory">
+                <span class="icon icon-search"></span>
+                <span class="tab-label">历史音乐</span>
+            </a>
+        </nav>
+
+        <!-- 这里是页面内容区 -->
+        <div class="content"></div>
+
+        <!-- 页面内容渲染前模版 -->
+        <script class="content-template" type="text/x-handlebars-template">
+            {{#each clock_entries}}
+            <div class="card clock-content" data-cid="{{cid}}">
+                <div class="clock-time">
+                    <p>{{time}}</p>
+                </div>
+                <div class="clock-sep"></div>
+                <a class="clock-title clock-edit" href="#">
+                    <p>{{textType}}</p>
+                    <p>{{desc}}</p>
+                </a>
+                <div class="clock-option">
+                    {{ClockSwitch}}
+                </div>
+            </div>
+            {{/each}}
+            <div class="content-block">
+                <p><a href="#page-clockDetail" class="button button-big clock-create">新建</a></p>
+            </div>
+
+        </script>
+    </div>
+
+    <div class="page" id="page-clockDetail">
+        <!-- 标题栏 -->
+        <header class="bar bar-nav">
+            <a class="icon icon-left pull-left back" href="#page-clockList" data-transition="slide-out"></a>
+            <h1 class="title">编辑闹钟</h1>
+        </header>
+
+        <!-- 这里是页面内容区 -->
+        <div class="content"></div>
+
+        <!-- 页面内容渲染前模版 -->
+        <script class="content-template" type="text/x-handlebars-template">
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">时间</div>
+                                <div class="item-input">
+                                    <input type="text" placeholder="请选择时间" id="input-time">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">重复</div>
+                                <div class="item-input">
+                                    <select id="input-type">
+                                        {{InputTypeOption '不重复' 'FOR_ONCE'}}
+                                        {{InputTypeOption '每天' 'FOR_DAY'}}
+                                        {{InputTypeOption '自定义' 'FOR_WEEK'}}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="input-week-item">
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label"></div>
+                                <div class="item-input">
+                                    <input type="text" class="open-popup" data-popup=".popup-select-week"
+                                           placeholder="请选择时间" id="input-week" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">备注</div>
+                                <div class="item-input">
+                                    <input type="text" id="input-desc" value="{{desc}}">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="content-block">
+                <a href="#" class="button button-big button-round button-fill button-success" id="save-clock-btn">保存</a>
+            </div>
+        </script>
+    </div>
+
+    <div class="page" id="page-songHistory">
+        <!-- 标题栏 -->
+        <header class="bar bar-nav">
+            <a class="icon icon-menu pull-left open-panel" data-panel=".setting-panel"></a>
+            <a class="icon icon-app pull-right open-panel" data-panel=".player-panel"></a>
+            <h1 class="title">历史音乐</h1>
+        </header>
+
+        <!-- 工具栏 -->
+        <nav class="bar bar-tab">
+            <a class="tab-item back" href="#page-clockList" data-transition="slide-out">
+                <span class="icon icon-clock"></span>
+                <span class="tab-label">闹钟</span>
+            </a>
+            <a class="tab-item active">
+                <span class="icon icon-search"></span>
+                <span class="tab-label">历史音乐</span>
+            </a>
+        </nav>
+
+        <!-- 这里是页面内容区 -->
+        <div class="content"></div>
+
+        <!-- 页面内容渲染前模版 -->
+        <script class="content-template" type="text/x-handlebars-template">
+            <div class="content-block-title">这里是最近播放过的音乐</div>
+            <div class="list-block media-list">
+                <ul>
+                    {{#each song_history}}
+                    <li data-playedTime="{{played_time}}">
+                        <div class="item-content item-link">
+                            <div class="item-media pb-popup"><img src="{{picture}}" style='width: 2.2rem;'></div>
+                            <div class="item-inner song-operation">
+                                <div class="item-title-row">
+                                    <div class="item-title">{{title}}</div>
+                                    <div class="item-after">{{textDate played_time}}</div>
+                                    <!--<div class="item-after">{{LikeStar like}}</div>-->
+                                </div>
+                                <div class="item-subtitle">{{artist}}</div>
+                            </div>
+                        </div>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </script>
+    </div>
+
+    <div class="page" id="page-settings">
+        <!-- 标题栏 -->
+        <header class="bar bar-nav">
+            <a class="icon icon-left pull-left back" href="#page-clockList" data-transition="slide-out"></a>
+            <h1 class="title">设置</h1>
+        </header>
+
+
+        <!-- 这里是页面内容区 -->
+        <div class="content"></div>
+
+        <!-- 页面内容渲染前模版 -->
+        <script class="content-template" type="text/x-handlebars-template">
+            <div class="content-block-title">豆瓣账户设置</div>
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-media"><i class="icon icon-form-email"></i></div>
+                            <div class="item-inner">
+                                <div class="item-title label">邮箱</div>
+                                <div class="item-input">
+                                    <input type="email" placeholder="E-mail" id="input-email" value="{{douban_email}}">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-media"><i class="icon icon-form-password"></i></div>
+                            <div class="item-inner">
+                                <div class="item-title label">密码</div>
+                                <div class="item-input">
+                                    <input type="password" placeholder="Password" id="input-password" value="{{douban_password}}">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="content-block-title">每次闹钟播放的歌曲数</div>
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" placeholder="请输入" class="number-picker" data-min="1" data-max="5" data-step="1" id="input-repeat" value="{{repeat}}">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="content-block-title">播放新歌的概率(%)</div>
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" placeholder="请输入" class="number-picker" data-min="0" data-max="100" data-step="10" data-unit="%" id="input-pForNew" value="{{textPercentage p_for_new}}">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="content-block-title">历史记录最大值</div>
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" placeholder="请输入" class="number-picker" data-min="5" data-max="50" data-step="5" id="input-maxHistory" value="{{max_history}}">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="content-block">
+                <p><a href="#" class="button button-big button-success button-fill" id="save-settings-btn">保存</a></p>
+            </div>
+        </script>
+
+    </div>
+
+    <!-- popup, panel 等放在这里 -->
+    <div class="popup popup-select-week"></div>
+    <script class="popup-select-week-template" type="text/x-handlebars-template">
+        <div class="content-block">
+            <p>请选择日期</p>
+            <div class="list-block media-list">
+                <ul>
+                    <li>{{InputWeekLabel '星期一' 1}}</li>
+                    <li>{{InputWeekLabel '星期二' 2}}</li>
+                    <li>{{InputWeekLabel '星期三' 3}}</li>
+                    <li>{{InputWeekLabel '星期四' 4}}</li>
+                    <li>{{InputWeekLabel '星期五' 5}}</li>
+                    <li>{{InputWeekLabel '星期六' 6}}</li>
+                    <li>{{InputWeekLabel '星期日' 0}}</li>
+                </ul>
+            </div>
+
+            <p><a href="#" class="button button-warning close-popup">确定</a></p>
+        </div>
+    </script>
+
+    <!--右侧栏 音乐播放器-->
+    <div class="panel panel-right panel-cover player-panel">
+        <div class="content-block">
+            <p>正在播放</p>
+            <div class="content-block-title" id="left-title">当前没有播放的歌曲</div>
+            <div class="content-block">
+                <p><a href="#" class="button close-panel" id="left-stop">停止播放</a></p>
+                <p><a href="#" class="button button-light close-panel">隐藏</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!--左侧栏 app相关-->
+    <div class="panel panel-left panel-reveal setting-panel">
+        <div class="content-block">
+            <p>v3.0</p>
+            <p><a href="#page-settings">设置</a></p>
+            <p><a href="#" class="close-panel">关闭</a></p>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src='zepto/zepto.min.js' charset='utf-8'></script>
+<script type="text/javascript" src='sui/js/sm.min.js' charset='utf-8'></script>
+<script type="text/javascript" src='sui/js/sm-extend.min.js' charset='utf-8'></script>
+<script type="text/javascript" src="handlebars/handlebars.js" charset="utf-8"></script>
+<script type="text/javascript" src="component.js" charset="utf-8"></script>
+<script type="text/javascript" src="index.js" charset="utf-8"></script>
+
+</body>
+</html>
