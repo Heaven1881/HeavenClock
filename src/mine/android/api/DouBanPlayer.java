@@ -133,6 +133,10 @@ public class DouBanPlayer implements MediaPlayer.OnCompletionListener,
         Log.i("addSong", String.format("add %d song", array.length()));
     }
 
+    public void addSong(Json song) {
+        this.playQueue.offer(song);
+    }
+
     public int sizeOfPlayQueue() {
         return this.playQueue.size();
     }

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.webkit.WebView;
 import mine.android.api.*;
 import mine.android.api.modules.Json;
+import mine.android.api.modules.JsonArray;
 
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
@@ -41,6 +42,7 @@ public class PlayCtrl implements DouBanPlayer.OnNewSongListener {
             Random seed = new Random();
             double pForNew = config.getDouble("p_for_new");
             int repeat = config.getInt("repeat");
+            int tryTime = 0;
             while (PlayCtrl.this.player.sizeOfPlayQueue() < repeat) {
                 double v = seed.nextDouble();
                 Json response;
@@ -55,7 +57,18 @@ public class PlayCtrl implements DouBanPlayer.OnNewSongListener {
                             "type", "n"
                     ));
 
-                PlayCtrl.this.player.addSong(response.getJsonArray("song"));
+                JsonArray array = response.getJsonArray("song");
+                // 检查每一首音乐,如果历史记录里面已经存在这首歌,那么就丢弃这首歌
+                // 最大尝试次数 3
+                for (Json song : array) {
+                    int sid = song.getInt("sid");
+                    if ((sid == 0 || SongHistoryAPI.hasSongId(sid)) && tryTime < 3) {
+                        tryTime += 1;
+                        continue;
+                    }
+                    PlayCtrl.this.player.addSong(song);
+                    tryTime = 0;
+                }
             }
         } catch (DoubanAPI.DoubanException e) {
             // TODO ....

@@ -277,6 +277,11 @@ var PAGE_INIT = {
     }
 };
 
+var PANEL_INTI = {
+    'panel-setting': function (e, panelId) {
+
+    }
+};
 
 /**
  * pageinit调用
@@ -290,6 +295,16 @@ $(document).on("pageInit", function (e, pageId, $page) {
     }
     initFunc(e, pageId, $page);
     console.info(JSON.stringify(Status));
+});
+
+$(document).on('open', function (e) {
+    panelId = e.target.id;
+    var initFunc = PANEL_INIT[panelId];
+    if (initFunc == null || typeof initFunc != 'function') {
+        console.warn('init function not found, panelId: ' + panelId);
+        return;
+    }
+    initFunc(e, panelId);
 });
 
 

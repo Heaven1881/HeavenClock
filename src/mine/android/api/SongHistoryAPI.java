@@ -93,4 +93,14 @@ public class SongHistoryAPI {
         loadData();
         return dataSet.get(playeredTime);
     }
+
+    public static boolean hasSongId(int sid) {
+        loadData();
+        for (Map.Entry<Integer, Json> entry : dataSet.entrySet()) {
+            if (sid == entry.getValue().getInt("sid")) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

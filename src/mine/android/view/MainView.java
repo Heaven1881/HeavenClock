@@ -36,14 +36,9 @@ public class MainView extends Activity {
     private static ExecutorService threadPool = null;
     private Handler handler = new Handler();
     private SimplePlayer player = null;
-    private static boolean active = false;
 
     public static Context getContext() {
         return context;
-    }
-
-    public static boolean isActive() {
-        return active;
     }
 
     @Override
@@ -52,7 +47,7 @@ public class MainView extends Activity {
         setContentView(R.layout.main);
         context = this;
 
-        MainView.active = true;
+//        MainView.active = true;
 
         // 初始化线程池
         if (threadPool == null)
@@ -171,34 +166,28 @@ public class MainView extends Activity {
         }
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            PackageManager packageManager = getPackageManager();
+            ResolveInfo homeInfo = packageManager.resolveActivity(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME), 0);
+            ActivityInfo ai = homeInfo.activityInfo;
+
+            Intent startIntent = new Intent(Intent.ACTION_MAIN);
+            startIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+            startIntent.setComponent(new ComponentName(ai.packageName, ai.name));
+
+            startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(startIntent);
+
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
 //    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        if (keyCode == KeyEvent.KEYCODE_BACK) {
-//            PackageManager packageManager = getPackageManager();
-//            ResolveInfo homeInfo = packageManager.resolveActivity(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME), 0);
-//            ActivityInfo ai = homeInfo.activityInfo;
-//
-//            Intent startIntent = new Intent(Intent.ACTION_MAIN);
-//            startIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-//            startIntent.setComponent(new ComponentName(ai.packageName, ai.name));
-//
-//            startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            startActivity(startIntent);
-//
-//            return true;
-//        }
-//        return super.onKeyDown(keyCode, event);
+//    protected void onResume() {
+//        super.onResume();
+//        webView.reload();
 //    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        webView.reload();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        MainView.active = false;
-    }
 }
