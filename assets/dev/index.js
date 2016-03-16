@@ -97,9 +97,10 @@ var PAGE_INIT = {
 
             // 渲染时间选择器
             var timeArray = data.time.split(':');
-            $('#input-time').val((timeArray[0] < 10 ? '0' + parseInt(timeArray[0]) : '' + timeArray[0]) + ' : '
-                + (timeArray[1] < 10 ? '0' + parseInt(timeArray[1]) : '' + timeArray[1]));
-            $('#input-time').timePicker({value: [timeArray[0], ':', timeArray[1]]});
+            $('#input-time').val(data.time);
+            //$('#input-time').val((timeArray[0] < 10 ? '0' + parseInt(timeArray[0]) : '' + timeArray[0]) + ' : '
+            //    + (timeArray[1] < 10 ? '0' + parseInt(timeArray[1]) : '' + timeArray[1]));
+            //$('#input-time').timePicker({value: [timeArray[0], ':', timeArray[1]]});
 
             // 渲染星期选择器
             var weekStrArray = [];
@@ -140,7 +141,7 @@ var PAGE_INIT = {
                 var data = {
                     cid: Status.openCid == null ? 0 : Status.openCid,
                     active: true,
-                    time: $('#input-time').val().replace(/ /g, ''),
+                    time: $('#input-time').val(),
                     type: $('#input-type').val(),
                     week: Status.popupWeekInput == null ? '' : Status.popupWeekInput.join(','),
                     desc: $('#input-desc').val()
@@ -241,14 +242,14 @@ var PAGE_INIT = {
 
     'page-settings': function (e, pageId, $page) {
         var initJsForPage = function (data) {
-            $('.number-picker').each(function () {
-                $(this).numberPicker({
-                    min: $(this).attr('data-min'),
-                    max: $(this).attr('data-max'),
-                    step: $(this).attr('data-step'),
-                    unit: $(this).attr('data-unit')
-                })
-            });
+            //$('.number-picker').each(function () {
+            //    $(this).numberPicker({
+            //        min: $(this).attr('data-min'),
+            //        max: $(this).attr('data-max'),
+            //        step: $(this).attr('data-step'),
+            //        unit: $(this).attr('data-unit')
+            //    })
+            //});
 
             // 保存按钮
             $('#save-settings-btn').on('click', function (e) {
@@ -256,7 +257,7 @@ var PAGE_INIT = {
                     douban_email: $('#input-email').val(),
                     douban_password: $('#input-password').val(),
                     repeat: $('#input-repeat').val(),
-                    p_for_new: $('#input-pForNew').val().split('%')[0] / 100.0,
+                    p_for_new: $('#input-pForNew').val(),
                     max_history: $('#input-maxHistory').val()
                 };
                 ConfigCtrl.setSettings(JSON.stringify(data));

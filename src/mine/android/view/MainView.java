@@ -62,7 +62,7 @@ public class MainView extends Activity {
         webView.addJavascriptInterface(new ClockCtrl(handler, webView), "ClockCtrl");
         webView.addJavascriptInterface(new ConfigCtrl(handler, webView), "ConfigCtrl");
         webView.addJavascriptInterface(this, "Activity");
-//        webView.loadUrl("file:///android_asset/clocks.htm");
+//        webView.loadUrl("file:///android_asset/clocks.html");
         webView.loadUrl("file:///android_asset/dev/index.html");
 
         // 激活所有闹钟的定时器

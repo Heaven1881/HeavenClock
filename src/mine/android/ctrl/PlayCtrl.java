@@ -58,6 +58,7 @@ public class PlayCtrl implements DouBanPlayer.OnNewSongListener {
                     ));
 
                 JsonArray array = response.getJsonArray("song");
+                Log.i("get response", response.toString());
                 // 检查每一首音乐,如果历史记录里面已经存在这首歌,那么就丢弃这首歌
                 // 最大尝试次数 3
                 for (Json song : array) {

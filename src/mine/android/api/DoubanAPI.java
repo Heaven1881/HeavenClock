@@ -6,6 +6,8 @@ import mine.android.api.modules.Json;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Heaven on 2015/2/15.
@@ -40,7 +42,7 @@ public class DoubanAPI {
             }
         }
         // 否则向服务器登陆
-        String loginUrl = "http://www.douban.com/j/app/login";
+        String loginUrl = "https://www.douban.com/j/app/login";
         String param = String.format("%s=%s&%s=%s&%s=%s&%s=%s",
                 "app_name", "radio_android",
                 "version", 100,
@@ -85,6 +87,7 @@ public class DoubanAPI {
                 out.print(param);
                 out.flush();
             }
+            Map<String, List<String>> headerFields = uc.getHeaderFields();
 
             InputStream inputStream = uc.getInputStream();
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
@@ -112,7 +115,7 @@ public class DoubanAPI {
      */
     public static Json report(Json data) {
         Log.i("DoubanAPI report", data.toString());
-        String reportUrl = "http://www.douban.com/j/app/radio/people";
+        String reportUrl = "https://www.douban.com/j/app/radio/people";
         Json loginResult = login();
         String param = String.format("%s=%s&%s=%s&%s=%s&%s=%s&%s=%s",
                 "app_name", "radio_android",
