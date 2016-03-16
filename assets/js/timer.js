@@ -2,9 +2,10 @@ var DATA_CONFIGS = [
     {
         src: '#main-pad-template',
         dst: '#main-pad',
-        data: PlayCtrl.getCurrentSongAndClock(),
+        //data: PlayCtrl.getCurrentSongAndClock(),
         ajax: {
-            url: "mock/getCurrentSongAndClock.json" // for debug
+            url: "mock/getCurrentSongAndClock.json", // for debug
+            async: false
         }
     }
 ];

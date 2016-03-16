@@ -2,10 +2,11 @@ var DATA_CONFIGS = [
     {
         src: '#song-list-template',
         dst: '#song-list',
-        data: ClockCtrl.getHistory()
-    //    ajax: {
-    //        url: 'mock/getSongHistory.json'
-    //    }
+        //data: ClockCtrl.getHistory()
+        ajax: {
+            url: 'mock/getSongHistory.json',
+            async: false
+        }
     }
 ];
 
@@ -30,5 +31,9 @@ $(document).ready(function () {
     );
     publisher.init();
 
-    $('#ctrl-stop-play').hide();
+    if (Activity.isPlaying()) {
+        $('#ctrl-stop-play').show();
+    } else {
+        $('#ctrl-stop-play').hide();
+    }
 });

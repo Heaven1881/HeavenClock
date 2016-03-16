@@ -17,10 +17,9 @@
 }
 
 .alarm-time {
-    font-size: 4em;
-    margin-right: auto;
-    margin-left: auto;
-    width: 160px;
+    font-size: 30px;
+    margin: 10px;
+    text-align: center;
 }
 
 .rat-clock-li-time {
@@ -31,11 +30,19 @@
     padding-top: 8px;
 }
 
-.rat-clock-new-repeat-label {
-    margin-right: 10px;
+.repeat-label {
+    margin-right: 15px;
 }
 
-.rat-clock-new-week-label {
+.label-group input {
+    margin-right: 5px;
+}
+
+.label-group span {
+    font-size: 13px;
+}
+
+.week-label {
     margin-right: 10px;
 }
 
@@ -64,3 +71,44 @@
     margin-left: 5px;
     font-size: 18px;
 }
+
+.song-card {
+    background: #fff;
+    box-shadow: 0 0.05rem 0.1rem rgba(0, 0, 0, 0.3);
+    margin: 0.5rem;
+    position: relative;
+    border-radius: 0.1rem;
+}
+
+.song-pic {
+    text-align: center;
+    padding: 15px 0;
+}
+
+.song-pic img {
+    height: 300px;
+}
+
+.song-detail {
+    padding: 8px 30px;
+}
+
+.sp {
+    content: '';
+    height: 1px;
+    width: 100%;
+    background-color: #e1e1e1;
+    display: block;
+}
+
+.song-title {
+    font-size: 18px;
+    color: #222;
+}
+
+.song-artist {
+}
+
+/*.content {*/
+    /*background: #fafafa;*/
+/*}*/

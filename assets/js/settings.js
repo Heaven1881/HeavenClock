@@ -2,9 +2,10 @@ var DATA_CONFIGS = [
     {
         src: '#setting-form-template',
         dst: '#setting-form',
-        data: ConfigCtrl.getSettings(),
+        //data: ConfigCtrl.getSettings(),
         ajax: {
-            url: 'mock/getSettings.json'
+            url: 'mock/getSettings.json',
+            async: false,
         }
     }
 ];
@@ -29,5 +30,9 @@ $(document).ready(function () {
         LISTENER_CONFIGS
     );
     publisher.init();
+
+    $('#repeat-slider').slider({
+
+    });
 
 });

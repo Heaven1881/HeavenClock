@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.util.Log;
 import mine.android.api.modules.Json;
 import mine.android.api.modules.JsonArray;
-import mine.android.view.AlarmView;
 import mine.android.view.CallAlarm;
 
 import java.util.Calendar;
@@ -17,21 +16,20 @@ import java.util.Date;
  * Created by Heaven on 15/7/21
  */
 public class AlarmAPI {
-
     /**
      * 获取下次激活的事件
      *
      * @param clock clock
      * @return long
      */
-    public static long caculateNextAlarm(Json clock) {
+    public static long calculateNextAlarm(Json clock) {
         String time = clock.getString("time");
         String type = clock.getString("type");
 
         String[] t = time.split(":");
         Calendar c = Calendar.getInstance();
-        c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(t[0]));
-        c.set(Calendar.MINUTE, Integer.parseInt(t[1]));
+        c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(t[0].trim()));
+        c.set(Calendar.MINUTE, Integer.parseInt(t[1].trim()));
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
 
@@ -40,12 +38,20 @@ public class AlarmAPI {
         if (timestamp > System.currentTimeMillis()) // 如果timestemp在当前时间之后,则直接返回
             return timestamp;
 
-        // 否则，加一天
+        // 否则，根据闹钟种类增加对应的天数
+        long ONE_DAY_MILLISECOND = 24 * 3600 * 1000;
         if (type.equals("FOR_ONCE") || type.equals("FOR_DAY")) {
-            long ONE_DAY_MILLISECOND = 24 * 3600 * 1000;
             timestamp += ONE_DAY_MILLISECOND;
         } else if (type.equals("FOR_WEEK")) {
-            // TODO ....
+            int curWeek = c.get(Calendar.DAY_OF_WEEK) - 1;
+            int minInterval = 7;
+            for (String week : clock.getString("week").split(",")) {
+                int actWeek = Integer.parseInt(week);
+                int interval = (actWeek + 7) - curWeek;
+                interval = interval > 7 ? interval - 7 : interval;
+                minInterval = minInterval < interval ? minInterval : interval;
+            }
+            timestamp += minInterval * ONE_DAY_MILLISECOND;
         }
         Log.i("next alarm", String.valueOf(new Date(timestamp)));
         return timestamp;
@@ -85,7 +91,7 @@ public class AlarmAPI {
             Log.e("setTimer", String.format("clock not find [id=%d]", cid));
             return;
         }
-        long timestamp = caculateNextAlarm(clock);
+        long timestamp = calculateNextAlarm(clock);
         setTimer(cid, timestamp);
 
         // make toast
@@ -104,7 +110,7 @@ public class AlarmAPI {
         JsonArray clocks = ClockAPI.getClockEntries();
         for (Json clock : clocks) {
             if (clock.getBoolean("active")) {
-                long timestamp = caculateNextAlarm(clock);
+                long timestamp = calculateNextAlarm(clock);
                 setTimer(clock.getInt("cid"), timestamp);
             }
         }

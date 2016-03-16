@@ -2,15 +2,19 @@ var DATA_CONFIGS = [
     {
         src: '#clock-detail-template',
         dst: '#clock-detail',
-        data: ClockCtrl.getClockEntry(JSON.stringify({
-            cid: getUrlParam('cid')
-        }))
+        //data: ClockCtrl.getClockEntry(JSON.stringify({
+        //    cid: getUrlParam('cid')
+        //})),
+        ajax: {
+            url: 'mock/getClockEntry.json',
+            async: false
+        }
     }
 ];
 
 var LISTENER_CONFIGS = {
     'input[name=repeat]': {
-        change: function (e) {
+        'change': function (e) {
             var curRepeat = $(e.target).val();
             if (curRepeat == 'FOR_WEEK') {
                 $('#input-week-group').show(100);
@@ -18,6 +22,13 @@ var LISTENER_CONFIGS = {
                 $('#input-week-group').hide(100);
             }
         }
+    },
+    '#ctrl-delete-clock': function (e) {
+        var cid = $('div#clock-cid').attr('data-cid');
+        ClockCtrl.deleteClockEntry(JSON.stringify({
+            cid: cid
+        }));
+        window.location = 'clocks.html';
     },
     '#ctrl-modify-confirm': function (e) {
         var data = {
@@ -29,7 +40,7 @@ var LISTENER_CONFIGS = {
             active: true
         };
 
-        if (data.repeat == 'FOR_WEEK') {
+        if (data.type == 'FOR_WEEK') {
             var week = [];
             $('input[name=week]:checked').each(function () {
                 week.push($(this).val());
@@ -39,13 +50,7 @@ var LISTENER_CONFIGS = {
         ClockCtrl.setClockEntry(JSON.stringify(data));
         window.location = 'clocks.html';
     },
-    '#ctrl-delete-clock': function (e) {
-        var cid = $('div#clock-cid').attr('data-cid');
-        ClockCtrl.deleteClockEntry(JSON.stringify({
-            cid: cid
-        }));
-        window.location = 'clocks.html';
-    }
+
 };
 
 $(document).ready(function () {
@@ -55,7 +60,9 @@ $(document).ready(function () {
     );
     publisher.init();
 
-    $('#input-week-group').hide();
+    if ($('input[name=repeat]:checked').val() != 'FOR_WEEK') {
+        $('#input-week-group').hide();
+    }
 });
 
 function getUrlParam(name) {
@@ -65,12 +72,3 @@ function getUrlParam(name) {
         return r[2];
     return null;
 }
-
-
-Handlebars.registerHelper("eq", function (v1, v2, options) {
-    if (v1 == v2) {
-        return options.fn(this);
-    } else {
-        return options.inverse(this);
-    }
-});

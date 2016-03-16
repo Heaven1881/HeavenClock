@@ -13,5 +13,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="zepto" level="application" />
+    <orderEntry type="library" name="sm" level="application" />
+    <orderEntry type="library" name="sm-extend" level="application" />
   </component>
 </module>

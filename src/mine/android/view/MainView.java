@@ -18,6 +18,7 @@ import android.webkit.WebView;
 import mine.android.HeavenClock.R;
 import mine.android.api.AlarmAPI;
 import mine.android.api.ContextAPI;
+import mine.android.api.SongHistoryAPI;
 import mine.android.api.modules.Json;
 import mine.android.ctrl.ClockCtrl;
 import mine.android.ctrl.ConfigCtrl;
@@ -35,14 +36,9 @@ public class MainView extends Activity {
     private static ExecutorService threadPool = null;
     private Handler handler = new Handler();
     private SimplePlayer player = null;
-    private static boolean active = false;
 
     public static Context getContext() {
         return context;
-    }
-
-    public static boolean isActive() {
-        return active;
     }
 
     @Override
@@ -51,7 +47,7 @@ public class MainView extends Activity {
         setContentView(R.layout.main);
         context = this;
 
-        MainView.active = true;
+//        MainView.active = true;
 
         // 初始化线程池
         if (threadPool == null)
@@ -66,7 +62,8 @@ public class MainView extends Activity {
         webView.addJavascriptInterface(new ClockCtrl(handler, webView), "ClockCtrl");
         webView.addJavascriptInterface(new ConfigCtrl(handler, webView), "ConfigCtrl");
         webView.addJavascriptInterface(this, "Activity");
-        webView.loadUrl("file:///android_asset/clocks.html");
+//        webView.loadUrl("file:///android_asset/clocks.html");
+        webView.loadUrl("file:///android_asset/dev/index.html");
 
         // 激活所有闹钟的定时器
         try {
@@ -76,9 +73,29 @@ public class MainView extends Activity {
         }
     }
 
+    public String simplePlayByPlayedTime(String jsonStr) {
+        Log.i("simplePlaByPlayedTime", jsonStr);
+        Json json = Json.parse(jsonStr);
+        Json song = SongHistoryAPI.getSongEntry(json.getInt("played_time"));
+        String url = song.getString("url");
+        new Thread() {
+            @Override
+            public void run() {
+                Looper.prepare();
+                try {
+                    MainView.this.player.playUrl(url);
+                } catch (IOException e) {
+                    ContextAPI.makeToast("时间过去太久，链接好像失效了...");
+                }
+                ContextAPI.makeToast("歌曲正在播放，请稍后...");
+            }
+        }.start();
+        return song.toString();
+    }
+
     public void simplePlay(String jsonStr) {
         Log.i("simplePlay", jsonStr);
-        threadPool.execute(new Runnable() {
+        new Thread() {
             @Override
             public void run() {
                 Looper.prepare();
@@ -91,8 +108,11 @@ public class MainView extends Activity {
                 }
                 ContextAPI.makeToast("歌曲正在播放，请稍后...");
             }
-        });
+        }.start();
+    }
 
+    public boolean isPlaying() {
+        return this.player.isPlaying();
     }
 
     public void simpleStop() {
@@ -110,6 +130,8 @@ public class MainView extends Activity {
      */
     private class SimplePlayer {
         private MediaPlayer mp = null;
+        private String currentUrl = null;
+
         public SimplePlayer() {
             this.mp = new MediaPlayer();
             mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -124,14 +146,23 @@ public class MainView extends Activity {
         public void playUrl(String url) throws IOException {
             if (mp.isPlaying())
                 mp.stop();
+            currentUrl = url;
             mp.reset();
             mp.setDataSource(url);
             mp.prepareAsync();
         }
 
         public void stop() {
-            if (mp.isPlaying())
+            if (mp.isPlaying()) {
                 mp.stop();
+                currentUrl = null;
+            } else {
+                ContextAPI.makeToast("当前没有播放音乐");
+            }
+        }
+
+        public boolean isPlaying() {
+            return currentUrl != null;
         }
     }
 
@@ -154,15 +185,9 @@ public class MainView extends Activity {
         return super.onKeyDown(keyCode, event);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        webView.reload();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        MainView.active = false;
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        webView.reload();
+//    }
 }

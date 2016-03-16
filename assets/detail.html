@@ -19,7 +19,8 @@
     <script src="ratchet/js/ratchet.min.js"></script>
     <script src="js/jquery-1.11.3.min.js"></script>
     <script src="js/handlebars-v4.0.5.js"></script>
-    <script src="js/_Publisher.js"></script>
+    <script src="js/_publisher.js"></script>
+    <script src="js/component.js"></script>
     <script src="js/detail.js"></script>
 </head>
 <body>
@@ -27,7 +28,6 @@
 <!-- Make sure all your bars are the first things in your <body> -->
 <header class="bar bar-nav">
     <a class="icon icon-left-nav pull-left" href="clocks.html" id="back" data-ignore="push"></a>
-    <a class="icon icon-check pull-right" id="ctrl-modify-confirm"></a>
 
     <h1 class="title">编辑闹钟</h1>
 </header>
@@ -43,30 +43,31 @@
 
         <div class="content-padded">
             <p>重复</p>
-            <label class="rat-clock-new-repeat-label">
-                <input type="radio" name="repeat" value="FOR_ONCE" {{#eq type 'FOR_ONCE'}} checked="checked" {{else}} {{/eq}}>
-                <span>一次</span>
-            </label>
-            <label class="rat-clock-new-repeat-label">
-                <input type="radio" name="repeat" value="FOR_DAY" {{#eq type 'FOR_DAY'}} checked="checked" {{else}} {{/eq}}>
-                <span>每天</span>
-            </label>
-            <!--<label class="rat-clock-new-repeat-label">-->
-                <!--<input type="radio" name="repeat" value="FOR_WEEK" {{#eq type 'FOR_WEEK'}} checked="checked" {{else}} {{/eq}}>-->
-                <!--<span>每周</span>-->
-            <!--</label>-->
+            <div class="label-group">
+                <label class="repeat-label">
+                    {{RepeatInput 'FOR_ONCE' type '一次'}}
+                </label>
+                <label class="repeat-label">
+                    {{RepeatInput 'FOR_DAY' type '每天'}}
+                </label>
+                <label class="repeat-label">
+                    {{RepeatInput 'FOR_WEEK' type '每周'}}
+                </label>
+            </div>
         </div>
 
-        <!--<div class="content-padded">-->
-            <!--<p>星期</p>-->
-            <!--<label class="rat-clock-new-week-label"><input type="checkbox" name="week"><span>一</span></label>-->
-            <!--<label class="rat-clock-new-week-label"><input type="checkbox" name="week"><span>二</span></label>-->
-            <!--<label class="rat-clock-new-week-label"><input type="checkbox" name="week"><span>三</span></label>-->
-            <!--<label class="rat-clock-new-week-label"><input type="checkbox" name="week"><span>四</span></label>-->
-            <!--<label class="rat-clock-new-week-label"><input type="checkbox" name="week"><span>五</span></label>-->
-            <!--<label class="rat-clock-new-week-label"><input type="checkbox" name="week"><span>六</span></label>-->
-            <!--<label class="rat-clock-new-week-label"><input type="checkbox" name="week"><span>日</span></label>-->
-        <!--</div>-->
+        <div class="content-padded" id="input-week-group">
+            <p>星期</p>
+            <div class="label-group">
+                <label class="week-label">{{WeekCheckbox 'week' '1' '一' week}}</label>
+                <label class="week-label">{{WeekCheckbox 'week' '2' '二' week}}</label>
+                <label class="week-label">{{WeekCheckbox 'week' '3' '三' week}}</label>
+                <label class="week-label">{{WeekCheckbox 'week' '4' '四' week}}</label>
+                <label class="week-label">{{WeekCheckbox 'week' '5' '五' week}}</label>
+                <label class="week-label">{{WeekCheckbox 'week' '6' '六' week}}</label>
+                <label class="week-label">{{WeekCheckbox 'week' '0' '日' week}}</label>
+            </div>
+        </div>
 
         <div class="content-padded">
             <p>备注</p>
@@ -74,6 +75,7 @@
         </div>
 
         <div class="content-padded">
+            <a class="btn btn-positive btn-block" id="ctrl-modify-confirm">保存</a>
             <a class="btn btn-negative btn-block" id="ctrl-delete-clock">删除该闹钟</a>
         </div>
     </script>
